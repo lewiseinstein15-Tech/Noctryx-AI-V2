@@ -1,447 +1,383 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Noctryx AI V2</title>
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#060a09">
-<link rel="icon" type="image/svg+xml" href="icon.svg">
-<link rel="apple-touch-icon" href="icon.svg">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Noctryx">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --bg: #060a09;
-    --bg-panel: #0c1210;
-    --bg-panel-2: #0f1614;
-    --border: #17231f;
-    --green: #16e6a1;
-    --green-dim: #0d7a58;
-    --green-glow: rgba(22,230,161,0.35);
-    --text: #e7f5ef;
-    --text-dim: #7c948b;
-    --text-dimmer: #4e6259;
-    --danger: #ff6b6b;
-    --radius: 16px;
-  }
-  *{box-sizing:border-box; margin:0; padding:0;}
-  html,body{height:100%;}
-  body{
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'JetBrains Mono', monospace;
-    -webkit-font-smoothing: antialiased;
-    overflow-x:hidden;
-  }
-  a{color:inherit; text-decoration:none;}
-  button{font-family:inherit; color:inherit; background:none; border:none; cursor:pointer;}
-
-  .app{
-    max-width: 480px;
-    margin: 0 auto;
-    min-height: 100vh;
-    display:flex;
-    flex-direction:column;
-    background: radial-gradient(120% 60% at 50% -10%, rgba(22,230,161,0.08), transparent 60%), var(--bg);
-    padding-bottom: 84px;
-  }
-
-  .header{
-    display:flex; align-items:center; justify-content:space-between;
-    padding: 18px 18px 6px;
-  }
-  .brand{ display:flex; align-items:center; gap:8px; }
-  .brand .orb-mini{
-    width:20px; height:20px; border-radius:50%;
-    background: radial-gradient(circle at 35% 30%, #7dffce, var(--green) 55%, var(--green-dim) 100%);
-    box-shadow: 0 0 12px var(--green-glow);
-  }
-  .brand span{
-    font-weight:800; letter-spacing:2px; font-size:15px;
-    background: linear-gradient(90deg, var(--green), #9dffd8);
-    -webkit-background-clip:text; background-clip:text; color:transparent;
-  }
-  .header-icons{ display:flex; align-items:center; gap:14px; color:var(--text-dim); }
-  .icon-btn{ width:34px; height:34px; display:flex; align-items:center; justify-content:center; border-radius:10px; }
-  .icon-btn:active{ background: var(--bg-panel-2); }
-  .avatar-btn{
-    width:34px; height:34px; border-radius:50%;
-    background: radial-gradient(circle at 35% 30%, #123c30, #071310 70%);
-    border: 1px solid var(--green-dim);
-    display:flex; align-items:center; justify-content:center;
-  }
-
-  .hero{ padding: 10px 20px 18px; }
-  .hero-row{ display:flex; align-items:center; gap:16px; }
-  .orb-wrap{ position:relative; width:78px; height:78px; flex-shrink:0; }
-  .orb{
-    width:78px; height:78px; border-radius:50%;
-    background: radial-gradient(circle at 32% 28%, #a7ffe0, var(--green) 45%, #06231a 100%);
-    box-shadow: 0 0 30px var(--green-glow), inset 0 0 20px rgba(0,0,0,0.4);
-    animation: pulse 3s ease-in-out infinite;
-  }
-  .orb-ring{
-    position:absolute; inset:-8px; border-radius:50%;
-    border: 1px solid rgba(22,230,161,0.25);
-    animation: ring 3s ease-in-out infinite;
-  }
-  @keyframes pulse{ 0%,100%{ transform:scale(1); } 50%{ transform:scale(1.04); } }
-  @keyframes ring{ 0%,100%{ opacity:.4; transform:scale(1);} 50%{ opacity:.9; transform:scale(1.08);} }
-
-  .greeting{ flex:1; }
-  .greeting .line1{ font-size:14px; color:var(--text-dim); }
-  .greeting .name{ font-size:19px; font-weight:800; color:var(--green); display:flex; align-items:center; gap:6px; }
-  .greeting .sub{ font-size:12.5px; color:var(--text-dim); margin-top:4px; }
-  .status-line{ display:flex; align-items:center; gap:6px; margin-top:8px; font-size:11px; color:var(--green); }
-  .status-dot{ width:6px; height:6px; border-radius:50%; background:var(--green); box-shadow:0 0 6px var(--green); }
-  .status-wave{ display:flex; align-items:flex-end; gap:2px; height:12px; margin-left:4px; }
-  .status-wave span{ width:2px; background:var(--green-dim); border-radius:1px; animation: wave 1.1s ease-in-out infinite; }
-  .status-wave span:nth-child(1){height:40%; animation-delay:0s;}
-  .status-wave span:nth-child(2){height:80%; animation-delay:.1s;}
-  .status-wave span:nth-child(3){height:100%; animation-delay:.2s;}
-  .status-wave span:nth-child(4){height:60%; animation-delay:.3s;}
-  .status-wave span:nth-child(5){height:90%; animation-delay:.4s;}
-  @keyframes wave{ 0%,100%{ transform:scaleY(0.4);} 50%{ transform:scaleY(1);} }
-
-  .search{
-    margin: 16px 20px 0;
-    display:flex; align-items:center; gap:10px;
-    background: var(--bg-panel);
-    border:1px solid var(--border);
-    border-radius: 14px;
-    padding: 12px 14px;
-  }
-  .search input{
-    flex:1; background:none; border:none; outline:none; color:var(--text);
-    font-family:inherit; font-size:13.5px;
-  }
-  .search input::placeholder{ color: var(--text-dimmer); }
-  .search button{ color:var(--text-dim); display:flex; }
-  .search .send{ color:var(--green); }
-
-  .quick-actions{
-    display:grid; grid-template-columns: repeat(5, 1fr); gap:8px;
-    margin: 16px 20px 0;
-  }
-  .qa-item{
-    display:flex; flex-direction:column; align-items:center; gap:6px;
-    padding:10px 2px; border-radius:12px;
-  }
-  .qa-item:active{ background: var(--bg-panel-2); }
-  .qa-icon{
-    width:42px; height:42px; border-radius:12px;
-    background: var(--bg-panel);
-    border:1px solid var(--border);
-    display:flex; align-items:center; justify-content:center;
-    color: var(--green);
-  }
-  .qa-label{ font-size:9.5px; color:var(--text-dim); text-align:center; line-height:1.2; }
-
-  .section{ margin: 18px 20px 0; }
-  .section-title{
-    display:flex; align-items:center; justify-content:space-between;
-    font-size:10.5px; letter-spacing:1.5px; color:var(--text-dim);
-    margin-bottom:10px; text-transform:uppercase;
-  }
-  .section-title .view-all{ color:var(--green); font-size:10.5px; letter-spacing:.5px; text-transform:none; }
-  .panel{
-    background: var(--bg-panel);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 16px;
-  }
-
-  .status-grid{ display:flex; gap:12px; }
-  .status-bars{ flex:1; display:flex; flex-direction:column; gap:12px; }
-  .stat-row{ display:flex; flex-direction:column; gap:4px; }
-  .stat-label{ display:flex; justify-content:space-between; font-size:11px; color:var(--text-dim); }
-  .stat-track{ height:5px; border-radius:3px; background:#111a17; overflow:hidden; }
-  .stat-fill{ height:100%; border-radius:3px; background: linear-gradient(90deg, var(--green-dim), var(--green)); }
-
-  .core-gauge{ width:104px; flex-shrink:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; }
-  .core-gauge svg{ transform: rotate(-90deg); }
-  .core-gauge .pct{ font-size:20px; font-weight:800; color:var(--green); margin-top:-70px; }
-  .core-gauge .cap{ font-size:8px; letter-spacing:1px; color:var(--text-dimmer); margin-top:58px; }
-  .core-gauge .status-text{ font-size:9px; color:var(--green); letter-spacing:.5px; }
-
-  .overview-grid{ display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
-  .overview-item{ display:flex; align-items:center; gap:10px; }
-  .overview-icon{ width:30px; height:30px; border-radius:8px; background:var(--bg-panel-2); display:flex; align-items:center; justify-content:center; color:var(--green); flex-shrink:0; }
-  .overview-num{ font-size:15px; font-weight:700; line-height:1.1; }
-  .overview-label{ font-size:9.5px; color:var(--text-dim); }
-
-  .agents-grid{ display:grid; grid-template-columns: repeat(3, 1fr); gap:10px; }
-  .agent-item{ display:flex; flex-direction:column; align-items:center; gap:6px; padding:10px 4px; border-radius:12px; }
-  .agent-item:active{ background:var(--bg-panel-2); }
-  .agent-icon{ width:44px; height:44px; border-radius:50%; background:var(--bg-panel-2); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; color:var(--green); }
-  .agent-label{ font-size:9.5px; color:var(--text-dim); }
-
-  .project-item{ display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid var(--border); }
-  .project-item:last-child{ border-bottom:none; }
-  .project-icon{ width:38px; height:38px; border-radius:10px; background:var(--bg-panel-2); display:flex; align-items:center; justify-content:center; color:var(--green); flex-shrink:0; }
-  .project-info{ flex:1; min-width:0; }
-  .project-name{ font-size:12.5px; font-weight:600; }
-  .project-meta{ font-size:9.5px; color:var(--text-dimmer); margin-top:2px; }
-  .project-track{ height:3px; border-radius:2px; background:#111a17; margin-top:6px; overflow:hidden; }
-  .project-fill{ height:100%; background:var(--green); border-radius:2px; }
-  .project-pct{ font-size:11px; color:var(--green); font-weight:700; flex-shrink:0; }
-
-  .listening-bar{
-    display:flex; align-items:center; gap:12px;
-    margin:18px 20px 0; padding:12px 14px;
-    background: linear-gradient(90deg, rgba(22,230,161,0.08), rgba(22,230,161,0.02));
-    border: 1px solid var(--green-dim);
-    border-radius: 14px;
-  }
-  .listening-mic{ width:34px; height:34px; border-radius:50%; background:var(--green); display:flex; align-items:center; justify-content:center; color:#052018; flex-shrink:0; }
-  .listening-text{ flex:1; }
-  .listening-title{ font-size:12px; font-weight:700; color:var(--green); }
-  .listening-sub{ font-size:10px; color:var(--text-dim); }
-  .listening-wave{ display:flex; align-items:center; gap:2px; height:16px; }
-  .listening-wave span{ width:2px; background:var(--green); border-radius:1px; animation:wave 1s ease-in-out infinite; }
-  .listening-wave span:nth-child(odd){ animation-delay:.15s; }
-
-  .bottom-nav{
-    position:fixed; bottom:0; left:50%; transform:translateX(-50%);
-    width:100%; max-width:480px;
-    display:flex; justify-content:space-around; align-items:center;
-    padding: 10px 6px calc(10px + env(safe-area-inset-bottom));
-    background: rgba(6,10,9,0.92); backdrop-filter: blur(10px);
-    border-top: 1px solid var(--border);
-  }
-  .nav-item{ display:flex; flex-direction:column; align-items:center; gap:4px; color:var(--text-dimmer); flex:1; padding:4px 0; }
-  .nav-item svg{ width:20px; height:20px; }
-  .nav-item span{ font-size:9px; }
-  .nav-item.active{ color:var(--green); }
-
-  ::selection{ background: var(--green-glow); }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Noctryx AI V2</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#060a09">
+  <link rel="icon" type="image/svg+xml" href="icon.svg">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Noctryx">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/animations.css">
 </head>
 <body>
-<div class="app">
+  <div class="app">
 
-  <div class="header">
-    <div class="header-icons">
-      <button class="icon-btn" aria-label="Menu">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-      </button>
+    <!-- Header -->
+    <div class="header">
+      <div class="header-icons">
+        <button class="icon-btn" id="menuBtn" aria-label="Menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="brand">
+        <div class="orb-mini"></div>
+        <span>NOCTRYX AI V2</span>
+      </div>
+      <div class="header-icons">
+        <button class="icon-btn" id="expandBtn" aria-label="Expand">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+        </button>
+        <button class="avatar-btn" id="profileBtn" aria-label="Profile">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
+        </button>
+      </div>
     </div>
-    <div class="brand">
-      <div class="orb-mini"></div>
-      <span>NOCTRYX AI V2</span>
-    </div>
-    <div class="header-icons">
-      <button class="icon-btn" aria-label="Expand">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
-      </button>
-      <button class="avatar-btn" aria-label="Profile">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
-      </button>
-    </div>
-  </div>
 
-  <div class="hero">
-    <div class="hero-row">
-      <div class="orb-wrap"><div class="orb-ring"></div><div class="orb"></div></div>
-      <div class="greeting">
-        <div class="line1" id="greetingLine">Good evening,</div>
-        <div class="name">Master 👑</div>
-        <div class="sub" id="idleLine">I am Noctryx. How can I assist you today?</div>
-        <div class="status-line">
-          <span class="status-dot"></span> AI CORE: ACTIVE
-          <span class="status-wave"><span></span><span></span><span></span><span></span><span></span></span>
+    <!-- Home Screen -->
+    <div id="screen-home" class="screen active">
+      <div class="hero">
+        <div class="hero-row">
+          <div class="orb-wrap"><div class="orb-ring"></div><div class="orb"></div></div>
+          <div class="greeting">
+            <div class="line1" id="greetingLine">Good evening,</div>
+            <div class="name">Master 👑</div>
+            <div class="sub" id="idleLine">I am Noctryx. How can I assist you today?</div>
+            <div class="status-line">
+              <span class="status-dot" id="aiStatusDot"></span>
+              <span id="aiStatusText">AI CORE: ACTIVE</span>
+              <span class="status-wave" id="aiStatusWave"><span></span><span></span><span></span><span></span><span></span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <form class="search" id="searchForm">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="askInput" placeholder="Ask Noctryx anything..." autocomplete="off">
+        <button type="button" id="voiceInputBtn" aria-label="Voice input">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4"/></svg>
+        </button>
+        <button type="submit" class="send" aria-label="Send">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
+        </button>
+      </form>
+
+      <div class="quick-actions" id="quickActions">
+        <button class="qa-item" data-action="chat">
+          <div class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-9 8.4A8.5 8.5 0 1 1 21 11.5z"/></svg></div>
+          <div class="qa-label">New Chat</div>
+        </button>
+        <button class="qa-item" data-action="code">
+          <div class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
+          <div class="qa-label">Write Code</div>
+        </button>
+        <button class="qa-item" data-action="vision">
+          <div class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+          <div class="qa-label">Vision</div>
+        </button>
+        <button class="qa-item" data-action="voice">
+          <div class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4"/></svg></div>
+          <div class="qa-label">Voice</div>
+        </button>
+        <button class="qa-item" data-action="agents">
+          <div class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
+          <div class="qa-label">Auto Agents</div>
+        </button>
+      </div>
+
+      <div class="section">
+        <div class="section-title">⚡ System Status</div>
+        <div class="panel status-grid">
+          <div class="status-bars">
+            <div class="stat-row">
+              <div class="stat-label"><span>CPU</span><span id="cpuVal">Unavailable</span></div>
+              <div class="stat-track"><div class="stat-fill" id="cpuFill" style="width:0%"></div></div>
+            </div>
+            <div class="stat-row">
+              <div class="stat-label"><span>RAM</span><span id="ramVal">Unavailable</span></div>
+              <div class="stat-track"><div class="stat-fill" id="ramFill" style="width:0%"></div></div>
+            </div>
+            <div class="stat-row">
+              <div class="stat-label"><span>STORAGE</span><span id="storageVal">Unavailable</span></div>
+              <div class="stat-track"><div class="stat-fill" id="storageFill" style="width:0%"></div></div>
+            </div>
+            <div class="stat-row">
+              <div class="stat-label"><span>BATTERY</span><span id="batteryVal">Unavailable</span></div>
+              <div class="stat-track"><div class="stat-fill" id="batteryFill" style="width:0%"></div></div>
+            </div>
+          </div>
+          <div class="core-gauge">
+            <svg width="88" height="88" viewBox="0 0 88 88">
+              <circle cx="44" cy="44" r="38" fill="none" stroke="#111a17" stroke-width="7"/>
+              <circle id="coreRing" cx="44" cy="44" r="38" fill="none" stroke="#16e6a1" stroke-width="7" stroke-linecap="round" stroke-dasharray="238.7" stroke-dashoffset="0"/>
+            </svg>
+            <div class="pct" id="corePct">--</div>
+            <div class="cap">NOCTRYX CORE</div>
+            <div class="status-text" id="coreStatusText">Initializing...</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">📋 Today's Overview</div>
+        <div class="panel overview-grid">
+          <div class="overview-item">
+            <div class="overview-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+            <div><div class="overview-num" id="taskCount">0</div><div class="overview-label">Tasks</div></div>
+          </div>
+          <div class="overview-item">
+            <div class="overview-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div><div class="overview-num" id="completedCount">0</div><div class="overview-label">Completed</div></div>
+          </div>
+          <div class="overview-item">
+            <div class="overview-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+            <div><div class="overview-num" id="messageCount">0</div><div class="overview-label">Messages</div></div>
+          </div>
+          <div class="overview-item">
+            <div class="overview-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+            <div><div class="overview-num" id="researchCount">0</div><div class="overview-label">Research</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Active Agents <span class="view-all" id="viewAllAgents">View All &gt;</span></div>
+        <div class="panel agents-grid" id="agentsGrid">
+          <button class="agent-item" data-agent="research"><div class="agent-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><div class="agent-label">Research</div></button>
+          <button class="agent-item" data-agent="github"><div class="agent-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></div><div class="agent-label">GitHub</div></button>
+          <button class="agent-item" data-agent="code"><div class="agent-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div><div class="agent-label">Code</div></button>
+          <button class="agent-item" data-agent="memory"><div class="agent-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.5H7a2.5 2.5 0 0 1 0-5H4.5a2.5 2.5 0 0 1 0-5H5a2.5 2.5 0 0 1 0-5h.04A2.5 2.5 0 0 1 9.5 2z"/></svg></div><div class="agent-label">Memory</div></button>
+          <button class="agent-item" data-agent="vision"><div class="agent-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div><div class="agent-label">Vision</div></button>
+          <button class="agent-item" data-agent="automation"><div class="agent-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div><div class="agent-label">Automation</div></button>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Recent Projects <span class="view-all" id="viewAllProjects">View All &gt;</span></div>
+        <div class="panel" id="projectsPanel">
+          <div class="project-item project-empty">
+            <div class="project-info">
+              <div class="project-name">Loading repositories...</div>
+              <div class="project-meta">Connect GitHub to see your projects</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="listening-bar" id="listeningBar">
+        <div class="listening-mic" id="listeningMic">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2H3v2a9 9 0 0 0 8 8.94V23h2v-2.06A9 9 0 0 0 21 12v-2z"/></svg>
+        </div>
+        <div class="listening-text">
+          <div class="listening-title" id="listeningTitle">Noctryx is listening...</div>
+          <div class="listening-sub" id="listeningSub">Say "Hey Noctryx" to wake me up</div>
+        </div>
+        <div class="listening-wave" id="listeningWave"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+      </div>
+    </div>
+
+    <!-- Chat Screen -->
+    <div id="screen-chat" class="screen">
+      <div class="screen-header">
+        <button class="back-btn" data-back="home">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div class="screen-title">Chat</div>
+        <button class="icon-btn" id="chatSettingsBtn" aria-label="Settings">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </button>
+      </div>
+      <div class="chat-container" id="chatContainer">
+        <div class="chat-welcome">
+          <div class="orb-wrap orb-wrap-sm"><div class="orb-ring"></div><div class="orb"></div></div>
+          <div class="chat-welcome-title">Noctryx AI</div>
+          <div class="chat-welcome-sub">How can I assist you today?</div>
+        </div>
+      </div>
+      <div class="chat-input-area">
+        <div class="typing-indicator" id="typingIndicator">
+          <span></span><span></span><span></span>
+        </div>
+        <form class="search chat-search" id="chatForm">
+          <input type="text" id="chatInput" placeholder="Message Noctryx..." autocomplete="off">
+          <button type="button" id="chatVoiceBtn" aria-label="Voice input">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4"/></svg>
+          </button>
+          <button type="submit" class="send" aria-label="Send">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Voice Screen -->
+    <div id="screen-voice" class="screen">
+      <div class="screen-header">
+        <button class="back-btn" data-back="home">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div class="screen-title">Voice</div>
+        <div style="width:34px"></div>
+      </div>
+      <div class="voice-center">
+        <div class="orb-wrap orb-wrap-lg"><div class="orb-ring"></div><div class="orb" id="voiceOrb"></div></div>
+        <div class="voice-status" id="voiceStatus">Tap microphone to start</div>
+        <div class="voice-transcript" id="voiceTranscript"></div>
+        <button class="voice-toggle" id="voiceToggle">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4"/></svg>
+        </button>
+        <div class="voice-hint">Say <span>"Hey Noctryx"</span> anytime to wake</div>
+      </div>
+    </div>
+
+    <!-- Vision Screen -->
+    <div id="screen-vision" class="screen">
+      <div class="screen-header">
+        <button class="back-btn" data-back="home">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div class="screen-title">Vision</div>
+        <div style="width:34px"></div>
+      </div>
+      <div class="vision-container">
+        <div class="vision-preview" id="visionPreview">
+          <div class="vision-placeholder">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            <div>Camera access required</div>
+          </div>
+          <video id="visionVideo" autoplay playsinline muted></video>
+          <canvas id="visionCanvas"></canvas>
+        </div>
+        <div class="vision-controls">
+          <button class="vision-btn" id="visionCaptureBtn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>
+            Capture
+          </button>
+          <button class="vision-btn" id="visionAnalyzeBtn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            Analyze
+          </button>
+        </div>
+        <div class="vision-output panel" id="visionOutput">
+          <div class="vision-output-text">Vision analysis will appear here.</div>
         </div>
       </div>
     </div>
-  </div>
 
-  <form class="search" id="searchForm">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-    <input type="text" id="askInput" placeholder="Ask Noctryx anything...">
-    <button type="button" aria-label="Voice input">
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4"/></svg>
-    </button>
-    <button type="submit" class="send" aria-label="Send">
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
-    </button>
-  </form>
-
-  <div class="quick-actions" id="quickActions">
-    <button class="qa-item" data-action="chat">
-      <div class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-9 8.4A8.5 8.5 0 1 1 21 11.5z"/></svg></div>
-      <div class="qa-label">New Chat</div>
-    </button>
-    <button class="qa-item" data-action="code">
-      <div class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
-      <div class="qa-label">Write Code</div>
-    </button>
-    <button class="qa-item" data-action="vision">
-      <div class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
-      <div class="qa-label">Vision</div>
-    </button>
-    <button class="qa-item" data-action="voice">
-      <div class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4"/></svg></div>
-      <div class="qa-label">Voice</div>
-    </button>
-    <button class="qa-item" data-action="agents">
-      <div class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
-      <div class="qa-label">Auto Agents</div>
-    </button>
-  </div>
-
-  <div class="section">
-    <div class="section-title">⚡ System Status</div>
-    <div class="panel status-grid">
-      <div class="status-bars">
-        <div class="stat-row"><div class="stat-label"><span>CPU</span><span id="cpuVal">18%</span></div><div class="stat-track"><div class="stat-fill" id="cpuFill" style="width:18%"></div></div></div>
-        <div class="stat-row"><div class="stat-label"><span>RAM</span><span id="ramVal">42%</span></div><div class="stat-track"><div class="stat-fill" id="ramFill" style="width:42%"></div></div></div>
-        <div class="stat-row"><div class="stat-label"><span>STORAGE</span><span id="storageVal">63%</span></div><div class="stat-track"><div class="stat-fill" id="storageFill" style="width:63%"></div></div></div>
-        <div class="stat-row"><div class="stat-label"><span>BATTERY</span><span id="batteryVal">100%</span></div><div class="stat-track"><div class="stat-fill" id="batteryFill" style="width:100%"></div></div></div>
+    <!-- Projects Screen -->
+    <div id="screen-projects" class="screen">
+      <div class="screen-header">
+        <button class="back-btn" data-back="home">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div class="screen-title">Projects</div>
+        <button class="icon-btn" id="projectsRefreshBtn" aria-label="Refresh">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        </button>
       </div>
-      <div class="core-gauge">
-        <svg width="88" height="88" viewBox="0 0 88 88">
-          <circle cx="44" cy="44" r="38" fill="none" stroke="#111a17" stroke-width="7"/>
-          <circle id="coreRing" cx="44" cy="44" r="38" fill="none" stroke="#16e6a1" stroke-width="7" stroke-linecap="round" stroke-dasharray="238.7" stroke-dashoffset="0"/>
-        </svg>
-        <div class="pct" id="corePct">100%</div>
-        <div class="cap">NOCTRYX CORE</div>
-        <div class="status-text">RUNNING SMOOTHLY</div>
+      <div class="projects-search search" style="margin: 12px 20px 0;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="projectSearch" placeholder="Search repositories...">
+      </div>
+      <div class="projects-list" id="projectsList">
+        <div class="project-loading">Loading GitHub data...</div>
       </div>
     </div>
-  </div>
 
-  <div class="section">
-    <div class="section-title">📋 Today's Overview</div>
-    <div class="panel overview-grid">
-      <div class="overview-item"><div class="overview-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div><div class="overview-num">8</div><div class="overview-label">Tasks</div></div></div>
-      <div class="overview-item"><div class="overview-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div><div><div class="overview-num">5</div><div class="overview-label">Completed</div></div></div>
-      <div class="overview-item"><div class="overview-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><div><div class="overview-num">24</div><div class="overview-label">Messages</div></div></div>
-      <div class="overview-item"><div class="overview-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><div><div class="overview-num">3</div><div class="overview-label">Research</div></div></div>
-    </div>
-  </div>
-
-  <div class="section">
-    <div class="section-title">Active Agents <span class="view-all">View All &gt;</span></div>
-    <div class="panel agents-grid">
-      <button class="agent-item"><div class="agent-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><div class="agent-label">Research</div></button>
-      <button class="agent-item"><div class="agent-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></div><div class="agent-label">GitHub</div></button>
-      <button class="agent-item"><div class="agent-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div><div class="agent-label">Code</div></button>
-      <button class="agent-item"><div class="agent-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.5H7a2.5 2.5 0 0 1 0-5H4.5a2.5 2.5 0 0 1 0-5H5a2.5 2.5 0 0 1 0-5h.04A2.5 2.5 0 0 1 9.5 2z"/></svg></div><div class="agent-label">Memory</div></button>
-      <button class="agent-item"><div class="agent-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div><div class="agent-label">Vision</div></button>
-      <button class="agent-item"><div class="agent-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div><div class="agent-label">Automation</div></button>
-    </div>
-  </div>
-
-  <div class="section">
-    <div class="section-title">Recent Projects <span class="view-all">View All &gt;</span></div>
-    <div class="panel" id="projectsPanel">
-    </div>
-  </div>
-
-  <div class="listening-bar">
-    <div class="listening-mic">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2H3v2a9 9 0 0 0 8 8.94V23h2v-2.06A9 9 0 0 0 21 12v-2z"/></svg>
-    </div>
-    <div class="listening-text">
-      <div class="listening-title">Noctryx is listening...</div>
-      <div class="listening-sub">Say "Hey Noctryx" to wake me up</div>
-    </div>
-    <div class="listening-wave"><span></span><span></span><span></span><span></span><span></span><span></span></div>
-  </div>
-
-</div>
-
-<div class="bottom-nav">
-  <a class="nav-item active" href="#" data-tab="home">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-    <span>Home</span>
-  </a>
-  <a class="nav-item" href="#" data-tab="chat">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-    <span>Chat</span>
-  </a>
-  <a class="nav-item" href="#" data-tab="voice">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4"/></svg>
-    <span>Voice</span>
-  </a>
-  <a class="nav-item" href="#" data-tab="vision">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-    <span>Vision</span>
-  </a>
-  <a class="nav-item" href="#" data-tab="projects">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-    <span>Projects</span>
-  </a>
-  <a class="nav-item" href="#" data-tab="more">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
-    <span>More</span>
-  </a>
-</div>
-
-<script>
-  function updateGreeting(){
-    const h = new Date().getHours();
-    const line = document.getElementById('greetingLine');
-    if (h < 5) line.textContent = 'Still up,';
-    else if (h < 12) line.textContent = 'Good morning,';
-    else if (h < 17) line.textContent = 'Good afternoon,';
-    else if (h < 21) line.textContent = 'Good evening,';
-    else line.textContent = 'Good night,';
-  }
-  updateGreeting();
-  setInterval(updateGreeting, 60000);
-
-  const projects = [
-    { name: 'Noctryx-AI-V2', meta: 'Private Repository · Updated 2h ago', pct: 78 },
-    { name: 'Personal-Website', meta: 'Private Repository · Updated 1d ago', pct: 45 }
-  ];
-  const panel = document.getElementById('projectsPanel');
-  panel.innerHTML = projects.map(p => `
-    <div class="project-item">
-      <div class="project-icon">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+    <!-- More Screen -->
+    <div id="screen-more" class="screen">
+      <div class="screen-header">
+        <button class="back-btn" data-back="home">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div class="screen-title">More</div>
+        <div style="width:34px"></div>
       </div>
-      <div class="project-info">
-        <div class="project-name">${p.name}</div>
-        <div class="project-meta">${p.meta}</div>
-        <div class="project-track"><div class="project-fill" style="width:${p.pct}%"></div></div>
+      <div class="more-grid">
+        <button class="more-item" data-more="memory">
+          <div class="more-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.5H7a2.5 2.5 0 0 1 0-5H4.5a2.5 2.5 0 0 1 0-5H5a2.5 2.5 0 0 1 0-5h.04A2.5 2.5 0 0 1 9.5 2z"/></svg></div>
+          <div class="more-label">Memory Engine</div>
+        </button>
+        <button class="more-item" data-more="knowledge">
+          <div class="more-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+          <div class="more-label">Knowledge Base</div>
+        </button>
+        <button class="more-item" data-more="automation">
+          <div class="more-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+          <div class="more-label">Automation</div>
+        </button>
+        <button class="more-item" data-more="tasks">
+          <div class="more-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+          <div class="more-label">Task Manager</div>
+        </button>
+        <button class="more-item" data-more="files">
+          <div class="more-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+          <div class="more-label">File Manager</div>
+        </button>
+        <button class="more-item" data-more="settings">
+          <div class="more-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+          <div class="more-label">Settings</div>
+        </button>
+        <button class="more-item" data-more="system">
+          <div class="more-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
+          <div class="more-label">System Info</div>
+        </button>
       </div>
-      <div class="project-pct">${p.pct}%</div>
+
+      <div class="section" id="systemInfoSection" style="display:none;">
+        <div class="section-title">System Information</div>
+        <div class="panel system-info-panel" id="systemInfoPanel"></div>
+      </div>
+
+      <div class="section" id="taskManagerSection" style="display:none;">
+        <div class="section-title">Task Manager</div>
+        <div class="panel">
+          <form class="task-form" id="taskForm">
+            <input type="text" id="taskInput" placeholder="New task...">
+            <button type="submit" class="send">Add</button>
+          </form>
+          <div class="task-list" id="taskList"></div>
+        </div>
+      </div>
     </div>
-  `).join('');
 
-  document.getElementById('searchForm').addEventListener('submit', function(e){
-    e.preventDefault();
-    const val = document.getElementById('askInput').value.trim();
-    if (!val) return;
-    alert('Wire this up to your chat backend. Query captured: "' + val + '"');
-  });
+  </div>
 
-  document.querySelectorAll('.qa-item').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const action = btn.dataset.action;
-      console.log('Quick action tapped:', action);
-    });
-  });
+  <div class="bottom-nav">
+    <a class="nav-item active" href="#" data-tab="home">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span>Home</span>
+    </a>
+    <a class="nav-item" href="#" data-tab="chat">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <span>Chat</span>
+    </a>
+    <a class="nav-item" href="#" data-tab="voice">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4"/></svg>
+      <span>Voice</span>
+    </a>
+    <a class="nav-item" href="#" data-tab="vision">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      <span>Vision</span>
+    </a>
+    <a class="nav-item" href="#" data-tab="projects">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+      <span>Projects</span>
+    </a>
+    <a class="nav-item" href="#" data-tab="more">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+      <span>More</span>
+    </a>
+  </div>
 
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('sw.js').catch(err => console.log('SW registration failed:', err));
-    });
-  }
-
-  document.querySelectorAll('.nav-item').forEach(item => {
-    item.addEventListener('click', (e) => {
-      e.preventDefault();
-      const tab = item.dataset.tab;
-      if (tab === 'home') return;
-      alert('"' + tab.charAt(0).toUpperCase() + tab.slice(1) + '" screen isn\'t built yet — this is next after Home.');
-    });
-  });
-</script>
+  <script type="module" src="js/app.js"></script>
 </body>
 </html>
