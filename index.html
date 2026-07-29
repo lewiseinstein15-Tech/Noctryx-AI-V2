@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Noctryx AI V2</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#060a09">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -407,7 +410,6 @@
   setInterval(updateGreeting, 60000);
 
   // ---- Real (not fake) recent projects data ----
-  // Replace this array with a fetch() call to your own backend/API once one exists.
   const projects = [
     { name: 'Noctryx-AI-V2', meta: 'Private Repository · Updated 2h ago', pct: 78 },
     { name: 'Personal-Website', meta: 'Private Repository · Updated 1d ago', pct: 45 }
@@ -427,13 +429,11 @@
     </div>
   `).join('');
 
-  // ---- Search bar: routes to chat with the query (wire this to your real chat page/API) ----
+  // ---- Search bar: routes to chat with the query ----
   document.getElementById('searchForm').addEventListener('submit', function(e){
     e.preventDefault();
     const val = document.getElementById('askInput').value.trim();
     if (!val) return;
-    // TODO: replace with real navigation once chat.html / your backend route exists, e.g.:
-    // window.location.href = 'chat.html?q=' + encodeURIComponent(val);
     alert('Wire this up to your chat backend. Query captured: "' + val + '"');
   });
 
@@ -441,7 +441,6 @@
   document.querySelectorAll('.qa-item').forEach(btn => {
     btn.addEventListener('click', () => {
       const action = btn.dataset.action;
-      // TODO: point these at real pages/routes as you build them out, e.g. window.location.href = action + '.html'
       console.log('Quick action tapped:', action);
     });
   });
@@ -452,9 +451,17 @@
       e.preventDefault();
       const tab = item.dataset.tab;
       if (tab === 'home') return;
-      alert('"' + tab.charAt(0).toUpperCase() + tab.slice(1) + '" screen isn\'t built yet — this is next after Home.');
+      alert('"' + tab.charAt(0).toUpperCase() + tab.slice(1) + '" screen isn\'t built yet.');
     });
   });
+</script>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js')
+      .then(reg => console.log('Noctryx SW registered:', reg.scope))
+      .catch(err => console.log('Noctryx SW failed:', err));
+  }
 </script>
 </body>
 </html>
