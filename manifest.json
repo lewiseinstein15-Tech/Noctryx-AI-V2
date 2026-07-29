@@ -1,0 +1,25 @@
+{
+  "name": "Noctryx AI V2",
+  "short_name": "Noctryx",
+  "description": "Noctryx AI — your multi-provider AI assistant",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#060a09",
+  "theme_color": "#060a09",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
