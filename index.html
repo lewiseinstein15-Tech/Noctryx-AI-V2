@@ -4,9 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Noctryx AI V2</title>
-<link rel="manifest" href="/manifest.json">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#060a09">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="apple-touch-icon" href="icon.svg">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Noctryx">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -334,7 +338,8 @@
 
   <div class="section">
     <div class="section-title">Recent Projects <span class="view-all">View All &gt;</span></div>
-    <div class="panel" id="projectsPanel"></div>
+    <div class="panel" id="projectsPanel">
+    </div>
   </div>
 
   <div class="listening-bar">
@@ -394,7 +399,8 @@
     { name: 'Noctryx-AI-V2', meta: 'Private Repository · Updated 2h ago', pct: 78 },
     { name: 'Personal-Website', meta: 'Private Repository · Updated 1d ago', pct: 45 }
   ];
-  document.getElementById('projectsPanel').innerHTML = projects.map(p => `
+  const panel = document.getElementById('projectsPanel');
+  panel.innerHTML = projects.map(p => `
     <div class="project-item">
       <div class="project-icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
@@ -416,25 +422,26 @@
   });
 
   document.querySelectorAll('.qa-item').forEach(btn => {
-    btn.addEventListener('click', () => console.log('Quick action:', btn.dataset.action));
+    btn.addEventListener('click', () => {
+      const action = btn.dataset.action;
+      console.log('Quick action tapped:', action);
+    });
   });
+
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js').catch(err => console.log('SW registration failed:', err));
+    });
+  }
 
   document.querySelectorAll('.nav-item').forEach(item => {
     item.addEventListener('click', (e) => {
       e.preventDefault();
       const tab = item.dataset.tab;
       if (tab === 'home') return;
-      alert('"' + tab.charAt(0).toUpperCase() + tab.slice(1) + '" screen isn\'t built yet.');
+      alert('"' + tab.charAt(0).toUpperCase() + tab.slice(1) + '" screen isn\'t built yet — this is next after Home.');
     });
   });
-</script>
-
-<script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js')
-      .then(reg => console.log('Noctryx SW registered:', reg.scope))
-      .catch(err => console.log('Noctryx SW failed:', err));
-  }
 </script>
 </body>
 </html>
