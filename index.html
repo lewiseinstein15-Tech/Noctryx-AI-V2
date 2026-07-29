@@ -46,7 +46,6 @@
     padding-bottom: 84px;
   }
 
-  /* ---------- Header ---------- */
   .header{
     display:flex; align-items:center; justify-content:space-between;
     padding: 18px 18px 6px;
@@ -72,7 +71,6 @@
     display:flex; align-items:center; justify-content:center;
   }
 
-  /* ---------- Hero ---------- */
   .hero{ padding: 10px 20px 18px; }
   .hero-row{ display:flex; align-items:center; gap:16px; }
   .orb-wrap{ position:relative; width:78px; height:78px; flex-shrink:0; }
@@ -105,7 +103,6 @@
   .status-wave span:nth-child(5){height:90%; animation-delay:.4s;}
   @keyframes wave{ 0%,100%{ transform:scaleY(0.4);} 50%{ transform:scaleY(1);} }
 
-  /* ---------- Search ---------- */
   .search{
     margin: 16px 20px 0;
     display:flex; align-items:center; gap:10px;
@@ -122,7 +119,6 @@
   .search button{ color:var(--text-dim); display:flex; }
   .search .send{ color:var(--green); }
 
-  /* ---------- Quick actions ---------- */
   .quick-actions{
     display:grid; grid-template-columns: repeat(5, 1fr); gap:8px;
     margin: 16px 20px 0;
@@ -141,7 +137,6 @@
   }
   .qa-label{ font-size:9.5px; color:var(--text-dim); text-align:center; line-height:1.2; }
 
-  /* ---------- Panels ---------- */
   .section{ margin: 18px 20px 0; }
   .section-title{
     display:flex; align-items:center; justify-content:space-between;
@@ -206,7 +201,6 @@
   .listening-wave span{ width:2px; background:var(--green); border-radius:1px; animation:wave 1s ease-in-out infinite; }
   .listening-wave span:nth-child(odd){ animation-delay:.15s; }
 
-  /* ---------- Bottom nav ---------- */
   .bottom-nav{
     position:fixed; bottom:0; left:50%; transform:translateX(-50%);
     width:100%; max-width:480px;
@@ -226,7 +220,6 @@
 <body>
 <div class="app">
 
-  <!-- Header -->
   <div class="header">
     <div class="header-icons">
       <button class="icon-btn" aria-label="Menu">
@@ -247,7 +240,6 @@
     </div>
   </div>
 
-  <!-- Hero -->
   <div class="hero">
     <div class="hero-row">
       <div class="orb-wrap"><div class="orb-ring"></div><div class="orb"></div></div>
@@ -263,7 +255,6 @@
     </div>
   </div>
 
-  <!-- Search -->
   <form class="search" id="searchForm">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
     <input type="text" id="askInput" placeholder="Ask Noctryx anything...">
@@ -275,7 +266,6 @@
     </button>
   </form>
 
-  <!-- Quick Actions -->
   <div class="quick-actions" id="quickActions">
     <button class="qa-item" data-action="chat">
       <div class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-9 8.4A8.5 8.5 0 1 1 21 11.5z"/></svg></div>
@@ -299,7 +289,6 @@
     </button>
   </div>
 
-  <!-- System Status -->
   <div class="section">
     <div class="section-title">⚡ System Status</div>
     <div class="panel status-grid">
@@ -321,7 +310,6 @@
     </div>
   </div>
 
-  <!-- Today's Overview -->
   <div class="section">
     <div class="section-title">📋 Today's Overview</div>
     <div class="panel overview-grid">
@@ -332,7 +320,6 @@
     </div>
   </div>
 
-  <!-- Active Agents -->
   <div class="section">
     <div class="section-title">Active Agents <span class="view-all">View All &gt;</span></div>
     <div class="panel agents-grid">
@@ -345,15 +332,11 @@
     </div>
   </div>
 
-  <!-- Recent Projects -->
   <div class="section">
     <div class="section-title">Recent Projects <span class="view-all">View All &gt;</span></div>
-    <div class="panel" id="projectsPanel">
-      <!-- injected by JS -->
-    </div>
+    <div class="panel" id="projectsPanel"></div>
   </div>
 
-  <!-- Listening bar -->
   <div class="listening-bar">
     <div class="listening-mic">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2H3v2a9 9 0 0 0 8 8.94V23h2v-2.06A9 9 0 0 0 21 12v-2z"/></svg>
@@ -367,7 +350,6 @@
 
 </div>
 
-<!-- Bottom Nav -->
 <div class="bottom-nav">
   <a class="nav-item active" href="#" data-tab="home">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
@@ -396,7 +378,6 @@
 </div>
 
 <script>
-  // ---- Real greeting based on device clock ----
   function updateGreeting(){
     const h = new Date().getHours();
     const line = document.getElementById('greetingLine');
@@ -409,13 +390,11 @@
   updateGreeting();
   setInterval(updateGreeting, 60000);
 
-  // ---- Real (not fake) recent projects data ----
   const projects = [
     { name: 'Noctryx-AI-V2', meta: 'Private Repository · Updated 2h ago', pct: 78 },
     { name: 'Personal-Website', meta: 'Private Repository · Updated 1d ago', pct: 45 }
   ];
-  const panel = document.getElementById('projectsPanel');
-  panel.innerHTML = projects.map(p => `
+  document.getElementById('projectsPanel').innerHTML = projects.map(p => `
     <div class="project-item">
       <div class="project-icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
@@ -429,7 +408,6 @@
     </div>
   `).join('');
 
-  // ---- Search bar: routes to chat with the query ----
   document.getElementById('searchForm').addEventListener('submit', function(e){
     e.preventDefault();
     const val = document.getElementById('askInput').value.trim();
@@ -437,15 +415,10 @@
     alert('Wire this up to your chat backend. Query captured: "' + val + '"');
   });
 
-  // ---- Quick actions: stubbed navigation targets ----
   document.querySelectorAll('.qa-item').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const action = btn.dataset.action;
-      console.log('Quick action tapped:', action);
-    });
+    btn.addEventListener('click', () => console.log('Quick action:', btn.dataset.action));
   });
 
-  // ---- Bottom nav: only Home is a built page right now ----
   document.querySelectorAll('.nav-item').forEach(item => {
     item.addEventListener('click', (e) => {
       e.preventDefault();
