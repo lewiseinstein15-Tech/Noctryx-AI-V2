@@ -1,0 +1,118 @@
+/* Dashboard-specific enhancements and responsive tweaks */
+
+/* Ensure smooth scrolling on all screen containers */
+.screen {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Chat scrollbar styling */
+.chat-container::-webkit-scrollbar,
+.projects-list::-webkit-scrollbar,
+.task-list::-webkit-scrollbar {
+  width: 4px;
+}
+.chat-container::-webkit-scrollbar-thumb,
+.projects-list::-webkit-scrollbar-thumb,
+.task-list::-webkit-scrollbar-thumb {
+  background: var(--green-dim);
+  border-radius: 4px;
+}
+
+/* Status bar fill transitions */
+.stat-fill {
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Core gauge ring transition */
+#coreRing {
+  transition: stroke-dashoffset 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Agent item hover/active states */
+.agent-item, .qa-item, .more-item {
+  transition: background 0.15s ease;
+}
+
+/* Project item transitions */
+.project-fill {
+  transition: width 0.8s ease;
+}
+
+/* Listening bar state transitions */
+.listening-bar {
+  transition: border-color 0.3s ease, background 0.3s ease;
+}
+.listening-bar.active {
+  border-color: var(--green);
+  background: linear-gradient(90deg, rgba(22,230,161,0.15), rgba(22,230,161,0.05));
+}
+
+/* Voice orb animation when active */
+.voice-toggle.active .orb-wrap-lg .orb {
+  animation: pulse 1s ease-in-out infinite;
+}
+
+/* Syntax highlighting colors within code blocks */
+.hljs-keyword, .hljs-selector-tag, .hljs-literal { color: #c792ea; }
+.hljs-string, .hljs-regexp, .hljs-addition { color: #c3e88d; }
+.hljs-number, .hljs-built_in { color: #f78c6c; }
+.hljs-comment, .hljs-quote { color: #546e7a; font-style: italic; }
+.hljs-function, .hljs-title { color: #82aaff; }
+.hljs-params { color: #f78c6c; }
+.hljs-variable, .hljs-template-variable { color: #ff5370; }
+.hljs-class, .hljs-type { color: #ffcb6b; }
+
+/* Mobile-specific adjustments */
+@media (max-width: 380px) {
+  .quick-actions {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 4px;
+  }
+  .qa-icon {
+    width: 36px;
+    height: 36px;
+  }
+  .qa-label {
+    font-size: 8.5px;
+  }
+  .agents-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+  .agent-icon {
+    width: 38px;
+    height: 38px;
+  }
+  .overview-grid {
+    gap: 8px;
+  }
+  .more-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Standalone PWA mode adjustments */
+@media (display-mode: standalone) {
+  .app {
+    padding-bottom: 100px;
+  }
+  .bottom-nav {
+    padding-bottom: calc(14px + env(safe-area-inset-bottom));
+  }
+  .header {
+    padding-top: calc(18px + env(safe-area-inset-top));
+  }
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .orb, .orb-ring, .status-wave span, .listening-wave span {
+    animation: none !important;
+  }
+  .stat-fill, #coreRing, .project-fill {
+    transition: none !important;
+  }
+  .chat-message {
+    animation: none !important;
+  }
+}
