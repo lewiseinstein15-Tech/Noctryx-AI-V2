@@ -325,7 +325,8 @@ a{color:inherit;text-decoration:none}
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 @keyframes msgSlide{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 @keyframes typingBounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
-@media (max-width:380px){.dashboard-grid{grid-template-columns:1fr}.more-grid{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:480px){.dashboard-grid{grid-template-columns:1fr}.overview-grid{grid-template-columns:1fr 1fr}.status-panel{flex-direction:column}.core-gauge{width:70px;height:auto}.core-gauge svg{width:70px;height:70px}.core-gauge .pct{font-size:16px;margin-top:-48px}.core-gauge .cap{font-size:7px;margin-top:38px}.section-title{font-size:9px;letter-spacing:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}}
+@media (max-width:380px){.dashboard-grid{grid-template-columns:1fr}.more-grid{grid-template-columns:repeat(3,1fr)}.overview-grid{grid-template-columns:1fr 1fr;gap:8px}.overview-panel{padding:10px}}
 @media (display-mode:standalone){.app{padding-bottom:100px}.bottom-nav{padding-bottom:calc(14px + env(safe-area-inset-bottom))}}
 @media (prefers-reduced-motion:reduce){.orb,.orb-ring,.status-wave span,.listening-wave span{animation:none!important}}
 </style>
@@ -868,8 +869,7 @@ function renderMarkdown(text) {
     return '%%MATH_BLOCK_' + idx + '%%';
   });
 
-  processed = processed.replace(/(?<!\$)\$(?![\$\d])([^$
-]+?)(?<!\$)\$/g, function(match, math) {
+  processed = processed.replace(/(?<!\$)\$(?![\$\d])([^$\n]+?)(?<!\$)\$/g, function(match, math) {
     var idx = mathBlocks.length;
     mathBlocks.push({ display: false, math: math.trim() });
     return '%%MATH_BLOCK_' + idx + '%%';
@@ -1565,9 +1565,12 @@ async function refreshBackendStatus() {
     return;
   }
 
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 8000);
   const t0 = performance.now();
   try {
-    const res = await fetch(api('/api/health'));
+    const res = await fetch(api('/api/health'), { signal: controller.signal });
+    clearTimeout(timeoutId);
     const data = await res.json();
     const rtt = Math.round(performance.now() - t0);
     if (!res.ok || !data.ok) throw new Error('unhealthy');
@@ -1575,14 +1578,15 @@ async function refreshBackendStatus() {
     dot.classList.remove('offline'); text.textContent = 'BACKEND: CONNECTED';
     corePct.textContent = '100%'; coreStatus.textContent = 'CONNECTED';
     ring.style.strokeDashoffset = 0;
-    document.getElementById('latencyVal').textContent = `${rtt}ms`;
+    document.getElementById('latencyVal').textContent = rtt + 'ms';
     const latencyPct = Math.max(5, 100 - rtt / 5);
-    document.getElementById('latencyFill').style.width = `${latencyPct}%`;
+    document.getElementById('latencyFill').style.width = latencyPct + '%';
 
     const enabled = Object.entries(data.providers || {}).filter(([, v]) => v).map(([k]) => k);
-    if (sysBackend) sysBackend.textContent = `Online (${rtt}ms)`;
+    if (sysBackend) sysBackend.textContent = 'Online (' + rtt + 'ms)';
     if (sysProviders) sysProviders.textContent = enabled.length ? enabled.join(', ') : 'None configured';
   } catch (err) {
+    clearTimeout(timeoutId);
     dot.classList.add('offline'); text.textContent = 'BACKEND: OFFLINE';
     corePct.textContent = '0%'; coreStatus.textContent = 'OFFLINE';
     ring.style.strokeDashoffset = 238.7;
@@ -1597,27 +1601,6 @@ function updateGreeting() {
   const h = new Date().getHours();
   const line = h < 12 ? 'Good morning,' : h < 18 ? 'Good afternoon,' : 'Good evening,';
   document.getElementById('greetingLine').textContent = line;
-}
-
-/* Initialize Mermaid */
-if (typeof mermaid !== 'undefined') {
-  mermaid.initialize({
-    startOnLoad: false,
-    theme: 'dark',
-    themeVariables: {
-      primaryColor: '#0d7a58',
-      primaryTextColor: '#e7f5ef',
-      primaryBorderColor: '#17231f',
-      lineColor: '#0d7a58',
-      secondaryColor: '#0f1614',
-      tertiaryColor: '#0c1210',
-      fontFamily: 'JetBrains Mono, monospace',
-      fontSize: '12px'
-    },
-    flowchart: { useMaxWidth: true, htmlLabels: true, curve: 'basis' },
-    sequence: { useMaxWidth: true, actorMargin: 50 },
-    fontFamily: 'JetBrains Mono, monospace'
-  });
 }
 
 /* Initialize Mermaid */
