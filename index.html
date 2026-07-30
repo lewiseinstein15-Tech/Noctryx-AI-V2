@@ -123,128 +123,119 @@ a{color:inherit;text-decoration:none}
 .nav-item svg{width:20px;height:20px}
 .nav-item span{font-size:9px}
 .nav-item.active{color:var(--green)}
-.chat-container{flex:1;overflow-y:auto;overflow-x:hidden;padding:20px 16px 8px;display:flex;flex-direction:column;gap:6px;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
-.chat-container::-webkit-scrollbar{width:4px}
+.chat-container{flex:1;overflow-y:auto;overflow-x:hidden;padding:8px 0;display:flex;flex-direction:column;scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
+.chat-container::-webkit-scrollbar{width:6px}
 .chat-container::-webkit-scrollbar-track{background:transparent}
-.chat-container::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
-.chat-welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:60px 24px 40px;opacity:.7;animation:nxFadeIn .6s ease}
-.chat-welcome-title{font-size:22px;font-weight:800;color:var(--green);letter-spacing:2px;text-shadow:0 0 30px var(--green-glow)}
-.chat-welcome-sub{font-size:13px;color:var(--text-dim);line-height:1.6;text-align:center;max-width:260px}
-.chat-welcome-hints{display:flex;flex-direction:column;gap:8px;margin-top:8px;width:100%;max-width:300px}
+.chat-container::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.chat-welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:80px 24px 40px;opacity:.7;animation:nxFadeIn .6s ease}
+.chat-welcome-title{font-size:20px;font-weight:800;color:var(--green);letter-spacing:2px}
+.chat-welcome-sub{font-size:13px;color:var(--text-dim);line-height:1.6;text-align:center;max-width:280px}
+.chat-welcome-hints{display:flex;flex-direction:column;gap:8px;margin-top:12px;width:100%;max-width:340px}
 .chat-welcome-hint{padding:12px 16px;background:var(--bg-panel);border:1px solid var(--border);border-radius:12px;font-size:12px;color:var(--text-dim);cursor:pointer;transition:all .2s;text-align:left;line-height:1.5}
-.chat-welcome-hint:hover{border-color:var(--green-dim);color:var(--text);background:var(--bg-panel-2)}
+.chat-welcome-hint:hover{border-color:var(--green-dim);color:var(--text)}
 .chat-welcome-hint:active{transform:scale(.98)}
-.chat-msg{display:flex;gap:10px;max-width:100%;animation:nxMsgSlideIn .4s cubic-bezier(.22,1,.36,1) both}
-.chat-msg.user{flex-direction:row-reverse}
-.chat-msg-avatar{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:8px;font-weight:800;letter-spacing:.5px;margin-top:2px;transition:transform .2s}
-.chat-msg-avatar.ai{background:linear-gradient(135deg,var(--bg-panel-2),var(--border));border:1.5px solid var(--green-dim);color:var(--green)}
-.chat-msg-avatar.human{background:var(--green);color:var(--bg);border:1.5px solid var(--green)}
-.chat-msg-body{display:flex;flex-direction:column;min-width:0;max-width:calc(100% - 42px);flex:1}
+.chat-msg{display:flex;gap:0;max-width:100%;animation:nxMsgSlideIn .3s ease both}
+.chat-msg.user{justify-content:flex-end}
+.chat-msg-inner{display:flex;gap:12px;max-width:100%;width:100%}
+.chat-msg.user .chat-msg-inner{flex-direction:row-reverse;max-width:85%;justify-content:flex-end}
+.chat-msg-avatar{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:9px;font-weight:800;letter-spacing:.5px;margin-top:2px}
+.chat-msg-avatar.ai{background:var(--bg-panel-2);border:1px solid var(--border);color:var(--green);border-radius:50%}
+.chat-msg-avatar.human{background:var(--green);color:var(--bg);border-radius:50%}
+.chat-msg-body{display:flex;flex-direction:column;min-width:0;flex:1;gap:2px}
 .chat-msg.user .chat-msg-body{align-items:flex-end}
-.chat-msg-meta{display:flex;align-items:center;gap:6px;padding:0 4px;margin-bottom:4px}
-.chat-msg-sender{font-size:10px;font-weight:700;letter-spacing:.5px}
-.chat-msg-sender.ai-sender{color:var(--green)}
-.chat-msg-sender.human-sender{color:var(--text-dimmer)}
-.chat-msg-time{font-size:9px;color:var(--text-dimmer);opacity:0}
-.chat-msg:hover .chat-msg-time{opacity:1}
-.chat-bubble{background:var(--bg-panel);border:1px solid var(--border);border-radius:16px 16px 16px 4px;padding:12px 15px;font-size:13.5px;line-height:1.75;word-break:break-word;overflow-wrap:break-word;position:relative;transition:border-color .3s}
-.chat-bubble:hover{border-color:rgba(0,255,136,0.12)}
-.chat-msg.user .chat-bubble{background:rgba(0,255,136,0.06);border-color:rgba(0,255,136,0.15);border-radius:16px 16px 4px 16px}
-.chat-bubble.error{border-color:rgba(255,107,107,0.3);color:var(--danger)}
-.nx-actions{display:flex;flex-wrap:wrap;gap:2px;padding:6px 4px 2px 42px;opacity:0;transition:opacity .25s ease}
+.chat-bubble{padding:10px 16px;font-size:14px;line-height:1.75;word-break:break-word;overflow-wrap:break-word;position:relative}
+.chat-msg.user .chat-bubble{background:var(--bg-panel-2);border-radius:18px 18px 4px 18px;padding:10px 16px;max-width:100%}
+.chat-bubble.error{color:var(--danger)}
+.nx-actions{display:flex;flex-wrap:wrap;gap:4px;padding:4px 0 0;opacity:0;transition:opacity .2s ease}
 .chat-msg:hover .nx-actions{opacity:1}
-@media(hover:none){.nx-actions{opacity:.7;pointer-events:auto}}
-.nx-act{display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:7px;font-size:10px;color:var(--text-dimmer);background:transparent;border:1px solid transparent;transition:all .15s ease;cursor:pointer;font-family:inherit;white-space:nowrap}
-.nx-act:hover{color:var(--green);border-color:var(--border);background:var(--bg-panel-2)}
-.nx-act:active{transform:scale(.94)}
-.nx-act svg{width:12px;height:12px;flex-shrink:0}
-.nx-act.liked{color:var(--green);border-color:rgba(0,255,136,0.2)}
-.nx-act.disliked{color:var(--danger);border-color:rgba(255,107,107,0.2)}
-.nx-stream-bar{display:flex;align-items:center;justify-content:center;gap:6px;margin:4px auto 8px}
-.nx-stop{display:none;align-items:center;justify-content:center;gap:5px;padding:6px 20px;border-radius:20px;font-size:11px;font-weight:600;color:var(--bg);background:var(--danger);border:none;cursor:pointer;font-family:inherit;transition:all .2s}
-.nx-stop:active{transform:scale(.95);opacity:.85}
-.nx-stop.show{display:inline-flex;animation:nxFadeIn .2s ease}
-.nx-continue{display:none;align-items:center;justify-content:center;gap:5px;padding:6px 20px;border-radius:20px;font-size:11px;font-weight:600;color:var(--green);background:var(--bg-panel);border:1px solid var(--green-dim);cursor:pointer;font-family:inherit;transition:all .2s}
-.nx-continue:active{transform:scale(.95)}
-.nx-continue.show{display:inline-flex;animation:nxFadeIn .2s ease}
-.chat-bottom{flex-shrink:0;padding:0 12px calc(12px + env(safe-area-inset-bottom));background:var(--bg)}
-.chat-input-wrap{border-top:1px solid var(--border);padding-top:10px}
-.chat-form{display:flex;align-items:flex-end;gap:6px;background:var(--bg-panel);border:1.5px solid var(--border);border-radius:18px;padding:6px 8px 6px 14px;transition:border-color .25s,box-shadow .25s}
-.chat-form:focus-within{border-color:var(--green-dim);box-shadow:0 0 0 3px rgba(0,255,136,0.06),0 0 20px rgba(0,255,136,0.03)}
+@media(hover:none){.nx-actions{opacity:.6;pointer-events:auto}}
+.nx-act{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:6px;font-size:11px;color:var(--text-dimmer);transition:all .15s ease;cursor:pointer;font-family:inherit;white-space:nowrap}
+.nx-act:hover{color:var(--text);background:var(--bg-panel)}
+.nx-act:active{transform:scale(.95)}
+.nx-act svg{width:14px;height:14px;flex-shrink:0}
+.nx-act.liked{color:var(--green)}
+.nx-act.disliked{color:var(--danger)}
+.nx-stream-bar{display:flex;align-items:center;justify-content:center;gap:8px;padding:4px 0 8px}
+.nx-stop{display:none;align-items:center;justify-content:center;gap:6px;padding:8px 20px;border-radius:20px;font-size:12px;font-weight:600;color:#fff;background:var(--danger);border:none;cursor:pointer;font-family:inherit;transition:all .15s}
+.nx-stop:active{transform:scale(.96)}
+.nx-stop.show{display:inline-flex;animation:nxFadeIn .15s ease}
+.nx-continue{display:none;align-items:center;justify-content:center;gap:6px;padding:8px 20px;border-radius:20px;font-size:12px;font-weight:600;color:var(--green);background:var(--bg-panel);border:1px solid var(--border);cursor:pointer;font-family:inherit;transition:all .15s}
+.nx-continue:active{transform:scale(.96)}
+.nx-continue.show{display:inline-flex;animation:nxFadeIn .15s ease}
+.chat-bottom{flex-shrink:0;padding:0 16px calc(12px + env(safe-area-inset-bottom));background:var(--bg)}
+.chat-input-wrap{padding-top:8px}
+.chat-form{display:flex;align-items:flex-end;gap:8px;background:var(--bg-panel);border:1px solid var(--border);border-radius:24px;padding:8px 8px 8px 20px;transition:border-color .2s,box-shadow .2s}
+.chat-form:focus-within{border-color:var(--text-dimmer);box-shadow:0 0 0 1px var(--text-dimmer)}
 .chat-form textarea{flex:1;background:none;border:none;outline:none;color:var(--text);font-family:inherit;font-size:14px;line-height:1.5;resize:none;max-height:150px;min-height:22px;overflow-y:auto;padding:6px 0}
 .chat-form textarea::placeholder{color:var(--text-dimmer)}
-.chat-send{width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:var(--bg);background:var(--green);border:none;cursor:pointer;transition:all .2s;flex-shrink:0;opacity:.4;pointer-events:none}
-.chat-send.active{opacity:1;pointer-events:auto}
-.chat-send.active:hover{background:#33ffaa;box-shadow:0 0 16px var(--green-glow)}
+.chat-send{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--text-dimmer);background:none;border:none;cursor:pointer;transition:all .2s;flex-shrink:0}
+.chat-send.active{color:var(--bg);background:var(--green)}
 .chat-send:active{transform:scale(.9)}
 .chat-send svg{width:16px;height:16px}
-.chat-mic{width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:var(--text-dimmer);background:none;border:none;cursor:pointer;flex-shrink:0;transition:all .2s}
-.chat-mic:hover{color:var(--green);background:rgba(0,255,136,0.06)}
+.chat-mic{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--text-dimmer);background:none;border:none;cursor:pointer;flex-shrink:0;transition:all .2s}
+.chat-mic:hover{color:var(--text)}
 .chat-mic.recording{color:var(--danger);animation:nxPulse 1.5s ease infinite}
-.typing-indicator{display:none;align-items:center;gap:5px;padding:6px 16px 4px;height:0;overflow:hidden;transition:height .3s ease,padding .3s ease}
-.typing-indicator.active{display:flex;height:24px}
-.typing-indicator span{width:5px;height:5px;background:var(--green-dim);border-radius:50%;animation:nxBounce 1.4s ease-in-out infinite}
+.typing-indicator{display:none;align-items:center;gap:5px;padding:8px 20px;height:0;overflow:hidden;transition:height .3s ease}
+.typing-indicator.active{display:flex;height:20px}
+.typing-indicator span{width:5px;height:5px;background:var(--text-dimmer);border-radius:50%;animation:nxBounce 1.4s ease-in-out infinite}
 .typing-indicator span:nth-child(1){animation-delay:0s}
 .typing-indicator span:nth-child(2){animation-delay:.2s}
 .typing-indicator span:nth-child(3){animation-delay:.4s}
-.chat-bubble h1,.chat-bubble h2,.chat-bubble h3,.chat-bubble h4,.chat-bubble h5,.chat-bubble h6{color:var(--text);margin:20px 0 8px;font-weight:700;line-height:1.3}
+.chat-bubble h1,.chat-bubble h2,.chat-bubble h3,.chat-bubble h4,.chat-bubble h5,.chat-bubble h6{color:var(--text);margin:16px 0 8px;font-weight:700;line-height:1.4}
 .chat-bubble h1:first-child,.chat-bubble h2:first-child,.chat-bubble h3:first-child{margin-top:0}
-.chat-bubble h1{font-size:18px;border-bottom:1px solid var(--border);padding-bottom:8px}
-.chat-bubble h2{font-size:16px;border-bottom:1px solid var(--border);padding-bottom:6px}
-.chat-bubble h3{font-size:14.5px}
-.chat-bubble h4{font-size:13.5px}
-.chat-bubble p{margin:0 0 10px}.chat-bubble p:last-child{margin-bottom:0}
-.chat-bubble ul,.chat-bubble ol{margin:6px 0 10px;padding-left:22px}
-.chat-bubble li{margin-bottom:4px;line-height:1.7}
-.chat-bubble li::marker{color:var(--green-dim)}
-.chat-bubble ol ol,.chat-bubble ul ul,.chat-bubble ol ul,.chat-bubble ul ol{margin:4px 0}
-.chat-bubble blockquote{border-left:3px solid var(--green-dim);padding:10px 14px;margin:10px 0;background:rgba(0,255,136,0.03);border-radius:0 10px 10px 0;color:var(--text-dim)}
+.chat-bubble h1{font-size:17px}
+.chat-bubble h2{font-size:16px}
+.chat-bubble h3{font-size:15px}
+.chat-bubble h4{font-size:14px}
+.chat-bubble p{margin:0 0 12px}.chat-bubble p:last-child{margin-bottom:0}
+.chat-bubble ul,.chat-bubble ol{margin:4px 0 12px 0;padding-left:20px}
+.chat-bubble li{margin-bottom:4px;line-height:1.75}
+.chat-bubble li::marker{color:var(--text-dim)}
+.chat-bubble ol ol,.chat-bubble ul ul,.chat-bubble ol ul,.chat-bubble ul ol{margin:2px 0}
+.chat-bubble blockquote{border-left:3px solid var(--border);padding:8px 14px;margin:10px 0;color:var(--text-dim);background:var(--bg-panel-2);border-radius:0 8px 8px 0}
 .chat-bubble blockquote p{margin:0}
-.chat-bubble a{color:var(--green);text-decoration:underline;text-underline-offset:2px;transition:opacity .15s}
-.chat-bubble a:hover{opacity:.8}
-.chat-bubble strong{color:var(--text);font-weight:700}
-.chat-bubble em{color:var(--text);font-style:italic}
+.chat-bubble a{color:var(--green);text-decoration:none}
+.chat-bubble a:hover{text-decoration:underline}
+.chat-bubble strong{font-weight:700}
+.chat-bubble em{font-style:italic}
 .chat-bubble del{opacity:.5}
 .chat-bubble hr{border:none;border-top:1px solid var(--border);margin:16px 0}
-.chat-bubble img{max-width:100%;border-radius:10px;margin:10px 0}
-.chat-bubble table{width:100%;border-collapse:collapse;margin:12px 0;font-size:12px}
+.chat-bubble img{max-width:100%;border-radius:8px;margin:8px 0}
+.chat-bubble table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13px}
 .chat-bubble thead{background:var(--bg-panel-2)}
 .chat-bubble th,.chat-bubble td{border:1px solid var(--border);padding:8px 12px;text-align:left}
-.chat-bubble th{font-weight:700;color:var(--green);font-size:11px}
-.chat-bubble tr:hover{background:rgba(0,255,136,0.02)}
-.chat-bubble code:not(pre code){font-family:'JetBrains Mono',monospace;background:rgba(0,255,136,0.08);color:var(--green);padding:1.5px 5px;border-radius:4px;font-size:12px;border:1px solid rgba(0,255,136,0.1)}
-.chat-bubble .nx-code{position:relative;margin:12px 0;border-radius:12px;overflow:hidden;border:1px solid var(--border);background:#080d0b;transition:border-color .2s}
-.chat-bubble .nx-code:hover{border-color:rgba(0,255,136,0.15)}
-.chat-bubble .nx-code-head{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:rgba(255,255,255,0.025);border-bottom:1px solid var(--border)}
-.chat-bubble .nx-code-lang{display:flex;align-items:center;gap:6px;font-size:10px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.8px}
-.chat-bubble .nx-code-lang-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
-.chat-bubble .nx-code-copy{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:6px;font-size:10px;color:var(--text-dimmer);background:rgba(255,255,255,0.04);border:1px solid transparent;cursor:pointer;transition:all .2s;font-family:inherit}
-.chat-bubble .nx-code-copy:hover{color:var(--green);border-color:var(--border);background:rgba(0,255,136,0.06)}
-.chat-bubble .nx-code-copy.done{color:var(--green);border-color:var(--green-dim)}
-.chat-bubble .nx-code-copy svg{width:12px;height:12px;transition:transform .2s}
-.chat-bubble .nx-code-copy.done svg{transform:scale(1.1)}
-.chat-bubble pre{margin:0!important;background:transparent!important;border:none!important;padding:14px!important;overflow-x:auto;font-size:12px;line-height:1.7;border-radius:0!important;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
-.chat-bubble pre::-webkit-scrollbar{height:3px}
-.chat-bubble pre::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
-.chat-bubble pre code{background:none!important;padding:0!important;font-size:12px;border:none!important;font-family:'JetBrains Mono',monospace}
+.chat-bubble th{font-weight:600;font-size:12px}
+.chat-bubble tr:hover td{background:var(--bg-panel-2)}
+.chat-bubble code:not(pre code){font-family:'JetBrains Mono',monospace;background:var(--bg-panel-2);color:var(--text);padding:1.5px 5px;border-radius:4px;font-size:12.5px}
+.chat-bubble .nx-code{position:relative;margin:12px 0;border-radius:10px;overflow:hidden;border:1px solid var(--border);background:#0d1117}
+.chat-bubble .nx-code-head{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:rgba(255,255,255,0.04);border-bottom:1px solid var(--border)}
+.chat-bubble .nx-code-lang{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px}
+.chat-bubble .nx-code-lang-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.chat-bubble .nx-code-copy{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:6px;font-size:11px;color:var(--text-dimmer);background:transparent;border:none;cursor:pointer;transition:all .15s;font-family:inherit}
+.chat-bubble .nx-code-copy:hover{color:var(--text);background:rgba(255,255,255,0.06)}
+.chat-bubble .nx-code-copy.done{color:var(--green)}
+.chat-bubble .nx-code-copy svg{width:13px;height:13px}
+.chat-bubble pre{margin:0!important;background:transparent!important;border:none!important;padding:14px 16px!important;overflow-x:auto;font-size:12.5px;line-height:1.7;border-radius:0!important;-webkit-overflow-scrolling:touch}
+.chat-bubble pre code{background:none!important;padding:0!important;font-size:12.5px;border:none!important;font-family:'JetBrains Mono',monospace}
 .chat-bubble .hljs{background:transparent!important;padding:0!important}
 .chat-bubble .nx-code.has-nums{padding-left:44px}
-.chat-bubble .nx-nums{position:absolute;left:0;top:37px;width:38px;padding:14px 6px 14px 0;text-align:right;font-size:10px;line-height:1.7;color:var(--text-dimmer);background:rgba(0,0,0,0.25);border-right:1px solid var(--border);user-select:none;overflow:hidden}
-.chat-bubble .nx-nums div{height:calc(12px * 1.7)}
+.chat-bubble .nx-nums{position:absolute;left:0;top:37px;width:38px;padding:14px 6px 14px 0;text-align:right;font-size:11px;line-height:1.7;color:var(--text-dimmer);background:rgba(0,0,0,0.3);border-right:1px solid var(--border);user-select:none;overflow:hidden}
+.chat-bubble .nx-nums div{height:calc(12.5px * 1.7)}
 .chat-bubble .contains-task-list{list-style:none;padding-left:4px}
 .chat-bubble .task-list-item{display:flex;align-items:flex-start;gap:8px}
 .chat-bubble .task-list-item input[type="checkbox"]{accent-color:var(--green);margin-top:5px;flex-shrink:0;width:14px;height:14px}
-.chat-bubble .nx-mermaid{margin:14px 0;padding:18px;background:var(--bg-panel-2);border:1px solid var(--border);border-radius:12px;overflow-x:auto;text-align:center}
+.chat-bubble .nx-mermaid{margin:12px 0;padding:16px;background:var(--bg-panel-2);border:1px solid var(--border);border-radius:10px;overflow-x:auto;text-align:center}
 .chat-bubble .nx-mermaid svg{max-width:100%;height:auto}
-.chat-bubble .nx-mermaid-err{color:var(--danger);font-size:11px;padding:8px}
+.chat-bubble .nx-mermaid-err{color:var(--danger);font-size:12px;padding:8px}
 .chat-bubble .katex-display{margin:12px 0;overflow-x:auto;overflow-y:hidden;padding:6px 0}
 .chat-bubble .katex{font-size:1.05em}
-.nx-cursor::after{content:'';display:inline-block;width:2px;height:16px;background:var(--green);margin-left:2px;vertical-align:text-bottom;animation:nxCursorPulse 1s ease-in-out infinite}
-@keyframes nxCursorPulse{0%,100%{opacity:1}50%{opacity:.2}}
+.nx-cursor::after{content:'';display:inline-block;width:2px;height:18px;background:var(--text-dim);margin-left:1px;vertical-align:text-bottom;animation:nxCursorPulse 1s ease-in-out infinite}
+@keyframes nxCursorPulse{0%,100%{opacity:1}50%{opacity:0}}
 @keyframes nxFadeIn{from{opacity:0}to{opacity:1}}
-@keyframes nxMsgSlideIn{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
-@keyframes nxBounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
-@keyframes nxPulse{0%,100%{opacity:1}50%{opacity:.5}}
+@keyframes nxMsgSlideIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes nxBounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-4px)}}
+@keyframes nxPulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes nxToastIn{from{opacity:0;transform:translate(-50%,12px)}to{opacity:1;transform:translate(-50%,0)}}
 @keyframes nxToastIn{from{opacity:0;transform:translate(-50%,12px)}to{opacity:1;transform:translate(-50%,0)}}
 .voice-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:30px 20px}
 .voice-status{font-size:13px;color:var(--text-dim);text-align:center}
@@ -488,7 +479,7 @@ a{color:inherit;text-decoration:none}
       <div class="chat-welcome" id="chatWelcome">
         <div class="orb-wrap orb-wrap-sm"><div class="orb-ring"></div><div class="orb"></div></div>
         <div class="chat-welcome-title">Noctryx AI</div>
-        <div class="chat-welcome-sub">Your advanced AI assistant for programming, research, automation, and productivity.</div>
+        <div class="chat-welcome-sub">How can I help you today?</div>
         <div class="chat-welcome-hints" id="chatWelcomeHints">
           <div class="chat-welcome-hint" onclick="window._quickPrompt(this.textContent)">Explain how async/await works in JavaScript</div>
           <div class="chat-welcome-hint" onclick="window._quickPrompt(this.textContent)">Write a Python function to sort a list</div>
@@ -497,7 +488,7 @@ a{color:inherit;text-decoration:none}
       </div>
     </div>
     <div class="nx-stream-bar" id="nxStreamBar">
-      <button class="nx-stop" id="nxStopBtn"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg> Stop</button>
+      <button class="nx-stop" id="nxStopBtn"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg> Stop generating</button>
       <button class="nx-continue" id="nxContinueBtn"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg> Continue</button>
     </div>
     <div class="typing-indicator" id="typingIndicator"><span></span><span></span><span></span></div>
@@ -505,7 +496,7 @@ a{color:inherit;text-decoration:none}
       <form class="chat-form" id="chatForm">
         <textarea id="chatInput" placeholder="Message Noctryx..." rows="1"></textarea>
         <button type="button" class="chat-mic" id="chatVoiceBtn" title="Voice input"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4"/></svg></button>
-        <button type="submit" class="chat-send" id="chatSendBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg></button>
+        <button type="submit" class="chat-send" id="chatSendBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
       </form>
     </div></div>
   </div>
@@ -880,26 +871,14 @@ async function renderMermaidBlocks(container) {
 function isNearBottom(el) { return el.scrollHeight - el.scrollTop - el.clientHeight < 120; }
 function smartScroll(el, force) { if (force || isNearBottom(el)) el.scrollTo({ top: el.scrollHeight, behavior: force ? 'instant' : 'auto' }); }
 
-/* Get current time string */
-function _timeNow() {
-  var d = new Date();
-  var h = d.getHours(), m = d.getMinutes();
-  var ampm = h >= 12 ? 'PM' : 'AM';
-  h = h % 12 || 12;
-  return h + ':' + String(m).padStart(2,'0') + ' ' + ampm;
-}
-
-/* Build 8 action buttons HTML */
+/* Build action buttons HTML */
 function _buildActions(id) {
   return '<div class="nx-actions" data-mid="' + id + '">' +
-    '<button class="nx-act" onclick="window._cr(\'' + id + '\')" title="Copy response"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button>' +
-    '<button class="nx-act" onclick="window._ca(\'' + id + '\')" title="Copy all code"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg> Code</button>' +
-    '<button class="nx-act" onclick="window._rg(\'' + id + '\')" title="Regenerate response"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg> Redo</button>' +
-    '<button class="nx-act" onclick="window._ct(\'' + id + '\')" title="Continue response"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg> More</button>' +
-    '<button class="nx-act" onclick="window._rt(\'' + id + '\')" title="Retry response"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L22 12"/></svg> Retry</button>' +
-    '<button class="nx-act" onclick="window._sp(\'' + id + '\')" title="Speak aloud"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg> Speak</button>' +
-    '<button class="nx-act" onclick="window._lk(\'' + id + '\')" title="Like response"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg></button>' +
-    '<button class="nx-act" onclick="window._dl(\'' + id + '\')" title="Dislike response"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3H10z"/><path d="M17 2h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"/></svg></button>' +
+    '<button class="nx-act" onclick="window._cr(\'' + id + '\')" title="Copy"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>' +
+    '<button class="nx-act" onclick="window._rg(\'' + id + '\')" title="Regenerate"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></button>' +
+    '<button class="nx-act" onclick="window._sp(\'' + id + '\')" title="Read aloud"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></button>' +
+    '<button class="nx-act" onclick="window._lk(\'' + id + '\')" title="Good response"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg></button>' +
+    '<button class="nx-act" onclick="window._dl(\'' + id + '\')" title="Bad response"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3H10z"/><path d="M17 2h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"/></svg></button>' +
   '</div>';
 }
 
@@ -913,14 +892,11 @@ function appendMessage(role, text, isError) {
   wrap.id = id;
   var avClass = role === 'user' ? 'human' : 'ai';
   var avText = role === 'user' ? 'U' : 'NX';
-  var senderClass = role === 'user' ? 'human-sender' : 'ai-sender';
-  var senderText = role === 'user' ? 'You' : 'Noctryx';
   var bc = isError ? ' error' : '';
   var rendered = role === 'user' ? escapeHtml(text).replace(/\n/g,'<br>') : renderMarkdown(text);
   var acts = (role === 'assistant' && !isError) ? _buildActions(id) : '';
-  wrap.innerHTML = '<div class="chat-msg-avatar ' + avClass + '">' + avText + '</div>' +
-    '<div class="chat-msg-body"><div class="chat-msg-meta"><span class="chat-msg-sender ' + senderClass + '">' + senderText + '</span><span class="chat-msg-time">' + _timeNow() + '</span></div>' +
-    '<div class="chat-bubble' + bc + '">' + rendered + '</div>' + acts + '</div>';
+  wrap.innerHTML = '<div class="chat-msg-inner"><div class="chat-msg-avatar ' + avClass + '">' + avText + '</div>' +
+    '<div class="chat-msg-body"><div class="chat-bubble' + bc + '">' + rendered + '</div>' + acts + '</div></div>';
   c.appendChild(wrap);
   smartScroll(c, true);
   if (role === 'assistant') requestAnimationFrame(function() { renderMermaidBlocks(wrap); });
@@ -934,9 +910,8 @@ function startStreamMessage() {
   var w = document.getElementById('chatWelcome'); if (w) w.remove();
   _sId = 'm' + Date.now() + Math.random().toString(36).slice(2,6); _sBuf = '';
   var wrap = document.createElement('div'); wrap.className = 'chat-msg'; wrap.id = _sId;
-  wrap.innerHTML = '<div class="chat-msg-avatar ai">NX</div>' +
-    '<div class="chat-msg-body"><div class="chat-msg-meta"><span class="chat-msg-sender ai-sender">Noctryx</span><span class="chat-msg-time">' + _timeNow() + '</span></div>' +
-    '<div class="chat-bubble nx-cursor" id="sBubble"></div></div>';
+  wrap.innerHTML = '<div class="chat-msg-inner"><div class="chat-msg-avatar ai">NX</div>' +
+    '<div class="chat-msg-body"><div class="chat-bubble nx-cursor" id="sBubble"></div></div></div>';
   c.appendChild(wrap); _sBubble = document.getElementById('sBubble');
   smartScroll(c, true);
   document.getElementById('nxStopBtn').classList.add('show');
@@ -980,11 +955,6 @@ window._cr = function(id) {
   var b = el.querySelector('.chat-bubble'); if (!b) return;
   navigator.clipboard.writeText(b.innerText || b.textContent).then(function() { toast('Response copied'); }).catch(function() { toast('Copy failed', true); });
 };
-window._ca = function(id) {
-  var el = document.getElementById(id); if (!el) return;
-  var codes = el.querySelectorAll('pre code');
-  var all = Array.from(codes).map(function(c){return c.textContent}).join('\n\n');
-  if (!all.trim()) { toast('No code found'); return; }
   navigator.clipboard.writeText(all).then(function() { toast('Code copied'); }).catch(function() { toast('Copy failed', true); });
 };
 window._rg = function(id) {
@@ -993,22 +963,6 @@ window._rg = function(id) {
   var txt = b.innerText || b.textContent;
   var lastUser = ChatState.history.slice().reverse().find(function(m){return m.role==='user'});
   if (!lastUser) { toast('No user message to regenerate from'); return; }
-  el.remove();
-  if (ChatState.history.length && ChatState.history[ChatState.history.length-1].role==='assistant') ChatState.history.pop();
-  sendChatMessage(lastUser.content);
-};
-window._ct = function(id) {
-  var el = document.getElementById(id); if (!el) return;
-  var b = el.querySelector('.chat-bubble'); if (!b) return;
-  var txt = b.innerText || '';
-  if (!txt.trim()) return;
-  ChatState.history.push({ role: 'user', content: 'Continue from where you left off. Complete the response.' });
-  sendChatMessage('Continue from where you left off. Complete the response.');
-};
-window._rt = function(id) {
-  var el = document.getElementById(id); if (!el) return;
-  var lastUser = ChatState.history.slice().reverse().find(function(m){return m.role==='user'});
-  if (!lastUser) { toast('No user message to retry'); return; }
   el.remove();
   if (ChatState.history.length && ChatState.history[ChatState.history.length-1].role==='assistant') ChatState.history.pop();
   sendChatMessage(lastUser.content);
@@ -1147,7 +1101,7 @@ document.getElementById('chatClearBtn').addEventListener('click', function() {
   ChatState.history = [];
   ChatState.lastReply = '';
   var c = document.getElementById('chatContainer');
-  c.innerHTML = '<div class="chat-welcome" id="chatWelcome"><div class="orb-wrap orb-wrap-sm"><div class="orb-ring"></div><div class="orb"></div></div><div class="chat-welcome-title">Noctryx AI</div><div class="chat-welcome-sub">Your advanced AI assistant for programming, research, automation, and productivity.</div><div class="chat-welcome-hints" id="chatWelcomeHints"><div class="chat-welcome-hint" onclick="window._quickPrompt(this.textContent)">Explain how async/await works in JavaScript</div><div class="chat-welcome-hint" onclick="window._quickPrompt(this.textContent)">Write a Python function to sort a list</div><div class="chat-welcome-hint" onclick="window._quickPrompt(this.textContent)">What are the best practices for REST APIs?</div></div></div>';
+  c.innerHTML = '<div class="chat-welcome" id="chatWelcome"><div class="orb-wrap orb-wrap-sm"><div class="orb-ring"></div><div class="orb"></div></div><div class="chat-welcome-title">Noctryx AI</div><div class="chat-welcome-sub">How can I help you today?</div><div class="chat-welcome-hints" id="chatWelcomeHints"><div class="chat-welcome-hint" onclick="window._quickPrompt(this.textContent)">Explain how async/await works in JavaScript</div><div class="chat-welcome-hint" onclick="window._quickPrompt(this.textContent)">Write a Python function to sort a list</div><div class="chat-welcome-hint" onclick="window._quickPrompt(this.textContent)">What are the best practices for REST APIs?</div></div></div>';
   document.getElementById('nxStopBtn').classList.remove('show');
   document.getElementById('nxContinueBtn').classList.remove('show');
 });
