@@ -862,13 +862,14 @@ function renderMarkdown(text) {
   var mathBlocks = [];
   var processed = text;
 
-  processed = processed.replace(/\\\$\$([\s\S]*?)\\\$/g, function(match, math) {
+  processed = processed.replace(/\$\$([\s\S]*?)\$\$/g, function(match, math) {
     var idx = mathBlocks.length;
     mathBlocks.push({ display: true, math: math.trim() });
     return '%%MATH_BLOCK_' + idx + '%%';
   });
 
-  processed = processed.replace(/(?<!\\)\$(?![\$\d])([^$\n]+?)(?<!\\)\$/g, function(match, math) {
+  processed = processed.replace(/(?<!\$)\$(?![\$\d])([^$
+]+?)(?<!\$)\$/g, function(match, math) {
     var idx = mathBlocks.length;
     mathBlocks.push({ display: false, math: math.trim() });
     return '%%MATH_BLOCK_' + idx + '%%';
