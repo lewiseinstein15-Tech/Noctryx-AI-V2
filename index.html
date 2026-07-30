@@ -6,55 +6,273 @@
 <title>Noctryx AI V2</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#060a09">
-<link rel="icon" type="image/svg+xml" href="icon.svg">
-<link rel="apple-touch-icon" href="icon.svg">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Noctryx">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/main.css">
-<link rel="stylesheet" href="css/screens.css">
-<link rel="stylesheet" href="css/animations.css">
+<style>
+:root{--bg:#060a09;--bg-panel:#0c1210;--bg-panel-2:#0f1614;--border:#17231f;--green:#00ff88;--green-dim:#0d7a58;--green-glow:rgba(0,255,136,0.25);--text:#e7f5ef;--text-dim:#7c948b;--text-dimmer:#4e6259;--danger:#ff6b6b;--radius:16px}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+button{font-family:inherit;color:inherit;background:none;border:none;cursor:pointer}
+a{color:inherit;text-decoration:none}
+.app{max-width:480px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;background:radial-gradient(120% 60% at 50% -10%,rgba(0,255,136,0.06),transparent 60%),var(--bg);padding-bottom:90px}
+.top-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px 6px}
+.brand{display:flex;align-items:center;gap:6px}
+.brand-title{font-weight:800;letter-spacing:3px;font-size:14px;color:var(--green)}
+.brand-sub{font-size:10px;color:var(--text-dim);letter-spacing:1px}
+.header-actions{display:flex;align-items:center;gap:10px}
+.icon-btn{width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:10px;color:var(--text-dim)}
+.icon-btn:active{background:var(--bg-panel-2)}
+.avatar-btn{width:34px;height:34px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#123c30,#071310 70%);border:1.5px solid var(--green-dim);display:flex;align-items:center;justify-content:center;color:var(--green)}
+.screen{display:none;flex-direction:column;min-height:calc(100vh - 60px);animation:fadeIn .25s ease}
+.screen.active{display:flex}
+.screen-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px 6px}
+.screen-title{font-size:15px;font-weight:800;letter-spacing:1px;color:var(--green)}
+.back-btn{color:var(--text-dim)}
+.end-btn{background:rgba(255,107,107,0.15);color:var(--danger);border:1px solid rgba(255,107,107,0.3);padding:6px 14px;border-radius:8px;font-size:12px;font-weight:600}
+.hero{padding:10px 20px 16px}
+.hero-row{display:flex;align-items:center;gap:16px}
+.orb-wrap{position:relative;width:90px;height:90px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.orb{width:78px;height:78px;border-radius:50%;background:radial-gradient(circle at 32% 28%,#a7ffe0,var(--green) 45%,#06231a 100%);box-shadow:0 0 40px var(--green-glow),inset 0 0 20px rgba(0,0,0,0.4);animation:pulse 3s ease-in-out infinite}
+.orb-ring{position:absolute;inset:-10px;border-radius:50%;border:1px solid rgba(0,255,136,0.2);animation:ring 3s ease-in-out infinite}
+.orb-ring-2{inset:-18px;border-color:rgba(0,255,136,0.1);animation-delay:1.5s}
+.orb-wrap-sm{width:50px;height:50px}
+.orb-wrap-sm .orb{width:46px;height:46px}
+.orb-wrap-xl{width:160px;height:160px}
+.orb-wrap-xl .orb{width:140px;height:140px}
+.orb-wrap-xl .orb-ring{inset:-16px}
+.orb-wrap-xl .orb-ring-2{inset:-28px}
+.orb.listening{animation:pulse 1.2s ease-in-out infinite}
+.orb.speaking{animation:pulse .6s ease-in-out infinite}
+.greeting{flex:1}
+.greeting .line1{font-size:13px;color:var(--text-dim)}
+.greeting .name{font-size:20px;font-weight:800;color:var(--green);display:flex;align-items:center;gap:6px}
+.greeting .sub{font-size:12px;color:var(--text-dim);margin-top:4px;line-height:1.4}
+.status-line{display:flex;align-items:center;gap:6px;margin-top:8px;font-size:10px;color:var(--green)}
+.status-dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green)}
+.status-dot.offline{background:var(--danger);box-shadow:0 0 8px var(--danger)}
+.status-wave{display:flex;align-items:flex-end;gap:2px;height:12px;margin-left:4px}
+.status-wave span{width:2px;background:var(--green-dim);border-radius:1px;animation:wave 1.1s ease-in-out infinite}
+.status-wave span:nth-child(1){height:40%;animation-delay:0s}
+.status-wave span:nth-child(2){height:80%;animation-delay:.1s}
+.status-wave span:nth-child(3){height:100%;animation-delay:.2s}
+.status-wave span:nth-child(4){height:60%;animation-delay:.3s}
+.status-wave span:nth-child(5){height:90%;animation-delay:.4s}
+.search-bar{margin:12px 20px 0;display:flex;align-items:center;gap:10px;background:var(--bg-panel);border:1px solid var(--border);border-radius:14px;padding:10px 12px}
+.search-bar input{flex:1;background:none;border:none;outline:none;color:var(--text);font-family:inherit;font-size:13px}
+.search-bar input::placeholder{color:var(--text-dimmer)}
+.input-action{color:var(--text-dim);display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px}
+.input-action.send{color:var(--green)}
+.input-action.recording{color:var(--danger)}
+.search-icon{color:var(--text-dimmer)}
+.quick-actions{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:14px 20px 0}
+.qa-item{display:flex;flex-direction:column;align-items:center;gap:5px;padding:8px 2px;border-radius:12px}
+.qa-item:active{background:var(--bg-panel-2)}
+.qa-icon{width:42px;height:42px;border-radius:12px;background:var(--bg-panel);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--green)}
+.qa-label{font-size:9px;color:var(--text-dim);text-align:center}
+.dashboard-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 20px 0}
+.section{margin:14px 20px 0}
+.section-title{display:flex;align-items:center;justify-content:space-between;font-size:10px;letter-spacing:1.5px;color:var(--text-dim);margin-bottom:8px;text-transform:uppercase;font-weight:600}
+.view-all{color:var(--green);font-size:10px;letter-spacing:.5px;text-transform:none;cursor:pointer}
+.panel{background:var(--bg-panel);border:1px solid var(--border);border-radius:var(--radius);padding:14px}
+.status-panel{display:flex;gap:10px;align-items:center}
+.status-bars{flex:1;display:flex;flex-direction:column;gap:10px}
+.stat-row{display:flex;flex-direction:column;gap:3px}
+.stat-label{display:flex;justify-content:space-between;font-size:10px;color:var(--text-dim)}
+.stat-track{height:4px;border-radius:2px;background:#111a17;overflow:hidden}
+.stat-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--green-dim),var(--green));transition:width .4s ease}
+.core-gauge{width:90px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.core-gauge svg{transform:rotate(-90deg)}
+.core-gauge .pct{font-size:18px;font-weight:800;color:var(--green);margin-top:-62px}
+.core-gauge .cap{font-size:7px;letter-spacing:1px;color:var(--text-dimmer);margin-top:50px}
+.core-gauge .status-text{font-size:8px;color:var(--green);letter-spacing:.5px;text-align:center}
+.overview-panel{padding:12px}
+.overview-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.overview-item{display:flex;align-items:center;gap:8px}
+.overview-icon{width:28px;height:28px;border-radius:8px;background:var(--bg-panel-2);display:flex;align-items:center;justify-content:center;color:var(--green)}
+.overview-num{font-size:15px;font-weight:700;line-height:1}
+.overview-label{font-size:9px;color:var(--text-dim)}
+.agents-panel{padding:12px}
+.agents-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.agent-item{display:flex;flex-direction:column;align-items:center;gap:5px;padding:8px 4px;border-radius:12px}
+.agent-item:active{background:var(--bg-panel-2)}
+.agent-icon{width:42px;height:42px;border-radius:50%;background:var(--bg-panel-2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--green)}
+.agent-label{font-size:9px;color:var(--text-dim)}
+.project-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.project-item:last-child{border-bottom:none}
+.project-empty{border-bottom:none;padding:16px 0;justify-content:center;text-align:center}
+.project-empty .project-name{color:var(--text-dim);font-size:12px}
+.project-empty .project-meta{color:var(--text-dimmer);font-size:10px}
+.project-icon{width:36px;height:36px;border-radius:10px;background:var(--bg-panel-2);display:flex;align-items:center;justify-content:center;color:var(--green);flex-shrink:0}
+.project-info{flex:1;min-width:0}
+.project-name{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.project-meta{font-size:9px;color:var(--text-dimmer);margin-top:1px}
+.project-track{height:3px;border-radius:2px;background:#111a17;margin-top:5px;overflow:hidden}
+.project-fill{height:100%;background:var(--green);border-radius:2px}
+.project-pct{font-size:10px;color:var(--green);font-weight:700;flex-shrink:0}
+.listening-bar{display:flex;align-items:center;gap:10px;margin:14px 20px 0;padding:10px 12px;background:linear-gradient(90deg,rgba(0,255,136,0.08),rgba(0,255,136,0.02));border:1px solid var(--green-dim);border-radius:14px}
+.listening-mic{width:32px;height:32px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;color:var(--bg);flex-shrink:0}
+.listening-text{flex:1}
+.listening-title{font-size:11px;font-weight:700;color:var(--green)}
+.listening-sub{font-size:9px;color:var(--text-dim)}
+.listening-wave{display:flex;align-items:center;gap:2px;height:14px}
+.listening-wave span{width:2px;background:var(--green);border-radius:1px;animation:wave 1s ease-in-out infinite}
+.listening-wave span:nth-child(odd){animation-delay:.15s}
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;display:flex;justify-content:space-around;align-items:center;padding:8px 4px calc(8px + env(safe-area-inset-bottom));background:rgba(6,10,9,0.95);backdrop-filter:blur(12px);border-top:1px solid var(--border);z-index:100}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--text-dimmer);flex:1;padding:4px 0}
+.nav-item svg{width:20px;height:20px}
+.nav-item span{font-size:9px}
+.nav-item.active{color:var(--green)}
+.chat-container{flex:1;overflow-y:auto;padding:10px 16px;display:flex;flex-direction:column;gap:10px}
+.chat-welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:30px 20px;opacity:0.6}
+.chat-welcome-title{font-size:16px;font-weight:800;color:var(--green)}
+.chat-welcome-sub{font-size:12px;color:var(--text-dim)}
+.chat-message{display:flex;gap:8px;max-width:94%;animation:msgSlide .2s ease}
+.chat-message.user{align-self:flex-end;flex-direction:row-reverse}
+.chat-avatar{width:26px;height:26px;border-radius:50%;background:var(--bg-panel-2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--green);flex-shrink:0;font-size:9px;font-weight:700}
+.chat-message.user .chat-avatar{background:var(--green);color:var(--bg)}
+.chat-bubble{background:var(--bg-panel);border:1px solid var(--border);border-radius:14px;padding:10px 12px;font-size:12px;line-height:1.6;word-break:break-word}
+.chat-message.user .chat-bubble{background:rgba(0,255,136,0.08);border-color:rgba(0,255,136,0.2)}
+.chat-bubble pre{background:#050908;border:1px solid var(--border);border-radius:8px;padding:10px;margin:8px 0;overflow-x:auto;font-size:11px}
+.chat-bubble code{font-family:'JetBrains Mono',monospace;background:rgba(0,255,136,0.08);padding:1px 4px;border-radius:4px;font-size:11px}
+.chat-bubble pre code{background:none;padding:0}
+.chat-bubble p{margin-bottom:8px}
+.chat-bubble p:last-child{margin-bottom:0}
+.chat-bubble strong{color:var(--green)}
+.chat-bubble.error{border-color:rgba(255,107,107,0.3);color:var(--danger)}
+.code-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;font-size:10px;color:var(--text-dimmer)}
+.code-copy{background:none;border:none;color:var(--text-dim);font-size:10px;cursor:pointer}
+.chat-actions{display:flex;gap:12px;padding:8px 16px}
+.chat-action{color:var(--text-dim);background:none;border:none}
+.chat-input-wrap{padding:10px 16px calc(10px + env(safe-area-inset-bottom));border-top:1px solid var(--border);background:var(--bg)}
+.chat-form{display:flex;align-items:center;gap:8px;background:var(--bg-panel);border:1px solid var(--border);border-radius:14px;padding:8px 10px}
+.chat-form input{flex:1;background:none;border:none;outline:none;color:var(--text);font-family:inherit;font-size:13px}
+.chat-form input::placeholder{color:var(--text-dimmer)}
+.typing-indicator{display:none;align-items:center;gap:4px;padding:0 0 8px 4px}
+.typing-indicator.active{display:flex}
+.typing-indicator span{width:6px;height:6px;background:var(--green-dim);border-radius:50%;animation:typingBounce 1.4s ease-in-out infinite}
+.typing-indicator span:nth-child(1){animation-delay:0s}
+.typing-indicator span:nth-child(2){animation-delay:.2s}
+.typing-indicator span:nth-child(3){animation-delay:.4s}
+.voice-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:30px 20px}
+.voice-status{font-size:13px;color:var(--text-dim);text-align:center}
+.voice-transcript{min-height:40px;max-width:100%;text-align:center;font-size:13px;color:var(--text);padding:0 20px;line-height:1.5}
+.voice-controls{display:flex;gap:12px;margin-top:10px}
+.voice-ctrl{display:flex;align-items:center;gap:6px;background:var(--bg-panel);border:1px solid var(--border);border-radius:10px;padding:8px 14px;font-size:11px;color:var(--text-dim)}
+.voice-ctrl.active{color:var(--green);border-color:var(--green-dim)}
+.voice-ctrl:active{background:var(--bg-panel-2)}
+#voiceVisualizer{width:280px;height:50px}
+.voice-keyboard-wrap{display:none;width:100%;padding:0 20px}
+.voice-keyboard-wrap.active{display:flex;gap:8px}
+.voice-keyboard-wrap input{flex:1;background:var(--bg-panel);border:1px solid var(--border);border-radius:10px;padding:10px 12px;color:var(--text);font-family:inherit;outline:none}
+.vision-body{flex:1;display:flex;flex-direction:column;padding:10px 16px 20px;gap:12px}
+.vision-preview{position:relative;width:100%;aspect-ratio:4/3;background:var(--bg-panel);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;display:flex;align-items:center;justify-content:center}
+.vision-placeholder{display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--text-dimmer);font-size:12px}
+.vision-preview video,.vision-preview canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.vision-preview.active .vision-placeholder{display:none}
+.vision-preview video{display:none}
+.vision-preview.active video{display:block}
+#visionOverlay{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2}
+.vision-actions{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
+.v-action{display:flex;flex-direction:column;align-items:center;gap:4px;background:var(--bg-panel);border:1px solid var(--border);border-radius:12px;padding:10px 8px;font-size:9px;color:var(--text-dim);min-width:56px}
+.v-action:active,.v-action.active{background:rgba(0,255,136,0.1);border-color:var(--green-dim);color:var(--green)}
+.v-action svg{margin-bottom:2px}
+.vision-analysis{font-size:12px;line-height:1.6}
+.analysis-header{display:flex;align-items:center;gap:6px;font-weight:700;color:var(--green);margin-bottom:8px;font-size:12px}
+.analysis-body{color:var(--text-dim);white-space:pre-wrap}
+.tabs{display:flex;gap:4px;padding:8px 16px 0;border-bottom:1px solid var(--border)}
+.tab{flex:1;padding:8px 4px;font-size:11px;color:var(--text-dimmer);border-bottom:2px solid transparent;margin-bottom:-1px;font-family:inherit;background:none}
+.tab.active{color:var(--green);border-bottom-color:var(--green)}
+.projects-body{flex:1;overflow-y:auto;padding:10px 16px}
+.project-loading{text-align:center;padding:30px;color:var(--text-dimmer);font-size:12px}
+.projects-list{display:flex;flex-direction:column;gap:8px}
+.repo-card{background:var(--bg-panel);border:1px solid var(--border);border-radius:var(--radius);padding:14px}
+.repo-header{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.repo-name{font-size:13px;font-weight:700;color:var(--green);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.repo-private{font-size:8px;padding:2px 6px;border-radius:4px;background:rgba(255,107,107,0.1);color:var(--danger);border:1px solid rgba(255,107,107,0.2)}
+.repo-desc{font-size:10px;color:var(--text-dim);margin-bottom:8px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.repo-stats{display:flex;gap:12px;flex-wrap:wrap}
+.repo-stat{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text-dimmer)}
+.repo-stat svg{width:12px;height:12px}
+.repo-lang{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text-dimmer)}
+.lang-dot{width:8px;height:8px;border-radius:50%}
+.memory-body{flex:1;overflow-y:auto;padding:10px 16px}
+.timeline{display:flex;flex-direction:column;gap:12px}
+.timeline-group{display:flex;flex-direction:column;gap:8px}
+.timeline-date{font-size:11px;font-weight:700;color:var(--text-dim);margin-bottom:4px}
+.timeline-item{display:flex;gap:10px;align-items:flex-start}
+.timeline-dot{width:8px;height:8px;border-radius:50%;background:var(--green);margin-top:4px;flex-shrink:0;box-shadow:0 0 6px var(--green)}
+.timeline-content{flex:1;background:var(--bg-panel);border:1px solid var(--border);border-radius:12px;padding:10px 12px}
+.timeline-text{font-size:12px;color:var(--text);line-height:1.4}
+.timeline-time{font-size:9px;color:var(--text-dimmer);margin-top:4px}
+.timeline-empty{text-align:center;padding:30px;color:var(--text-dimmer);font-size:12px}
+.more-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:10px 16px}
+.more-item{display:flex;flex-direction:column;align-items:center;gap:6px;background:var(--bg-panel);border:1px solid var(--border);border-radius:var(--radius);padding:14px 4px}
+.more-item:active{background:var(--bg-panel-2)}
+.more-icon{width:36px;height:36px;border-radius:10px;background:var(--bg-panel-2);display:flex;align-items:center;justify-content:center;color:var(--green)}
+.more-label{font-size:9px;color:var(--text-dim);text-align:center}
+.system-info-panel{display:flex;flex-direction:column;gap:2px;padding:14px;margin:10px 16px}
+.sys-row{display:flex;justify-content:space-between;font-size:11px;padding:8px 0;border-bottom:1px solid var(--border)}
+.sys-row:last-child{border-bottom:none}
+.sys-label{color:var(--text-dim)}
+.sys-value{color:var(--green);text-align:right}
+.settings-body{padding:4px 0}
+.task-form{display:flex;gap:8px;margin:12px 16px}
+.task-form input{flex:1;background:var(--bg-panel);border:1px solid var(--border);border-radius:10px;padding:10px 12px;color:var(--text);font-family:inherit;font-size:12px;outline:none}
+.task-form input::placeholder{color:var(--text-dimmer)}
+.task-form button.send{color:var(--green);padding:8px 12px;background:var(--bg-panel);border:1px solid var(--border);border-radius:10px}
+.task-list{display:flex;flex-direction:column;gap:6px;padding:0 16px 16px;overflow-y:auto}
+.task-item{display:flex;align-items:center;gap:8px;background:var(--bg-panel-2);border-radius:10px;padding:10px 12px;font-size:12px}
+.task-check{width:18px;height:18px;border-radius:50%;border:2px solid var(--green-dim);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;color:var(--bg)}
+.task-check.checked{background:var(--green);border-color:var(--green)}
+.task-check svg{display:none}
+.task-check.checked svg{display:block}
+.task-text{flex:1}
+.task-text.done{text-decoration:line-through;color:var(--text-dimmer)}
+.task-delete{color:var(--danger);opacity:0.6;background:none;border:none}
+.task-delete:active{opacity:1}
+.task-empty{text-align:center;padding:30px;color:var(--text-dimmer);font-size:12px}
+.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:var(--bg-panel);border:1px solid var(--green-dim);color:var(--green);padding:10px 18px;border-radius:10px;font-size:12px;z-index:200;opacity:0;pointer-events:none;transition:opacity .25s ease, transform .25s ease;max-width:90%;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(-6px)}
+.toast.error{border-color:rgba(255,107,107,0.5);color:var(--danger)}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-thumb{background:var(--green-dim);border-radius:3px}
+::selection{background:var(--green-glow)}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+@keyframes ring{0%,100%{opacity:.4;transform:scale(1)}50%{opacity:.9;transform:scale(1.08)}}
+@keyframes wave{0%,100%{transform:scaleY(0.4)}50%{transform:scaleY(1)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@keyframes msgSlide{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes typingBounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+@media (max-width:380px){.dashboard-grid{grid-template-columns:1fr}.more-grid{grid-template-columns:repeat(3,1fr)}}
+@media (display-mode:standalone){.app{padding-bottom:100px}.bottom-nav{padding-bottom:calc(14px + env(safe-area-inset-bottom))}}
+@media (prefers-reduced-motion:reduce){.orb,.orb-ring,.status-wave span,.listening-wave span{animation:none!important}}
+</style>
 </head>
 <body>
 <div class="app">
 
-  <!-- HEADER -->
-  <header class="top-header">
-    <button class="icon-btn" id="menuBtn" aria-label="Menu">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-    </button>
-    <div class="brand">
-      <span class="brand-title">NOCTRYX</span>
-      <span class="brand-sub">AI V2</span>
-    </div>
+  <header class="top-header" id="mainHeader">
+    <button class="icon-btn" id="menuBtn" aria-label="Menu"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <div class="brand"><span class="brand-title">NOCTRYX</span><span class="brand-sub">AI V2</span></div>
     <div class="header-actions">
-      <button class="icon-btn" id="expandBtn" aria-label="Expand">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
-      </button>
-      <button class="avatar-btn" id="profileBtn" aria-label="Profile">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
-      </button>
+      <button class="icon-btn" id="expandBtn" aria-label="Expand"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></button>
+      <button class="avatar-btn" id="profileBtn" aria-label="Profile"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg></button>
     </div>
   </header>
 
-  <!-- HOME SCREEN -->
+  <!-- HOME -->
   <div id="screen-home" class="screen active">
     <div class="hero">
       <div class="hero-row">
-        <div class="orb-wrap">
-          <div class="orb-ring"></div>
-          <div class="orb-ring orb-ring-2"></div>
-          <div class="orb"></div>
-        </div>
+        <div class="orb-wrap"><div class="orb-ring"></div><div class="orb-ring orb-ring-2"></div><div class="orb"></div></div>
         <div class="greeting">
           <div class="line1" id="greetingLine">Good evening,</div>
           <div class="name">Master 👑</div>
           <div class="sub">I am Noctryx. How can I assist you today?</div>
           <div class="status-line">
-            <span class="status-dot" id="aiStatusDot"></span>
-            <span id="aiStatusText">AI CORE: ACTIVE</span>
+            <span class="status-dot offline" id="aiStatusDot"></span>
+            <span id="aiStatusText">BACKEND: CHECKING...</span>
             <span class="status-wave"><span></span><span></span><span></span><span></span><span></span></span>
           </div>
         </div>
@@ -64,35 +282,16 @@
     <form class="search-bar" id="searchForm">
       <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       <input type="text" id="askInput" placeholder="Ask Noctryx anything..." autocomplete="off">
-      <button type="button" class="input-action" id="homeVoiceBtn" aria-label="Voice">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4"/></svg>
-      </button>
-      <button type="submit" class="input-action send" aria-label="Send">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
-      </button>
+      <button type="button" class="input-action" id="homeVoiceBtn" aria-label="Voice"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4"/></svg></button>
+      <button type="submit" class="input-action send" aria-label="Send"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg></button>
     </form>
 
     <div class="quick-actions">
-      <button class="qa-item" data-action="chat">
-        <div class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-9 8.4A8.5 8.5 0 1 1 21 11.5z"/></svg></div>
-        <div class="qa-label">New Chat</div>
-      </button>
-      <button class="qa-item" data-action="code">
-        <div class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
-        <div class="qa-label">Write Code</div>
-      </button>
-      <button class="qa-item" data-action="vision">
-        <div class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
-        <div class="qa-label">Vision</div>
-      </button>
-      <button class="qa-item" data-action="voice">
-        <div class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4"/></svg></div>
-        <div class="qa-label">Voice</div>
-      </button>
-      <button class="qa-item" data-action="agents">
-        <div class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
-        <div class="qa-label">Auto Agents</div>
-      </button>
+      <button class="qa-item" data-action="chat"><div class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-9 8.4A8.5 8.5 0 1 1 21 11.5z"/></svg></div><div class="qa-label">New Chat</div></button>
+      <button class="qa-item" data-action="code"><div class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div><div class="qa-label">Write Code</div></button>
+      <button class="qa-item" data-action="vision"><div class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div><div class="qa-label">Vision</div></button>
+      <button class="qa-item" data-action="voice"><div class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4"/></svg></div><div class="qa-label">Voice</div></button>
+      <button class="qa-item" data-action="projects"><div class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div><div class="qa-label">Projects</div></button>
     </div>
 
     <div class="dashboard-grid">
@@ -100,19 +299,19 @@
         <div class="section-title">⚡ System Status</div>
         <div class="panel status-panel">
           <div class="status-bars">
-            <div class="stat-row"><div class="stat-label"><span>CPU</span><span id="cpuVal">--</span></div><div class="stat-track"><div class="stat-fill" id="cpuFill" style="width:0%"></div></div></div>
-            <div class="stat-row"><div class="stat-label"><span>RAM</span><span id="ramVal">--</span></div><div class="stat-track"><div class="stat-fill" id="ramFill" style="width:0%"></div></div></div>
             <div class="stat-row"><div class="stat-label"><span>STORAGE</span><span id="storageVal">--</span></div><div class="stat-track"><div class="stat-fill" id="storageFill" style="width:0%"></div></div></div>
-            <div class="stat-row"><div class="stat-label"><span>BATTERY</span><span id="batteryVal">--</span></div><div class="stat-track"><div class="stat-fill" id="batteryFill" style="width:0%"></div></div></div>
+            <div class="stat-row"><div class="stat-label"><span>NETWORK</span><span id="networkVal">--</span></div><div class="stat-track"><div class="stat-fill" id="networkFill" style="width:0%"></div></div></div>
+            <div class="stat-row"><div class="stat-label"><span>SESSION</span><span id="sessionVal">00:00</span></div><div class="stat-track"><div class="stat-fill" id="sessionFill" style="width:0%"></div></div></div>
+            <div class="stat-row"><div class="stat-label"><span>LATENCY</span><span id="latencyVal">--</span></div><div class="stat-track"><div class="stat-fill" id="latencyFill" style="width:0%"></div></div></div>
           </div>
           <div class="core-gauge">
             <svg width="90" height="90" viewBox="0 0 90 90">
               <circle cx="45" cy="45" r="38" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="6"/>
-              <circle id="coreRing" cx="45" cy="45" r="38" fill="none" stroke="#00ff88" stroke-width="6" stroke-linecap="round" stroke-dasharray="238.7" stroke-dashoffset="0"/>
+              <circle id="coreRing" cx="45" cy="45" r="38" fill="none" stroke="#00ff88" stroke-width="6" stroke-linecap="round" stroke-dasharray="238.7" stroke-dashoffset="238.7"/>
             </svg>
             <div class="pct" id="corePct">--</div>
-            <div class="cap">NOCTRYX CORE</div>
-            <div class="status-text" id="coreStatusText">--</div>
+            <div class="cap">BACKEND</div>
+            <div class="status-text" id="coreStatusText">CHECKING</div>
           </div>
         </div>
       </div>
@@ -124,58 +323,47 @@
             <div class="overview-item"><div class="overview-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div><div class="overview-num" id="taskCount">0</div><div class="overview-label">Tasks</div></div></div>
             <div class="overview-item"><div class="overview-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div><div><div class="overview-num" id="completedCount">0</div><div class="overview-label">Completed</div></div></div>
             <div class="overview-item"><div class="overview-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><div><div class="overview-num" id="messageCount">0</div><div class="overview-label">Messages</div></div></div>
-            <div class="overview-item"><div class="overview-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><div><div class="overview-num" id="researchCount">0</div><div class="overview-label">Research</div></div></div>
+            <div class="overview-item"><div class="overview-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><div><div class="overview-num" id="researchCount">0</div><div class="overview-label">Vision Scans</div></div></div>
           </div>
         </div>
       </div>
     </div>
 
     <div class="section">
-      <div class="section-title">Active Agents <span class="view-all" id="viewAllAgents">View All ></span></div>
+      <div class="section-title">Active Agents <span class="view-all" data-nav="more">View All ></span></div>
       <div class="panel agents-panel">
         <div class="agents-grid">
-          <button class="agent-item" data-agent="research"><div class="agent-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><div class="agent-label">Research</div></button>
-          <button class="agent-item" data-agent="github"><div class="agent-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></div><div class="agent-label">GitHub</div></button>
-          <button class="agent-item" data-agent="code"><div class="agent-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div><div class="agent-label">Code</div></button>
-          <button class="agent-item" data-agent="memory"><div class="agent-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.5H7a2.5 2.5 0 0 1 0-5H4.5a2.5 2.5 0 0 1 0-5H5a2.5 2.5 0 0 1 0-5h.04A2.5 2.5 0 0 1 9.5 2z"/></svg></div><div class="agent-label">Memory</div></button>
-          <button class="agent-item" data-agent="vision"><div class="agent-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div><div class="agent-label">Vision</div></button>
-          <button class="agent-item" data-agent="automation"><div class="agent-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div><div class="agent-label">Automation</div></button>
+          <button class="agent-item" data-agent-nav="projects"><div class="agent-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><div class="agent-label">Research</div></button>
+          <button class="agent-item" data-agent-nav="projects"><div class="agent-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></div><div class="agent-label">GitHub</div></button>
+          <button class="agent-item" data-agent-nav="chat"><div class="agent-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div><div class="agent-label">Code</div></button>
+          <button class="agent-item" data-agent-nav="memory"><div class="agent-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.5H7a2.5 2.5 0 0 1 0-5H4.5a2.5 2.5 0 0 1 0-5H5a2.5 2.5 0 0 1 0-5h.04A2.5 2.5 0 0 1 9.5 2z"/></svg></div><div class="agent-label">Memory</div></button>
+          <button class="agent-item" data-agent-nav="vision"><div class="agent-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div><div class="agent-label">Vision</div></button>
+          <button class="agent-item" data-agent-nav="tasks"><div class="agent-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div><div class="agent-label">Automation</div></button>
         </div>
       </div>
     </div>
 
     <div class="section">
-      <div class="section-title">Recent Projects <span class="view-all" id="viewAllProjects">View All ></span></div>
+      <div class="section-title">Recent Projects <span class="view-all" data-nav="projects">View All ></span></div>
       <div class="panel" id="projectsPanel">
-        <div class="project-item project-empty">
-          <div class="project-info"><div class="project-name">Loading repositories...</div><div class="project-meta">Connect GitHub to see your projects</div></div>
-        </div>
+        <div class="project-item project-empty"><div class="project-info"><div class="project-name">Loading repositories...</div><div class="project-meta">Set a GitHub username in Settings</div></div></div>
       </div>
-    </div>
-
-    <div class="listening-bar" id="listeningBar">
-      <div class="listening-mic"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2H3v2a9 9 0 0 0 8 8.94V23h2v-2.06A9 9 0 0 0 21 12v-2z"/></svg></div>
-      <div class="listening-text"><div class="listening-title">Noctryx is listening...</div><div class="listening-sub">Say "Hey Noctryx" to wake me up</div></div>
-      <div class="listening-wave"><span></span><span></span><span></span><span></span><span></span><span></span></div>
     </div>
   </div>
 
-  <!-- CHAT SCREEN -->
+  <!-- CHAT -->
   <div id="screen-chat" class="screen">
     <header class="screen-header">
       <button class="icon-btn back-btn" data-back="home"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
       <div class="screen-title">Chat</div>
-      <div class="header-actions">
-        <button class="icon-btn" id="chatExpandBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></button>
-        <button class="icon-btn" id="chatMenuBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
-      </div>
+      <div class="header-actions"><button class="icon-btn" id="chatMenuBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></div>
     </header>
     <div class="chat-container" id="chatContainer">
-      <div class="chat-welcome">
-        <div class="orb-wrap orb-wrap-sm"><div class="orb-ring"></div><div class="orb"></div></div>
-        <div class="chat-welcome-title">Noctryx AI</div>
-        <div class="chat-welcome-sub">How can I assist you today?</div>
-      </div>
+      <div class="chat-welcome" id="chatWelcome"><div class="orb-wrap orb-wrap-sm"><div class="orb-ring"></div><div class="orb"></div></div><div class="chat-welcome-title">Noctryx AI</div><div class="chat-welcome-sub">How can I assist you today?</div></div>
+    </div>
+    <div class="chat-actions">
+      <button class="chat-action" id="chatClearBtn" title="New conversation"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button>
+      <button class="chat-action" id="chatRefreshBtn" title="Retry last"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></button>
     </div>
     <div class="chat-input-wrap">
       <div class="typing-indicator" id="typingIndicator"><span></span><span></span><span></span></div>
@@ -187,7 +375,7 @@
     </div>
   </div>
 
-  <!-- VOICE SCREEN -->
+  <!-- VOICE -->
   <div id="screen-voice" class="screen">
     <header class="screen-header">
       <button class="icon-btn back-btn" data-back="home"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
@@ -196,137 +384,789 @@
     </header>
     <div class="voice-body">
       <div class="orb-wrap orb-wrap-xl"><div class="orb-ring"></div><div class="orb-ring orb-ring-2"></div><div class="orb" id="voiceOrb"></div></div>
-      <canvas id="voiceVisualizer" width="300" height="60"></canvas>
-      <div class="voice-status" id="voiceStatus">Noctryx is listening...</div>
+      <canvas id="voiceVisualizer" width="280" height="50"></canvas>
+      <div class="voice-status" id="voiceStatus">Tap the mic to start</div>
       <div class="voice-transcript" id="voiceTranscript"></div>
+      <div class="voice-keyboard-wrap" id="voiceKeyboardWrap">
+        <input type="text" id="voiceKeyboardInput" placeholder="Type instead...">
+        <button class="voice-ctrl" id="voiceKeyboardSend">Send</button>
+      </div>
       <div class="voice-controls">
+        <button class="voice-ctrl" id="voiceMicBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4"/></svg> Start</button>
         <button class="voice-ctrl" id="voiceMuteBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg> Mute</button>
-        <button class="voice-ctrl" id="voiceKeyboardBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="6" y1="8" x2="6" y2="8"/><line x1="10" y1="8" x2="10" y2="8"/><line x1="14" y1="8" x2="14" y2="8"/><line x1="18" y1="8" x2="18" y2="8"/><line x1="6" y1="12" x2="6" y2="12"/><line x1="10" y1="12" x2="10" y2="12"/><line x1="14" y1="12" x2="14" y2="12"/><line x1="18" y1="12" x2="18" y2="12"/><line x1="6" y1="16" x2="6" y2="16"/><line x1="10" y1="16" x2="10" y2="16"/><line x1="14" y1="16" x2="14" y2="16"/><line x1="18" y1="16" x2="18" y2="16"/></svg> Keyboard</button>
+        <button class="voice-ctrl" id="voiceKeyboardBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/></svg> Keyboard</button>
       </div>
     </div>
   </div>
 
-  <!-- VISION SCREEN -->
+  <!-- VISION -->
   <div id="screen-vision" class="screen">
     <header class="screen-header">
       <button class="icon-btn back-btn" data-back="home"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
       <div class="screen-title">Vision</div>
-      <button class="icon-btn back-btn" data-back="home"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      <div style="width:36px"></div>
     </header>
     <div class="vision-body">
       <div class="vision-preview" id="visionPreview">
         <video id="visionVideo" autoplay playsinline muted></video>
         <canvas id="visionOverlay"></canvas>
-        <div class="vision-placeholder" id="visionPlaceholder">
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-          <div>Camera access required</div>
-        </div>
+        <div class="vision-placeholder" id="visionPlaceholder"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg><div id="visionPlaceholderText">Tap Camera to start</div></div>
       </div>
       <div class="vision-actions">
-        <button class="v-action" data-vision="scan"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/></svg>Scan</button>
-        <button class="v-action" data-vision="ocr"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/></svg>OCR</button>
-        <button class="v-action active" data-vision="camera"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="3"/></svg>Camera</button>
-        <button class="v-action" data-vision="object"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Object</button>
-        <button class="v-action" data-vision="analyze"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s4-8 11-8 11 8 11 8"/><path d="M5 12v4h3v-4"/><path d="M10 12v7h3v-7"/><path d="M15 12v5h3v-5"/></svg>Analyze</button>
+        <button class="v-action active" id="visionCameraBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="3"/></svg>Camera</button>
+        <button class="v-action" id="visionCaptureBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s4-8 11-8 11 8 11 8"/><path d="M5 12v4h3v-4"/><path d="M10 12v7h3v-7"/><path d="M15 12v5h3v-5"/></svg>Analyze</button>
+        <button class="v-action" id="visionSwitchBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>Flip</button>
       </div>
       <div class="panel vision-analysis" id="visionAnalysis">
         <div class="analysis-header"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg> AI Analysis</div>
-        <div class="analysis-body" id="analysisBody">Point your camera at an object and tap Analyze to begin.</div>
+        <div class="analysis-body" id="analysisBody">Point your camera at something and tap Analyze to begin.</div>
       </div>
     </div>
   </div>
 
-  <!-- PROJECTS SCREEN -->
+  <!-- PROJECTS -->
   <div id="screen-projects" class="screen">
     <header class="screen-header">
       <button class="icon-btn back-btn" data-back="home"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
       <div class="screen-title">Projects</div>
-      <div class="header-actions">
-        <button class="icon-btn" id="projectSearchBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
-        <button class="icon-btn" id="projectAddBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
-      </div>
+      <button class="icon-btn" id="projectsRefreshBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></button>
     </header>
-    <div class="tabs">
-      <button class="tab active" data-tab="repos">Repositories</button>
-      <button class="tab" data-tab="sessions">Code Sessions</button>
-      <button class="tab" data-tab="activities">Activities</button>
-    </div>
     <div class="projects-body" id="projectsBody">
-      <div class="project-loading" id="projectsLoading">Loading GitHub data...</div>
+      <div class="project-loading" id="projectsLoading">Enter a GitHub username in Settings to load repositories.</div>
       <div class="projects-list" id="projectsList"></div>
     </div>
   </div>
 
-  <!-- MEMORY SCREEN -->
+  <!-- MEMORY -->
   <div id="screen-memory" class="screen">
     <header class="screen-header">
       <button class="icon-btn back-btn" data-back="more"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
       <div class="screen-title">Memory</div>
-      <div class="header-actions">
-        <button class="icon-btn" id="memorySearchBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
-        <button class="icon-btn" id="memoryAddBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
-      </div>
+      <button class="icon-btn" id="memoryClearBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
     </header>
-    <div class="tabs">
-      <button class="tab active" data-tab="timeline">Timeline</button>
-      <button class="tab" data-tab="graph">Knowledge Graph</button>
-      <button class="tab" data-tab="insights">Insights</button>
-    </div>
     <div class="memory-body">
       <div class="timeline" id="memoryTimeline"></div>
-      <button class="view-all-memories" id="viewAllMemories">View All Memories</button>
     </div>
   </div>
 
-  <!-- MORE SCREEN -->
-  <div id="screen-more" class="screen">
+  <!-- TASKS -->
+  <div id="screen-tasks" class="screen">
     <header class="screen-header">
-      <div class="screen-title" style="margin-left:0">More</div>
-      <div style="width:34px"></div>
+      <button class="icon-btn back-btn" data-back="more"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
+      <div class="screen-title">Tasks</div>
+      <div style="width:36px"></div>
     </header>
-    <div class="more-grid">
-      <button class="more-item" data-more="memory"><div class="more-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.5H7a2.5 2.5 0 0 1 0-5H4.5a2.5 2.5 0 0 1 0-5H5a2.5 2.5 0 0 1 0-5h.04A2.5 2.5 0 0 1 9.5 2z"/></svg></div><div class="more-label">Memory Engine</div></button>
-      <button class="more-item" data-more="knowledge"><div class="more-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div><div class="more-label">Knowledge Base</div></button>
-      <button class="more-item" data-more="automation"><div class="more-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div><div class="more-label">Automation</div></button>
-      <button class="more-item" data-more="tasks"><div class="more-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div class="more-label">Task Manager</div></button>
-      <button class="more-item" data-more="files"><div class="more-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div class="more-label">File Manager</div></button>
-      <button class="more-item" data-more="settings"><div class="more-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div><div class="more-label">Settings</div></button>
-      <button class="more-item" data-more="system"><div class="more-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div><div class="more-label">System Info</div></button>
-      <button class="more-item" data-more="github"><div class="more-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></div><div class="more-label">GitHub Agent</div></button>
-      <button class="more-item" data-more="api"><div class="more-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div><div class="more-label">API Config</div></button>
+    <form class="task-form" id="taskForm">
+      <input type="text" id="taskInput" placeholder="Add a task..." autocomplete="off">
+      <button type="submit" class="send"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+    </form>
+    <div class="task-list" id="taskList"></div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div id="screen-settings" class="screen">
+    <header class="screen-header">
+      <button class="icon-btn back-btn" data-back="more"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
+      <div class="screen-title">Settings</div>
+      <div style="width:36px"></div>
+    </header>
+    <div class="settings-body">
+      <div class="panel system-info-panel">
+        <div class="sys-row"><span class="sys-label">Backend URL</span></div>
+        <div class="task-form" style="margin:4px 0 12px"><input type="text" id="backendUrlInput" placeholder="https://your-app.vercel.app"></div>
+        <div class="sys-row"><span class="sys-label">GitHub username</span></div>
+        <div class="task-form" style="margin:4px 0 0"><input type="text" id="githubUserInput" placeholder="Newton-oyweri"></div>
+      </div>
+      <div style="padding:0 16px"><button class="voice-ctrl active" id="saveSettingsBtn" style="width:100%;justify-content:center;padding:12px">Save Settings</button></div>
+      <div class="panel system-info-panel">
+        <div class="sys-row"><span class="sys-label">Voice input</span><span class="sys-value" id="sysVoiceSupport">--</span></div>
+        <div class="sys-row"><span class="sys-label">Camera</span><span class="sys-value" id="sysCameraSupport">--</span></div>
+        <div class="sys-row"><span class="sys-label">Storage quota</span><span class="sys-value" id="sysStorageQuota">--</span></div>
+        <div class="sys-row"><span class="sys-label">Connection</span><span class="sys-value" id="sysConnection">--</span></div>
+        <div class="sys-row"><span class="sys-label">Backend status</span><span class="sys-value" id="sysBackendStatus">--</span></div>
+        <div class="sys-row"><span class="sys-label">Enabled providers</span><span class="sys-value" id="sysProviders">--</span></div>
+      </div>
     </div>
   </div>
 
+  <!-- MORE -->
+  <div id="screen-more" class="screen">
+    <header class="screen-header"><div class="screen-title" style="margin-left:0">More</div><div style="width:34px"></div></header>
+    <div class="more-grid">
+      <button class="more-item" data-nav="memory"><div class="more-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.5H7a2.5 2.5 0 0 1 0-5H4.5a2.5 2.5 0 0 1 0-5H5a2.5 2.5 0 0 1 0-5h.04A2.5 2.5 0 0 1 9.5 2z"/></svg></div><div class="more-label">Memory</div></button>
+      <button class="more-item" data-nav="tasks"><div class="more-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div class="more-label">Tasks</div></button>
+      <button class="more-item" data-nav="projects"><div class="more-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div><div class="more-label">Projects</div></button>
+      <button class="more-item" data-nav="settings"><div class="more-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div><div class="more-label">Settings</div></button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <nav class="bottom-nav">
+    <button class="nav-item active" data-nav="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span>Home</span></button>
+    <button class="nav-item" data-nav="chat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-9 8.4A8.5 8.5 0 1 1 21 11.5z"/></svg><span>Chat</span></button>
+    <button class="nav-item" data-nav="voice"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4"/></svg><span>Voice</span></button>
+    <button class="nav-item" data-nav="vision"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg><span>Vision</span></button>
+    <button class="nav-item" data-nav="projects"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>Projects</span></button>
+    <button class="nav-item" data-nav="more"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg><span>More</span></button>
+  </nav>
 </div>
 
-<!-- BOTTOM NAV -->
-<nav class="bottom-nav">
-  <a class="nav-item active" href="#" data-tab="home">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-    <span>Home</span>
-  </a>
-  <a class="nav-item" href="#" data-tab="chat">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-    <span>Chat</span>
-  </a>
-  <a class="nav-item" href="#" data-tab="voice">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4"/></svg>
-    <span>Voice</span>
-  </a>
-  <a class="nav-item" href="#" data-tab="vision">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-    <span>Vision</span>
-  </a>
-  <a class="nav-item" href="#" data-tab="projects">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-    <span>Projects</span>
-  </a>
-  <a class="nav-item" href="#" data-tab="more">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
-    <span>More</span>
-  </a>
-</nav>
+<script>
+(() => {
+'use strict';
 
-<script type="module" src="js/app.js"></script>
+const Config = {
+  get apiBase() { return localStorage.getItem('noctryx_api_base') || ''; },
+  set apiBase(v) { localStorage.setItem('noctryx_api_base', v.replace(/\/$/, '')); },
+  get githubUser() { return localStorage.getItem('noctryx_github_user') || ''; },
+  set githubUser(v) { localStorage.setItem('noctryx_github_user', v); }
+};
+
+function api(path) { return Config.apiBase + path; }
+
+let toastTimer;
+function toast(msg, isError = false) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast show' + (isError ? ' error' : '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2600);
+}
+
+const Memory = {
+  KEY: 'noctryx_memory',
+  all() { try { return JSON.parse(localStorage.getItem(this.KEY)) || []; } catch { return []; } },
+  log(text) {
+    const events = this.all();
+    events.unshift({ text, ts: Date.now() });
+    localStorage.setItem(this.KEY, JSON.stringify(events.slice(0, 200)));
+    renderMemory();
+  },
+  clear() { localStorage.removeItem(this.KEY); renderMemory(); }
+};
+
+function timeAgoLabel(ts) {
+  const d = new Date(ts);
+  return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
+function dayLabel(ts) {
+  const d = new Date(ts), today = new Date();
+  const isToday = d.toDateString() === today.toDateString();
+  const yest = new Date(today); yest.setDate(yest.getDate() - 1);
+  if (isToday) return 'Today';
+  if (d.toDateString() === yest.toDateString()) return 'Yesterday';
+  return d.toLocaleDateString();
+}
+
+function renderMemory() {
+  const events = Memory.all();
+  const el = document.getElementById('memoryTimeline');
+  if (!events.length) {
+    el.innerHTML = '<div class="timeline-empty">No activity yet. Use chat, voice, or vision and it will show up here.</div>';
+    return;
+  }
+  const groups = {};
+  events.forEach(e => {
+    const label = dayLabel(e.ts);
+    groups[label] = groups[label] || [];
+    groups[label].push(e);
+  });
+  el.innerHTML = Object.entries(groups).map(([day, items]) => `
+    <div class="timeline-group">
+      <div class="timeline-date">${escapeHtml(day)}</div>
+      ${items.map(e => `
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <div class="timeline-text">${escapeHtml(e.text)}</div>
+            <div class="timeline-time">${timeAgoLabel(e.ts)}</div>
+          </div>
+        </div>`).join('')}
+    </div>`).join('');
+}
+
+document.getElementById('memoryClearBtn').addEventListener('click', () => {
+  if (confirm('Clear all memory timeline entries? This cannot be undone.')) Memory.clear();
+});
+
+const Counters = {
+  KEY: 'noctryx_counters',
+  get() { try { return Object.assign({ messages: 0, scans: 0 }, JSON.parse(localStorage.getItem(this.KEY))); } catch { return { messages: 0, scans: 0 }; } },
+  bump(field) { const c = this.get(); c[field] = (c[field] || 0) + 1; localStorage.setItem(this.KEY, JSON.stringify(c)); renderOverview(); }
+};
+
+function renderOverview() {
+  const c = Counters.get();
+  const tasks = Tasks.all();
+  document.getElementById('taskCount').textContent = tasks.length;
+  document.getElementById('completedCount').textContent = tasks.filter(t => t.done).length;
+  document.getElementById('messageCount').textContent = c.messages;
+  document.getElementById('researchCount').textContent = c.scans;
+}
+
+const Tasks = {
+  KEY: 'noctryx_tasks',
+  all() { try { return JSON.parse(localStorage.getItem(this.KEY)) || []; } catch { return []; } },
+  save(list) { localStorage.setItem(this.KEY, JSON.stringify(list)); renderTasks(); renderOverview(); },
+  add(text) { const list = this.all(); list.unshift({ id: Date.now(), text, done: false }); this.save(list); Memory.log(`Added task: "${text}"`); },
+  toggle(id) { const list = this.all().map(t => t.id === id ? { ...t, done: !t.done } : t); this.save(list); },
+  remove(id) { this.save(this.all().filter(t => t.id !== id)); }
+};
+
+function renderTasks() {
+  const list = Tasks.all();
+  const el = document.getElementById('taskList');
+  if (!list.length) { el.innerHTML = '<div class="task-empty">No tasks yet. Add one above.</div>'; return; }
+  el.innerHTML = list.map(t => `
+    <div class="task-item">
+      <div class="task-check ${t.done ? 'checked' : ''}" data-id="${t.id}"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="task-text ${t.done ? 'done' : ''}">${escapeHtml(t.text)}</div>
+      <button class="task-delete" data-id="${t.id}">✕</button>
+    </div>`).join('');
+  el.querySelectorAll('.task-check').forEach(b => b.addEventListener('click', () => Tasks.toggle(Number(b.dataset.id))));
+  el.querySelectorAll('.task-delete').forEach(b => b.addEventListener('click', () => Tasks.remove(Number(b.dataset.id))));
+}
+
+document.getElementById('taskForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const input = document.getElementById('taskInput');
+  const v = input.value.trim();
+  if (!v) return;
+  Tasks.add(v);
+  input.value = '';
+});
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+const screens = document.querySelectorAll('.screen');
+const navItems = document.querySelectorAll('.nav-item');
+
+function showScreen(name) {
+  screens.forEach(s => s.classList.toggle('active', s.id === `screen-${name}`));
+  navItems.forEach(n => n.classList.toggle('active', n.dataset.nav === name));
+  if (name === 'projects') loadProjects();
+  if (name === 'memory') renderMemory();
+  if (name === 'tasks') renderTasks();
+  if (name === 'settings') loadSettingsScreen();
+  if (name !== 'vision') stopCamera();
+  if (name !== 'voice') stopVoiceSession();
+}
+
+document.querySelectorAll('[data-nav]').forEach(el => {
+  el.addEventListener('click', () => showScreen(el.dataset.nav));
+});
+document.querySelectorAll('[data-back]').forEach(el => {
+  el.addEventListener('click', () => showScreen(el.dataset.back));
+});
+document.querySelectorAll('[data-agent-nav]').forEach(el => {
+  el.addEventListener('click', () => showScreen(el.dataset.agentNav));
+});
+document.querySelectorAll('.qa-item[data-action]').forEach(el => {
+  el.addEventListener('click', () => {
+    const map = { chat: 'chat', code: 'chat', vision: 'vision', voice: 'voice', projects: 'projects' };
+    showScreen(map[el.dataset.action] || 'chat');
+  });
+});
+
+document.getElementById('searchForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const input = document.getElementById('askInput');
+  const v = input.value.trim();
+  if (!v) return;
+  input.value = '';
+  showScreen('chat');
+  sendChatMessage(v);
+});
+document.getElementById('homeVoiceBtn').addEventListener('click', () => showScreen('voice'));
+
+const ChatState = { history: [] };
+
+function appendMessage(role, text, isError = false) {
+  const container = document.getElementById('chatContainer');
+  document.getElementById('chatWelcome')?.remove();
+  const wrap = document.createElement('div');
+  wrap.className = `chat-message ${role === 'user' ? 'user' : ''}`;
+  wrap.innerHTML = `
+    <div class="chat-avatar">${role === 'user' ? 'U' : 'N'}</div>
+    <div class="chat-bubble ${isError ? 'error' : ''}">${renderMarkdownLite(text)}</div>`;
+  container.appendChild(wrap);
+  container.scrollTop = container.scrollHeight;
+}
+
+function renderMarkdownLite(text) {
+  let safe = escapeHtml(text);
+  safe = safe.replace(/```([\s\S]*?)```/g, (_, code) => `<pre><code>${code.trim()}</code></pre>`);
+  safe = safe.replace(/`([^`]+)`/g, '<code>$1</code>');
+  safe = safe.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  safe = safe.split(/\n{2,}/).map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`).join('');
+  return safe;
+}
+
+async function sendChatMessage(message) {
+  if (!Config.apiBase) {
+    appendMessage('user', message);
+    appendMessage('assistant', 'No backend URL is set yet. Go to More → Settings and enter your deployed backend URL (e.g. https://your-app.vercel.app), then try again.', true);
+    return;
+  }
+  appendMessage('user', message);
+  ChatState.history.push({ role: 'user', content: message });
+  document.getElementById('typingIndicator').classList.add('active');
+  try {
+    const res = await fetch(api('/api/chat'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message, history: ChatState.history.slice(-10) })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+    appendMessage('assistant', data.reply);
+    ChatState.history.push({ role: 'assistant', content: data.reply });
+    Counters.bump('messages');
+    Memory.log(`You asked: "${message.slice(0, 60)}${message.length > 60 ? '…' : ''}"`);
+  } catch (err) {
+    appendMessage('assistant', `Request failed: ${err.message}`, true);
+    toast('Chat request failed — see message for details', true);
+  } finally {
+    document.getElementById('typingIndicator').classList.remove('active');
+  }
+}
+
+document.getElementById('chatForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const input = document.getElementById('chatInput');
+  const v = input.value.trim();
+  if (!v) return;
+  input.value = '';
+  sendChatMessage(v);
+});
+
+document.getElementById('chatClearBtn').addEventListener('click', () => {
+  ChatState.history = [];
+  document.getElementById('chatContainer').innerHTML = `
+    <div class="chat-welcome" id="chatWelcome"><div class="orb-wrap orb-wrap-sm"><div class="orb-ring"></div><div class="orb"></div></div><div class="chat-welcome-title">Noctryx AI</div><div class="chat-welcome-sub">How can I assist you today?</div></div>`;
+});
+
+document.getElementById('chatRefreshBtn').addEventListener('click', () => {
+  const lastUser = [...ChatState.history].reverse().find(m => m.role === 'user');
+  if (lastUser) sendChatMessage(lastUser.content);
+  else toast('No previous message to retry');
+});
+
+document.getElementById('chatVoiceBtn').addEventListener('click', () => {
+  startDictation(text => { document.getElementById('chatInput').value = text; });
+});
+
+const SpeechRecognitionCtor = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+function startDictation(onResult) {
+  if (!SpeechRecognitionCtor) {
+    toast('Speech recognition is not supported in this browser', true);
+    return;
+  }
+  const rec = new SpeechRecognitionCtor();
+  rec.lang = 'en-US';
+  rec.interimResults = false;
+  rec.maxAlternatives = 1;
+  rec.onresult = (e) => onResult(e.results[0][0].transcript);
+  rec.onerror = (e) => toast(`Mic error: ${e.error}`, true);
+  rec.start();
+}
+
+const Voice = {
+  recognition: null,
+  active: false,
+  muted: false,
+  audioCtx: null,
+  analyser: null,
+  micStream: null,
+  rafId: null
+};
+
+function setVoiceStatus(text) { document.getElementById('voiceStatus').textContent = text; }
+
+async function startVoiceVisualizer() {
+  try {
+    Voice.micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    Voice.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const source = Voice.audioCtx.createMediaStreamSource(Voice.micStream);
+    Voice.analyser = Voice.audioCtx.createAnalyser();
+    Voice.analyser.fftSize = 64;
+    source.connect(Voice.analyser);
+    drawVisualizer();
+  } catch (err) {
+    toast('Microphone access denied — visualizer disabled', true);
+  }
+}
+
+function drawVisualizer() {
+  const canvas = document.getElementById('voiceVisualizer');
+  const ctx = canvas.getContext('2d');
+  const bufferLength = Voice.analyser.frequencyBinCount;
+  const dataArray = new Uint8Array(bufferLength);
+
+  function draw() {
+    Voice.rafId = requestAnimationFrame(draw);
+    Voice.analyser.getByteFrequencyData(dataArray);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const barWidth = (canvas.width / bufferLength) * 1.5;
+    let x = 0;
+    for (let i = 0; i < bufferLength; i++) {
+      const barHeight = (dataArray[i] / 255) * canvas.height;
+      ctx.fillStyle = '#00ff88';
+      ctx.fillRect(x, canvas.height - barHeight, barWidth - 2, barHeight);
+      x += barWidth;
+    }
+  }
+  draw();
+}
+
+function stopVoiceVisualizer() {
+  if (Voice.rafId) cancelAnimationFrame(Voice.rafId);
+  Voice.micStream?.getTracks().forEach(t => t.stop());
+  Voice.audioCtx?.close().catch(() => {});
+  Voice.rafId = null; Voice.micStream = null; Voice.audioCtx = null;
+}
+
+function speak(text) {
+  if (Voice.muted || !window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.rate = 1.0;
+  document.getElementById('voiceOrb').classList.add('speaking');
+  utter.onend = () => document.getElementById('voiceOrb').classList.remove('speaking');
+  window.speechSynthesis.speak(utter);
+}
+
+async function handleVoiceTurn(transcript) {
+  document.getElementById('voiceTranscript').textContent = transcript;
+  setVoiceStatus('Thinking...');
+  if (!Config.apiBase) {
+    setVoiceStatus('Set a backend URL in Settings first');
+    return;
+  }
+  try {
+    const res = await fetch(api('/api/chat'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: transcript, history: ChatState.history.slice(-6) })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+    setVoiceStatus('Noctryx is speaking...');
+    document.getElementById('voiceTranscript').textContent = data.reply;
+    speak(data.reply);
+    ChatState.history.push({ role: 'user', content: transcript }, { role: 'assistant', content: data.reply });
+    Counters.bump('messages');
+    Memory.log(`Voice: "${transcript.slice(0, 50)}${transcript.length > 50 ? '…' : ''}"`);
+    setVoiceStatus(Voice.active ? 'Listening...' : 'Tap the mic to continue');
+  } catch (err) {
+    setVoiceStatus(`Error: ${err.message}`);
+  }
+}
+
+function startVoiceSession() {
+  if (!SpeechRecognitionCtor) { toast('Speech recognition not supported here', true); return; }
+  Voice.active = true;
+  document.getElementById('voiceOrb').classList.add('listening');
+  document.getElementById('voiceMicBtn').classList.add('active');
+  startVoiceVisualizer();
+  Voice.recognition = new SpeechRecognitionCtor();
+  Voice.recognition.lang = 'en-US';
+  Voice.recognition.continuous = true;
+  Voice.recognition.interimResults = false;
+  setVoiceStatus('Listening...');
+  Voice.recognition.onresult = (e) => {
+    const transcript = e.results[e.results.length - 1][0].transcript;
+    handleVoiceTurn(transcript);
+  };
+  Voice.recognition.onerror = (e) => { if (e.error !== 'no-speech') toast(`Mic error: ${e.error}`, true); };
+  Voice.recognition.onend = () => { if (Voice.active) Voice.recognition.start(); };
+  Voice.recognition.start();
+}
+
+function stopVoiceSession() {
+  Voice.active = false;
+  document.getElementById('voiceOrb').classList.remove('listening', 'speaking');
+  document.getElementById('voiceMicBtn').classList.remove('active');
+  try { Voice.recognition?.stop(); } catch {}
+  window.speechSynthesis?.cancel();
+  stopVoiceVisualizer();
+  setVoiceStatus('Tap the mic to start');
+}
+
+document.getElementById('voiceMicBtn').addEventListener('click', () => Voice.active ? stopVoiceSession() : startVoiceSession());
+document.getElementById('voiceEndBtn').addEventListener('click', () => { stopVoiceSession(); showScreen('home'); });
+document.getElementById('voiceMuteBtn').addEventListener('click', (e) => {
+  Voice.muted = !Voice.muted;
+  e.currentTarget.classList.toggle('active', Voice.muted);
+  if (Voice.muted) window.speechSynthesis?.cancel();
+});
+document.getElementById('voiceKeyboardBtn').addEventListener('click', (e) => {
+  const wrap = document.getElementById('voiceKeyboardWrap');
+  wrap.classList.toggle('active');
+  e.currentTarget.classList.toggle('active');
+});
+document.getElementById('voiceKeyboardSend').addEventListener('click', () => {
+  const input = document.getElementById('voiceKeyboardInput');
+  const v = input.value.trim();
+  if (!v) return;
+  input.value = '';
+  handleVoiceTurn(v);
+});
+
+const VisionState = { stream: null, facingMode: 'environment' };
+
+async function startCamera() {
+  try {
+    VisionState.stream?.getTracks().forEach(t => t.stop());
+    VisionState.stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: VisionState.facingMode }, audio: false
+    });
+    const video = document.getElementById('visionVideo');
+    video.srcObject = VisionState.stream;
+    document.getElementById('visionPreview').classList.add('active');
+  } catch (err) {
+    document.getElementById('visionPlaceholderText').textContent = `Camera error: ${err.message}`;
+    toast('Camera access failed', true);
+  }
+}
+
+function stopCamera() {
+  VisionState.stream?.getTracks().forEach(t => t.stop());
+  VisionState.stream = null;
+  document.getElementById('visionPreview').classList.remove('active');
+}
+
+document.getElementById('visionCameraBtn').addEventListener('click', startCamera);
+document.getElementById('visionSwitchBtn').addEventListener('click', () => {
+  VisionState.facingMode = VisionState.facingMode === 'environment' ? 'user' : 'environment';
+  if (VisionState.stream) startCamera();
+});
+
+document.getElementById('visionCaptureBtn').addEventListener('click', async () => {
+  if (!VisionState.stream) { toast('Start the camera first'); return; }
+  if (!Config.apiBase) { toast('Set a backend URL in Settings first', true); return; }
+
+  const video = document.getElementById('visionVideo');
+  const canvas = document.createElement('canvas');
+  canvas.width = video.videoWidth; canvas.height = video.videoHeight;
+  canvas.getContext('2d').drawImage(video, 0, 0);
+  const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+  const base64 = dataUrl.split(',')[1];
+
+  const body = document.getElementById('analysisBody');
+  body.textContent = 'Analyzing...';
+  try {
+    const res = await fetch(api('/api/vision'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ imageBase64: base64, mimeType: 'image/jpeg' })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+    body.textContent = data.analysis;
+    Counters.bump('scans');
+    Memory.log('Vision analyzed a captured frame');
+  } catch (err) {
+    body.textContent = `Analysis failed: ${err.message}`;
+    toast('Vision analysis failed', true);
+  }
+});
+
+async function loadProjects() {
+  const user = Config.githubUser;
+  const listEl = document.getElementById('projectsList');
+  const loadingEl = document.getElementById('projectsLoading');
+  const panelEl = document.getElementById('projectsPanel');
+
+  if (!user) {
+    loadingEl.textContent = 'Enter a GitHub username in Settings to load repositories.';
+    listEl.innerHTML = '';
+    return;
+  }
+  if (!Config.apiBase) {
+    loadingEl.textContent = 'Set a backend URL in Settings to load repositories.';
+    listEl.innerHTML = '';
+    return;
+  }
+
+  loadingEl.style.display = 'block';
+  loadingEl.textContent = 'Loading GitHub data...';
+  listEl.innerHTML = '';
+
+  try {
+    const res = await fetch(api(`/api/github/${encodeURIComponent(user)}`));
+    const repos = await res.json();
+    if (!res.ok) throw new Error(repos.error || `HTTP ${res.status}`);
+    loadingEl.style.display = 'none';
+
+    if (!repos.length) {
+      listEl.innerHTML = '<div class="project-loading">No repositories found for this user.</div>';
+    } else {
+      listEl.innerHTML = repos.map(r => `
+        <div class="repo-card">
+          <div class="repo-header">
+            <div class="repo-name">${escapeHtml(r.name)}</div>
+            ${r.private ? '<span class="repo-private">Private</span>' : ''}
+          </div>
+          <div class="repo-desc">${escapeHtml(r.description || 'No description')}</div>
+          <div class="repo-stats">
+            ${r.language ? `<div class="repo-lang"><span class="lang-dot" style="background:${langColor(r.language)}"></span>${escapeHtml(r.language)}</div>` : ''}
+            <div class="repo-stat">★ ${r.stars}</div>
+            <div class="repo-stat">⑂ ${r.forks}</div>
+            <div class="repo-stat">Updated ${new Date(r.updated_at).toLocaleDateString()}</div>
+          </div>
+        </div>`).join('');
+    }
+
+    panelEl.innerHTML = repos.slice(0, 2).map(r => `
+      <div class="project-item">
+        <div class="project-icon">◆</div>
+        <div class="project-info">
+          <div class="project-name">${escapeHtml(r.name)}</div>
+          <div class="project-meta">${r.private ? 'Private' : 'Public'} · Updated ${new Date(r.updated_at).toLocaleDateString()}</div>
+        </div>
+      </div>`).join('') || '<div class="project-item project-empty"><div class="project-info"><div class="project-name">No repositories found</div></div></div>';
+  } catch (err) {
+    loadingEl.style.display = 'block';
+    loadingEl.textContent = `Failed to load: ${err.message}`;
+  }
+}
+
+function langColor(lang) {
+  const colors = { JavaScript: '#f1e05a', TypeScript: '#3178c6', Python: '#3572A5', HTML: '#e34c26', CSS: '#563d7c', Dart: '#00B4AB', Java: '#b07219', 'C++': '#f34b7d' };
+  return colors[lang] || '#00ff88';
+}
+
+document.getElementById('projectsRefreshBtn').addEventListener('click', loadProjects);
+
+function loadSettingsScreen() {
+  document.getElementById('backendUrlInput').value = Config.apiBase;
+  document.getElementById('githubUserInput').value = Config.githubUser;
+  document.getElementById('sysVoiceSupport').textContent = SpeechRecognitionCtor ? 'Supported' : 'Not supported';
+  document.getElementById('sysCameraSupport').textContent = navigator.mediaDevices?.getUserMedia ? 'Supported' : 'Not supported';
+  document.getElementById('sysConnection').textContent = navigator.connection
+    ? `${navigator.connection.effectiveType || '?'} · ${navigator.connection.downlink || '?'} Mbps`
+    : 'Not exposed by browser';
+  navigator.storage?.estimate?.().then(est => {
+    const usedMb = (est.usage / 1e6).toFixed(1);
+    const quotaMb = (est.quota / 1e6).toFixed(0);
+    document.getElementById('sysStorageQuota').textContent = `${usedMb}MB / ${quotaMb}MB`;
+  }).catch(() => { document.getElementById('sysStorageQuota').textContent = 'Not available'; });
+  refreshBackendStatus();
+}
+
+document.getElementById('saveSettingsBtn').addEventListener('click', () => {
+  Config.apiBase = document.getElementById('backendUrlInput').value.trim();
+  Config.githubUser = document.getElementById('githubUserInput').value.trim();
+  toast('Settings saved');
+  refreshBackendStatus();
+});
+
+const sessionStart = Date.now();
+
+function updateSessionTimer() {
+  const secs = Math.floor((Date.now() - sessionStart) / 1000);
+  const m = String(Math.floor(secs / 60)).padStart(2, '0');
+  const s = String(secs % 60).padStart(2, '0');
+  document.getElementById('sessionVal').textContent = `${m}:${s}`;
+  document.getElementById('sessionFill').style.width = `${Math.min(100, secs / 6)}%`;
+}
+
+async function updateStorageStat() {
+  try {
+    const est = await navigator.storage.estimate();
+    const pct = est.quota ? Math.round((est.usage / est.quota) * 100) : 0;
+    document.getElementById('storageVal').textContent = `${pct}%`;
+    document.getElementById('storageFill').style.width = `${pct}%`;
+  } catch {
+    document.getElementById('storageVal').textContent = 'N/A';
+  }
+}
+
+function updateNetworkStat() {
+  const conn = navigator.connection;
+  if (!conn) { document.getElementById('networkVal').textContent = 'N/A'; return; }
+  document.getElementById('networkVal').textContent = (conn.effectiveType || '?').toUpperCase();
+  const speedPct = Math.min(100, ((conn.downlink || 1) / 10) * 100);
+  document.getElementById('networkFill').style.width = `${speedPct}%`;
+}
+
+async function refreshBackendStatus() {
+  const dot = document.getElementById('aiStatusDot');
+  const text = document.getElementById('aiStatusText');
+  const corePct = document.getElementById('corePct');
+  const coreStatus = document.getElementById('coreStatusText');
+  const ring = document.getElementById('coreRing');
+  const sysBackend = document.getElementById('sysBackendStatus');
+  const sysProviders = document.getElementById('sysProviders');
+
+  if (!Config.apiBase) {
+    dot.classList.add('offline'); text.textContent = 'BACKEND: NOT CONFIGURED';
+    corePct.textContent = '--'; coreStatus.textContent = 'NOT SET';
+    ring.style.strokeDashoffset = 238.7;
+    if (sysBackend) sysBackend.textContent = 'Not configured';
+    if (sysProviders) sysProviders.textContent = '--';
+    document.getElementById('latencyVal').textContent = '--';
+    return;
+  }
+
+  const t0 = performance.now();
+  try {
+    const res = await fetch(api('/api/health'));
+    const data = await res.json();
+    const rtt = Math.round(performance.now() - t0);
+    if (!res.ok || !data.ok) throw new Error('unhealthy');
+
+    dot.classList.remove('offline'); text.textContent = 'BACKEND: CONNECTED';
+    corePct.textContent = '100%'; coreStatus.textContent = 'CONNECTED';
+    ring.style.strokeDashoffset = 0;
+    document.getElementById('latencyVal').textContent = `${rtt}ms`;
+    const latencyPct = Math.max(5, 100 - rtt / 5);
+    document.getElementById('latencyFill').style.width = `${latencyPct}%`;
+
+    const enabled = Object.entries(data.providers || {}).filter(([, v]) => v).map(([k]) => k);
+    if (sysBackend) sysBackend.textContent = `Online (${rtt}ms)`;
+    if (sysProviders) sysProviders.textContent = enabled.length ? enabled.join(', ') : 'None configured';
+  } catch (err) {
+    dot.classList.add('offline'); text.textContent = 'BACKEND: OFFLINE';
+    corePct.textContent = '0%'; coreStatus.textContent = 'OFFLINE';
+    ring.style.strokeDashoffset = 238.7;
+    document.getElementById('latencyVal').textContent = 'timeout';
+    document.getElementById('latencyFill').style.width = '0%';
+    if (sysBackend) sysBackend.textContent = 'Unreachable';
+    if (sysProviders) sysProviders.textContent = '--';
+  }
+}
+
+function updateGreeting() {
+  const h = new Date().getHours();
+  const line = h < 12 ? 'Good morning,' : h < 18 ? 'Good afternoon,' : 'Good evening,';
+  document.getElementById('greetingLine').textContent = line;
+}
+
+function init() {
+  updateGreeting();
+  renderTasks();
+  renderMemory();
+  renderOverview();
+  updateStorageStat();
+  updateNetworkStat();
+  refreshBackendStatus();
+  setInterval(updateSessionTimer, 1000);
+  setInterval(refreshBackendStatus, 30000);
+  if (Config.githubUser) loadProjects();
+  else {
+    document.getElementById('projectsPanel').innerHTML =
+      '<div class="project-item project-empty"><div class="project-info"><div class="project-name">No GitHub username set</div><div class="project-meta">Add one in More → Settings</div></div></div>';
+  }
+}
+
+init();
+})();
+</script>
 </body>
 </html>
