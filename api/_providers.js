@@ -41,7 +41,7 @@ async function callOpenAICompatible(providerKey, messages) {
   const res = await fetch(p.url, {
     method: 'POST',
     headers: p.headers(),
-    body: JSON.stringify({ model: p.model, messages, temperature: 0.7, max_tokens: 1024 })
+    body: JSON.stringify({ model: p.model, messages, temperature: 0.7, max_tokens: 4096 })
   });
   if (!res.ok) {
     const errText = await res.text().catch(() => '');
@@ -64,7 +64,7 @@ export async function callGemini(messages) {
   const body = {
     contents,
     ...(systemMsg ? { systemInstruction: { parts: [{ text: systemMsg.content }] } } : {}),
-    generationConfig: { temperature: 0.7, maxOutputTokens: 1024 }
+    generationConfig: { temperature: 0.7, maxOutputTokens: 8192 }
   };
 
   const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
