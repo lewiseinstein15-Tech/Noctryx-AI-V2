@@ -1,0 +1,6 @@
+{
+  "name": "noctryx-backend",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Noctryx AI V2 backend — Vercel serverless functions (multi-provider chat, vision, GitHub proxy)"
+}
