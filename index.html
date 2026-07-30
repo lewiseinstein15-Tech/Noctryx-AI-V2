@@ -1210,6 +1210,7 @@ function finishStreamMessage(stopped) {
   const reply = _sBuf;
   ChatState.history.push({ role: 'assistant', content: reply });
   ChatState.lastReply = reply;
+  ChatState.save();
   Counters.bump('messages');
   Memory.log('Chat: "' + reply.slice(0,50) + (reply.length>50?'...':'') + '"');
   _sId = null; _sBubble = null; _sBuf = '';
@@ -1271,7 +1272,25 @@ window._quickPrompt = function(text) {
 };
 
 /* Chat State */
-const ChatState = { history: [], isStreaming: false, lastReply: '' };
+const ChatState = { 
+  history: [], 
+  isStreaming: false, 
+  lastReply: '',
+  get STORAGE_KEY() { return 'noctryx_chat_history'; },
+  load() { 
+    try { 
+      const saved = localStorage.getItem(this.STORAGE_KEY); 
+      if (saved) this.history = JSON.parse(saved); 
+    } catch(e) {} 
+  },
+  save() { 
+    try { localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.history)); } catch(e) {} 
+  },
+  clear() { 
+    this.history = []; this.lastReply = ''; 
+    try { localStorage.removeItem(this.STORAGE_KEY); } catch(e) {} 
+  }
+};
 let _sAbort = null;
 
 async function sendChatMessage(message) {
@@ -1291,7 +1310,7 @@ async function sendChatMessage(message) {
   try {
     const res = await fetch(api('/api/chat'), {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: message, history: ChatState.history.slice(-10), stream: true }),
+      body: JSON.stringify({ message: message, history: ChatState.history, stream: true }),
       signal: _sAbort.signal
     });
     const ct = res.headers.get('content-type') || '';
@@ -1334,6 +1353,7 @@ async function sendChatMessage(message) {
     appendMessage('assistant', data.reply);
     ChatState.history.push({ role: 'assistant', content: data.reply });
     ChatState.lastReply = data.reply;
+    ChatState.save();
     Counters.bump('messages');
     Memory.log('Chat: "' + data.reply.slice(0,50) + (data.reply.length>50?'...':'') + '"');
     ChatState.isStreaming = false;
@@ -1371,7 +1391,7 @@ chatInput.addEventListener('keydown', function(e) {
 
 document.getElementById('chatClearBtn').addEventListener('click', function() {
   if (ChatState.isStreaming && _sAbort) { _sAbort.abort(); ChatState.isStreaming = false; }
-  ChatState.history = []; ChatState.lastReply = '';
+  ChatState.clear();
   const c = document.getElementById('chatContainer');
   c.innerHTML = `<div class="chat-welcome" id="chatWelcome"><div class="orb-wrap orb-wrap-sm"><div class="orb-ring"></div><div class="orb"></div></div><div class="chat-welcome-title">Noctryx AI</div><div class="chat-welcome-sub">How can I help you today?</div><div class="chat-welcome-hints" id="chatWelcomeHints"><div class="chat-welcome-hint" onclick="window._quickPrompt(this.textContent)">Explain how async/await works in JavaScript</div><div class="chat-welcome-hint" onclick="window._quickPrompt(this.textContent)">Write a Python function to sort a list</div><div class="chat-welcome-hint" onclick="window._quickPrompt(this.textContent)">What are the best practices for REST APIs?</div></div></div>`;
   document.getElementById('nxStopBtn').classList.remove('show');
@@ -1481,7 +1501,7 @@ async function handleVoiceTurn(transcript) {
   setVoiceStatus('Thinking...');
   if (!Config.apiBase) { setVoiceStatus('Set a backend URL in Settings first'); return; }
   try {
-    const res = await fetch(api('/api/chat'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: transcript, history: ChatState.history.slice(-6) }) });
+    const res = await fetch(api('/api/chat'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: transcript, history: ChatState.history }) });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'HTTP ' + res.status);
     setVoiceStatus('Noctryx is speaking...');
@@ -1718,8 +1738,26 @@ function updateGreeting() {
 }
 
 /* Init */
+function loadChatHistory() {
+  ChatState.load();
+  if (!ChatState.history.length) return;
+  const welcome = document.getElementById('chatWelcome');
+  if (welcome) welcome.remove();
+  const container = document.getElementById('chatContainer');
+  // Render all persisted messages
+  for (const msg of ChatState.history) {
+    if (msg.role === 'user') {
+      appendMessage('user', msg.content);
+    } else if (msg.role === 'assistant') {
+      appendMessage('assistant', msg.content);
+    }
+  }
+}
+
 function init() {
   mermaid.initialize({ startOnLoad: false, theme: 'dark', securityLevel: 'strict' });
+  ChatState.load();
+  loadChatHistory();
   updateGreeting();
   updateSystemInfo();
   renderOverview();
