@@ -869,8 +869,7 @@ function renderMarkdown(text) {
     return '%%MATH_BLOCK_' + idx + '%%';
   });
 
-  processed = processed.replace(/(?<!\$)\$(?![\$\d])([^$
-]+?)(?<!\$)\$/g, function(match, math) {
+  processed = processed.replace(/(?<!\$)\$(?![\$\d])([^$\n]+?)(?<!\$)\$/g, function(match, math) {
     var idx = mathBlocks.length;
     mathBlocks.push({ display: false, math: math.trim() });
     return '%%MATH_BLOCK_' + idx + '%%';
@@ -1566,9 +1565,12 @@ async function refreshBackendStatus() {
     return;
   }
 
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 8000);
   const t0 = performance.now();
   try {
-    const res = await fetch(api('/api/health'));
+    const res = await fetch(api('/api/health'), { signal: controller.signal });
+    clearTimeout(timeoutId);
     const data = await res.json();
     const rtt = Math.round(performance.now() - t0);
     if (!res.ok || !data.ok) throw new Error('unhealthy');
@@ -1576,14 +1578,15 @@ async function refreshBackendStatus() {
     dot.classList.remove('offline'); text.textContent = 'BACKEND: CONNECTED';
     corePct.textContent = '100%'; coreStatus.textContent = 'CONNECTED';
     ring.style.strokeDashoffset = 0;
-    document.getElementById('latencyVal').textContent = `${rtt}ms`;
+    document.getElementById('latencyVal').textContent = rtt + 'ms';
     const latencyPct = Math.max(5, 100 - rtt / 5);
-    document.getElementById('latencyFill').style.width = `${latencyPct}%`;
+    document.getElementById('latencyFill').style.width = latencyPct + '%';
 
     const enabled = Object.entries(data.providers || {}).filter(([, v]) => v).map(([k]) => k);
-    if (sysBackend) sysBackend.textContent = `Online (${rtt}ms)`;
+    if (sysBackend) sysBackend.textContent = 'Online (' + rtt + 'ms)';
     if (sysProviders) sysProviders.textContent = enabled.length ? enabled.join(', ') : 'None configured';
   } catch (err) {
+    clearTimeout(timeoutId);
     dot.classList.add('offline'); text.textContent = 'BACKEND: OFFLINE';
     corePct.textContent = '0%'; coreStatus.textContent = 'OFFLINE';
     ring.style.strokeDashoffset = 238.7;
@@ -1598,27 +1601,6 @@ function updateGreeting() {
   const h = new Date().getHours();
   const line = h < 12 ? 'Good morning,' : h < 18 ? 'Good afternoon,' : 'Good evening,';
   document.getElementById('greetingLine').textContent = line;
-}
-
-/* Initialize Mermaid */
-if (typeof mermaid !== 'undefined') {
-  mermaid.initialize({
-    startOnLoad: false,
-    theme: 'dark',
-    themeVariables: {
-      primaryColor: '#0d7a58',
-      primaryTextColor: '#e7f5ef',
-      primaryBorderColor: '#17231f',
-      lineColor: '#0d7a58',
-      secondaryColor: '#0f1614',
-      tertiaryColor: '#0c1210',
-      fontFamily: 'JetBrains Mono, monospace',
-      fontSize: '12px'
-    },
-    flowchart: { useMaxWidth: true, htmlLabels: true, curve: 'basis' },
-    sequence: { useMaxWidth: true, actorMargin: 50 },
-    fontFamily: 'JetBrains Mono, monospace'
-  });
 }
 
 /* Initialize Mermaid */
