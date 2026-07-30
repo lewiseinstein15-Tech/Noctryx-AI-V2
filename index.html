@@ -70,54 +70,10 @@ a{color:inherit;text-decoration:none}
 .qa-item:active{background:var(--bg-panel-2)}
 .qa-icon{width:42px;height:42px;border-radius:12px;background:var(--bg-panel);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--green)}
 .qa-label{font-size:9px;color:var(--text-dim);text-align:center}
-.dashboard-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 20px 0}
 .section{margin:14px 20px 0}
 .section-title{display:flex;align-items:center;justify-content:space-between;font-size:10px;letter-spacing:1.5px;color:var(--text-dim);margin-bottom:8px;text-transform:uppercase;font-weight:600}
 .view-all{color:var(--green);font-size:10px;letter-spacing:.5px;text-transform:none;cursor:pointer}
 .panel{background:var(--bg-panel);border:1px solid var(--border);border-radius:var(--radius);padding:14px}
-.status-panel{display:flex;gap:10px;align-items:center}
-.status-bars{flex:1;display:flex;flex-direction:column;gap:10px}
-.stat-row{display:flex;flex-direction:column;gap:3px}
-.stat-label{display:flex;justify-content:space-between;font-size:10px;color:var(--text-dim)}
-.stat-track{height:4px;border-radius:2px;background:#111a17;overflow:hidden}
-.stat-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--green-dim),var(--green));transition:width .4s ease}
-.core-gauge{width:90px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
-.core-gauge svg{transform:rotate(-90deg)}
-.core-gauge .pct{font-size:18px;font-weight:800;color:var(--green);margin-top:-62px}
-.core-gauge .cap{font-size:7px;letter-spacing:1px;color:var(--text-dimmer);margin-top:50px}
-.core-gauge .status-text{font-size:8px;color:var(--green);letter-spacing:.5px;text-align:center}
-.overview-panel{padding:12px}
-.overview-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.overview-item{display:flex;align-items:center;gap:8px}
-.overview-icon{width:28px;height:28px;border-radius:8px;background:var(--bg-panel-2);display:flex;align-items:center;justify-content:center;color:var(--green)}
-.overview-num{font-size:15px;font-weight:700;line-height:1}
-.overview-label{font-size:9px;color:var(--text-dim)}
-.agents-panel{padding:12px}
-.agents-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.agent-item{display:flex;flex-direction:column;align-items:center;gap:5px;padding:8px 4px;border-radius:12px}
-.agent-item:active{background:var(--bg-panel-2)}
-.agent-icon{width:42px;height:42px;border-radius:50%;background:var(--bg-panel-2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--green)}
-.agent-label{font-size:9px;color:var(--text-dim)}
-.project-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
-.project-item:last-child{border-bottom:none}
-.project-empty{border-bottom:none;padding:16px 0;justify-content:center;text-align:center}
-.project-empty .project-name{color:var(--text-dim);font-size:12px}
-.project-empty .project-meta{color:var(--text-dimmer);font-size:10px}
-.project-icon{width:36px;height:36px;border-radius:10px;background:var(--bg-panel-2);display:flex;align-items:center;justify-content:center;color:var(--green);flex-shrink:0}
-.project-info{flex:1;min-width:0}
-.project-name{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.project-meta{font-size:9px;color:var(--text-dimmer);margin-top:1px}
-.project-track{height:3px;border-radius:2px;background:#111a17;margin-top:5px;overflow:hidden}
-.project-fill{height:100%;background:var(--green);border-radius:2px}
-.project-pct{font-size:10px;color:var(--green);font-weight:700;flex-shrink:0}
-.listening-bar{display:flex;align-items:center;gap:10px;margin:14px 20px 0;padding:10px 12px;background:linear-gradient(90deg,rgba(0,255,136,0.08),rgba(0,255,136,0.02));border:1px solid var(--green-dim);border-radius:14px}
-.listening-mic{width:32px;height:32px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;color:var(--bg);flex-shrink:0}
-.listening-text{flex:1}
-.listening-title{font-size:11px;font-weight:700;color:var(--green)}
-.listening-sub{font-size:9px;color:var(--text-dim)}
-.listening-wave{display:flex;align-items:center;gap:2px;height:14px}
-.listening-wave span{width:2px;background:var(--green);border-radius:1px;animation:wave 1s ease-in-out infinite}
-.listening-wave span:nth-child(odd){animation-delay:.15s}
 .bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;display:flex;justify-content:space-around;align-items:center;padding:8px 4px calc(8px + env(safe-area-inset-bottom));background:rgba(6,10,9,0.95);backdrop-filter:blur(12px);border-top:1px solid var(--border);z-index:100}
 .nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--text-dimmer);flex:1;padding:4px 0}
 .nav-item svg{width:20px;height:20px}
@@ -326,10 +282,10 @@ a{color:inherit;text-decoration:none}
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 @keyframes msgSlide{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 @keyframes typingBounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
-@media (max-width:480px){.dashboard-grid{grid-template-columns:1fr}.overview-grid{grid-template-columns:1fr 1fr}.status-panel{flex-direction:column}.core-gauge{width:70px;height:auto}.core-gauge svg{width:70px;height:70px}.core-gauge .pct{font-size:16px;margin-top:-48px}.core-gauge .cap{font-size:7px;margin-top:38px}.section-title{font-size:9px;letter-spacing:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}}
-@media (max-width:380px){.dashboard-grid{grid-template-columns:1fr}.more-grid{grid-template-columns:repeat(3,1fr)}.overview-grid{grid-template-columns:1fr 1fr;gap:8px}.overview-panel{padding:10px}}
+@media (max-width:480px){.section-title{font-size:9px;letter-spacing:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.home-status-card{margin:0 12px;padding:16px}.home-overview,.home-agents,.home-projects{margin:12px 12px 0}.agents-3x2{gap:8px}
+@media (max-width:380px){.more-grid{grid-template-columns:repeat(3,1fr)}.agents-3x2{gap:6px}.agent-card-icon{width:40px;height:40px}}
 @media (display-mode:standalone){.app{padding-bottom:100px}.bottom-nav{padding-bottom:calc(14px + env(safe-area-inset-bottom))}}
-@media (prefers-reduced-motion:reduce){.orb,.orb-ring,.status-wave span,.listening-wave span{animation:none!important}}
+@media (prefers-reduced-motion:reduce){.orb,.orb-ring,.status-wave span{animation:none!important}}
 
 /* Redesigned Home: System Status Card */.home-status-card{background:var(--bg-panel);border:1px solid var(--border);border-radius:20px;padding:20px;margin:0 20px}.status-metrics{display:flex;flex-direction:column;gap:0}.status-metric{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(23,35,31,0.8)}.status-metric:last-of-type{border-bottom:none}.status-metric-label{font-size:11px;letter-spacing:1.5px;color:var(--text-dimmer);text-transform:uppercase;font-weight:600}.status-metric-value{font-size:13px;color:var(--text-dim);font-weight:500}.status-metric-value.live{color:var(--green)}.status-center{display:flex;flex-direction:column;align-items:center;padding:20px 0 8px;gap:6px}.status-ring-outer{width:80px;height:80px;border-radius:50%;border:2px solid rgba(23,35,31,0.8);display:flex;align-items:center;justify-content:center;position:relative}.status-ring-pulse{position:absolute;inset:-6px;border-radius:50%;border:1px solid rgba(0,255,136,0.15);animation:statusPulse 2s ease-in-out infinite}.status-ring-icon{color:var(--text-dimmer)}.status-ring-icon.online{color:var(--green)}.status-backend-label{font-size:9px;letter-spacing:1.5px;color:var(--text-dimmer);text-transform:uppercase;margin-top:4px}.status-backend-value{font-size:12px;font-weight:700;color:var(--green);letter-spacing:1px;text-transform:uppercase}.status-backend-value.offline{color:var(--danger)}@keyframes statusPulse{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:.8;transform:scale(1.05)}}/* Redesigned Today's Overview */.home-overview{margin:16px 20px 0}.overview-card{background:var(--bg-panel);border:1px solid var(--border);border-radius:20px;padding:16px}.overview-2x2{display:grid;grid-template-columns:1fr 1fr;gap:16px 24px}.overview-stat{display:flex;align-items:center;gap:12px}.overview-stat-icon{width:40px;height:40px;border-radius:10px;background:var(--bg-panel-2);display:flex;align-items:center;justify-content:center;color:var(--green);flex-shrink:0}.overview-stat-num{font-size:18px;font-weight:700;color:var(--text);line-height:1}.overview-stat-label{font-size:11px;color:var(--text-dim);margin-top:2px}/* Redesigned Active Agents */.home-agents{margin:16px 20px 0}.agents-card{background:var(--bg-panel);border:1px solid var(--border);border-radius:20px;padding:16px}.agents-3x2{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.agent-card{display:flex;flex-direction:column;align-items:center;gap:8px;padding:12px 4px;border-radius:14px;cursor:pointer;transition:background .15s}.agent-card:active{background:var(--bg-panel-2)}.agent-card-icon{width:48px;height:48px;border-radius:50%;background:var(--bg-panel-2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--green)}.agent-card-name{font-size:10px;color:var(--text-dim);text-align:center;letter-spacing:.3px}.agent-card-status{display:flex;align-items:center;gap:4px;font-size:8px;letter-spacing:1px;text-transform:uppercase;font-weight:600}.agent-card-status .dot{width:5px;height:5px;border-radius:50%}.agent-card-status.active .dot{background:var(--green);box-shadow:0 0 6px var(--green)}.agent-card-status.active{color:var(--green)}.agent-card-status.idle .dot{background:var(--text-dimmer)}.agent-card-status.idle{color:var(--text-dimmer)}/* Redesigned Recent Projects */.home-projects{margin:16px 20px 0;padding-bottom:16px}.projects-card{background:var(--bg-panel);border:1px solid var(--border);border-radius:20px;padding:16px;min-height:80px}.project-card-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}.project-card-row:last-child{border-bottom:none}.project-card-icon{width:36px;height:36px;border-radius:10px;background:var(--bg-panel-2);display:flex;align-items:center;justify-content:center;color:var(--green);flex-shrink:0}.project-card-info{flex:1;min-width:0}.project-card-name{font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.project-card-meta{font-size:9px;color:var(--text-dimmer);margin-top:2px}.project-card-bar{height:3px;border-radius:2px;background:rgba(255,255,255,0.05);margin-top:6px;overflow:hidden}.project-card-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--green-dim),var(--green))}.project-card-pct{font-size:10px;color:var(--green);font-weight:700;flex-shrink:0;margin-left:8px}.projects-empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 0;gap:4px}.projects-empty-state .empty-text{font-size:12px;color:var(--text-dim)}.projects-empty-state .empty-sub{font-size:10px;color:var(--text-dimmer)}
 </style>
@@ -682,6 +638,7 @@ function dayLabel(ts) {
 }
 
 function renderMemory() {
+  window.setAgentStatus && window.setAgentStatus('memory', true);
   const events = Memory.all();
   const el = document.getElementById('memoryTimeline');
   if (!events.length) {
@@ -706,6 +663,7 @@ function renderMemory() {
           </div>
         </div>`).join('')}
     </div>`).join('');
+  window.setAgentStatus && window.setAgentStatus('memory', false);
 }
 
 document.getElementById('memoryClearBtn').addEventListener('click', () => {
@@ -755,7 +713,7 @@ document.getElementById('taskForm').addEventListener('submit', e => {
   const input = document.getElementById('taskInput');
   const v = input.value.trim();
   if (!v) return;
-  Tasks.add(v);
+  Tasks.add(v); window.setAgentStatus && window.setAgentStatus('auto', true); setTimeout(function(){ window.setAgentStatus && window.setAgentStatus('auto', false); }, 1000);
   input.value = '';
 });
 
@@ -973,16 +931,16 @@ window._sp = function(id) {
 };
 window._lk = function(id) {
   var el = document.getElementById(id); if (!el) return;
-  var btn = el.querySelector('.nx-actions button:nth-child(7)');
-  var dlBtn = el.querySelector('.nx-actions button:nth-child(8)');
+  var btn = el.querySelector('.nx-actions button:nth-child(4)');
+  var dlBtn = el.querySelector('.nx-actions button:nth-child(5)');
   if (btn) btn.classList.toggle('liked');
   if (dlBtn) dlBtn.classList.remove('disliked');
   Memory.log('Response liked');
 };
 window._dl = function(id) {
   var el = document.getElementById(id); if (!el) return;
-  var btn = el.querySelector('.nx-actions button:nth-child(8)');
-  var lkBtn = el.querySelector('.nx-actions button:nth-child(7)');
+  var btn = el.querySelector('.nx-actions button:nth-child(5)');
+  var lkBtn = el.querySelector('.nx-actions button:nth-child(4)');
   if (btn) btn.classList.toggle('disliked');
   if (lkBtn) lkBtn.classList.remove('liked');
   Memory.log('Response disliked');
@@ -1014,7 +972,7 @@ async function sendChatMessage(message) {
   document.getElementById('typingIndicator').classList.add('active');
   ChatState.isStreaming = true;
   document.getElementById('nxContinueBtn').classList.remove('show');
-  setAgentStatus('code', true);
+  window.setAgentStatus && window.setAgentStatus('code', true);
   _sAbort = new AbortController();
   try {
     var res = await fetch(api('/api/chat'), {
@@ -1039,7 +997,7 @@ async function sendChatMessage(message) {
             var tr = lns[li].trim();
             if (!tr || tr === 'data: [DONE]') continue;
             if (tr.indexOf('data: ') === 0) {
-              try { var j = JSON.parse(tr.slice(6)); var tk = (j.choices&&j.choices[0]&&j.choices[0].delta&&j.choices[0].delta.content)||''; if (tk) updateStreamMessage(tk); }
+              try { var j = JSON.parse(tr.slice(6)); if (j.object === 'error') { wasStopped = true; break; } var tk = (j.choices&&j.choices[0]&&j.choices[0].delta&&j.choices[0].delta.content)||''; if (tk) updateStreamMessage(tk); }
               catch(e) { var t2 = tr.slice(6); if (t2 && t2 !== '[DONE]') updateStreamMessage(t2); }
             }
           }
@@ -1048,7 +1006,7 @@ async function sendChatMessage(message) {
         if (streamErr.name === 'AbortError') wasStopped = true;
         else throw streamErr;
       }
-      finishStreamMessage(wasStopped); ChatState.isStreaming = false; return;
+      finishStreamMessage(wasStopped); ChatState.isStreaming = false; window.setAgentStatus && window.setAgentStatus('code', false); return;
     }
     var data = await res.json();
     if (!res.ok) throw new Error(data.error || 'HTTP ' + res.status);
@@ -1059,11 +1017,13 @@ async function sendChatMessage(message) {
     Counters.bump('messages');
     Memory.log('Chat: "' + data.reply.slice(0,50) + (data.reply.length>50?'\u2026':'') + '"');
     ChatState.isStreaming = false;
+    window.setAgentStatus && window.setAgentStatus('code', false);
   } catch (err) {
-    if (err.name === 'AbortError') { ChatState.isStreaming = false; document.getElementById('nxStopBtn').classList.remove('show'); return; }
+    if (err.name === 'AbortError') { ChatState.isStreaming = false; document.getElementById('nxStopBtn').classList.remove('show'); window.setAgentStatus && window.setAgentStatus('code', false); return; }
     document.getElementById('typingIndicator').classList.remove('active');
     appendMessage('assistant', 'Request failed: ' + err.message, true);
     ChatState.isStreaming = false;
+    window.setAgentStatus && window.setAgentStatus('code', false);
   }
   document.getElementById('nxStopBtn').classList.remove('show');
 }
@@ -1339,6 +1299,7 @@ document.getElementById('visionCaptureBtn').addEventListener('click', async () =
 
   const body = document.getElementById('analysisBody');
   body.textContent = 'Analyzing...';
+  window.setAgentStatus && window.setAgentStatus('vision', true);
   try {
     const res = await fetch(api('/api/vision'), {
       method: 'POST',
@@ -1350,26 +1311,36 @@ document.getElementById('visionCaptureBtn').addEventListener('click', async () =
     body.textContent = data.analysis;
     Counters.bump('scans');
     Memory.log('Vision analyzed a captured frame');
+    window.setAgentStatus && window.setAgentStatus('vision', false);
   } catch (err) {
     body.textContent = `Analysis failed: ${err.message}`;
     toast('Vision analysis failed', true);
+    window.setAgentStatus && window.setAgentStatus('vision', false);
   }
 });
 
-async function loadProjects() {
-  const user = Config.githubUser;
-  const listEl = document.getElementById('projectsList');
-  const loadingEl = document.getElementById('projectsLoading');
-  const panelEl = document.getElementById('projectsPanel');
+window.loadProjects = async function loadProjects() {
+  var user = Config.githubUser;
+  var listEl = document.getElementById('projectsList');
+  var loadingEl = document.getElementById('projectsLoading');
+  var homeCard = document.getElementById('homeProjectsCard');
+
+  window.setAgentStatus && window.setAgentStatus('github', true);
+  window.setAgentStatus && window.setAgentStatus('research', true);
 
   if (!user) {
     loadingEl.textContent = 'Enter a GitHub username in Settings to load repositories.';
     listEl.innerHTML = '';
+    if (homeCard) homeCard.innerHTML = '<div class="projects-empty-state"><div class="empty-text">No GitHub username set</div><div class="empty-sub">Add one in More \u2192 Settings</div></div>';
+    window.setAgentStatus && window.setAgentStatus('github', false);
+    window.setAgentStatus && window.setAgentStatus('research', false);
     return;
   }
   if (!Config.apiBase) {
     loadingEl.textContent = 'Set a backend URL in Settings to load repositories.';
     listEl.innerHTML = '';
+    window.setAgentStatus && window.setAgentStatus('github', false);
+    window.setAgentStatus && window.setAgentStatus('research', false);
     return;
   }
 
@@ -1378,43 +1349,36 @@ async function loadProjects() {
   listEl.innerHTML = '';
 
   try {
-    const res = await fetch(api(`/api/github/${encodeURIComponent(user)}`));
-    const repos = await res.json();
-    if (!res.ok) throw new Error(repos.error || `HTTP ${res.status}`);
+    var res = await fetch(api('/api/github/' + encodeURIComponent(user)));
+    var repos = await res.json();
+    if (!res.ok) throw new Error(repos.error || 'HTTP ' + res.status);
     loadingEl.style.display = 'none';
 
     if (!repos.length) {
       listEl.innerHTML = '<div class="project-loading">No repositories found for this user.</div>';
+      if (homeCard) homeCard.innerHTML = '<div class="projects-empty-state"><div class="empty-text">No repositories found</div><div class="empty-sub">Check your username in Settings</div></div>';
     } else {
-      listEl.innerHTML = repos.map(r => `
-        <div class="repo-card">
-          <div class="repo-header">
-            <div class="repo-name">${escapeHtml(r.name)}</div>
-            ${r.private ? '<span class="repo-private">Private</span>' : ''}
-          </div>
-          <div class="repo-desc">${escapeHtml(r.description || 'No description')}</div>
-          <div class="repo-stats">
-            ${r.language ? `<div class="repo-lang"><span class="lang-dot" style="background:${langColor(r.language)}"></span>${escapeHtml(r.language)}</div>` : ''}
-            <div class="repo-stat">★ ${r.stars}</div>
-            <div class="repo-stat">⑂ ${r.forks}</div>
-            <div class="repo-stat">Updated ${new Date(r.updated_at).toLocaleDateString()}</div>
-          </div>
-        </div>`).join('');
-    }
+      listEl.innerHTML = repos.map(function(r) {
+        return '<div class="repo-card"><div class="repo-header"><div class="repo-name">' + escapeHtml(r.name) + '</div>' + (r.private ? '<span class="repo-private">Private</span>' : '') + '</div><div class="repo-desc">' + escapeHtml(r.description || 'No description') + '</div><div class="repo-stats">' + (r.language ? '<div class="repo-lang"><span class="lang-dot" style="background:' + langColor(r.language) + '"></span>' + escapeHtml(r.language) + '</div>' : '') + '<div class="repo-stat">\u2605 ' + r.stars + '</div><div class="repo-stat">\u2142 ' + r.forks + '</div><div class="repo-stat">Updated ' + new Date(r.updated_at).toLocaleDateString() + '</div></div></div>';
+      }).join('');
 
-    panelEl.innerHTML = repos.slice(0, 2).map(r => `
-      <div class="project-item">
-        <div class="project-icon">◆</div>
-        <div class="project-info">
-          <div class="project-name">${escapeHtml(r.name)}</div>
-          <div class="project-meta">${r.private ? 'Private' : 'Public'} · Updated ${new Date(r.updated_at).toLocaleDateString()}</div>
-        </div>
-      </div>`).join('') || '<div class="project-item project-empty"><div class="project-info"><div class="project-name">No repositories found</div></div></div>';
+      if (homeCard) {
+        homeCard.innerHTML = repos.slice(0, 3).map(function(r) {
+          var daysSinceUpdate = Math.max(1, Math.min(30, Math.floor((Date.now() - new Date(r.updated_at).getTime()) / 86400000)));
+          var pct = Math.max(5, Math.round(100 - (daysSinceUpdate / 30) * 100));
+          var stars = r.stars || 0;
+          return '<div class="project-card-row"><div class="project-card-icon">\u25C6</div><div class="project-card-info"><div class="project-card-name">' + escapeHtml(r.name) + '</div><div class="project-card-meta">' + (r.language || 'Code') + ' \u00b7 \u2605 ' + stars + ' \u00b7 ' + daysSinceUpdate + 'd ago</div><div class="project-card-bar"><div class="project-card-fill" style="width:' + pct + '%"></div></div></div><span class="project-card-pct">' + pct + '%</span></div>';
+        }).join('') || '<div class="projects-empty-state"><div class="empty-text">No repositories found</div></div>';
+      }
+    }
   } catch (err) {
     loadingEl.style.display = 'block';
-    loadingEl.textContent = `Failed to load: ${err.message}`;
+    loadingEl.textContent = 'Failed to load: ' + err.message;
+    if (homeCard) homeCard.innerHTML = '<div class="projects-empty-state"><div class="empty-text">Load failed</div><div class="empty-sub">' + escapeHtml(err.message) + '</div></div>';
   }
-}
+  window.setAgentStatus && window.setAgentStatus('github', false);
+  window.setAgentStatus && window.setAgentStatus('research', false);
+};
 
 function langColor(lang) {
   const colors = { JavaScript: '#f1e05a', TypeScript: '#3178c6', Python: '#3572A5', HTML: '#e34c26', CSS: '#563d7c', Dart: '#00B4AB', Java: '#b07219', 'C++': '#f34b7d' };
@@ -1556,7 +1520,7 @@ if (typeof mermaid !== 'undefined') {
 
 
 /* Real-time agent status tracking */
-function setAgentStatus(name, isActive) {
+window.setAgentStatus = function setAgentStatus(name, isActive) {
   var idMap = {research:'agentStatusResearch',github:'agentStatusGithub',code:'agentStatusCode',memory:'agentStatusMemory',vision:'agentStatusVision',auto:'agentStatusAuto'};
   var el = document.getElementById(idMap[name]);
   if (!el) return;
@@ -1575,8 +1539,6 @@ function init() {
   setInterval(refreshBackendStatus, 30000);
   if (Config.githubUser) loadProjects();
   else {
-    document.getElementById('projectsPanel').innerHTML =
-      '<div class="project-item project-empty"><div class="project-info"><div class="project-name">No GitHub username set</div><div class="project-meta">Add one in More → Settings</div></div></div>';
     var hpc = document.getElementById('homeProjectsCard');
     if (hpc) hpc.innerHTML = '<div class="projects-empty-state"><div class="empty-text">No GitHub username set</div><div class="empty-sub">Add one in More → Settings</div></div>';
   }

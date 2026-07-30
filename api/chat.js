@@ -10,7 +10,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { message, history } = req.body || {};
+    const { message, history, stream } = req.body || {};
     if (!message || typeof message !== 'string') {
       return res.status(400).json({ error: 'message (string) is required' });
     }
@@ -32,6 +32,36 @@ CRITICAL IDENTITY RULES:
       ...(Array.isArray(history) ? history.slice(-10) : []),
       { role: 'user', content: message }
     ];
+
+    // If client explicitly requested streaming, simulate SSE from the non-streaming result
+    if (stream) {
+      res.setHeader('Content-Type', 'text/event-stream');
+      res.setHeader('Cache-Control', 'no-cache');
+      res.setHeader('Connection', 'keep-alive');
+      res.flushHeaders?.();
+      try {
+        const result = await chatWithFallback(messages);
+        // Simulate streaming by sending the reply in word chunks
+        const words = result.reply.split(/(\s+)/);
+        for (let i = 0; i < words.length; i++) {
+          const chunk = { id: 'chatcmpl-noctryx', object: 'chat.completion.chunk', choices: [{ index: 0, delta: { content: words[i] }, finish_reason: null }] };
+          res.write('data: ' + JSON.stringify(chunk) + '\n\n');
+          // Small delay for first few chunks to feel like streaming
+          if (i < 3) await new Promise(r => setTimeout(r, 10));
+        }
+        // Send finish
+        const finish = { id: 'chatcmpl-noctryx', object: 'chat.completion.chunk', choices: [{ index: 0, delta: {}, finish_reason: 'stop' }] };
+        res.write('data: ' + JSON.stringify(finish) + '\n\n');
+        res.write('data: [DONE]\n\n');
+        res.end();
+      } catch (err) {
+        const errChunk = { id: 'err', object: 'error', message: err.message };
+        res.write('data: ' + JSON.stringify(errChunk) + '\n\n');
+        res.write('data: [DONE]\n\n');
+        res.end();
+      }
+      return;
+    }
 
     const result = await chatWithFallback(messages);
     res.status(200).json(result);
