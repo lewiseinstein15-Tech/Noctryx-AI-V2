@@ -181,7 +181,7 @@ a{color:inherit;text-decoration:none}
 .typing-indicator span:nth-child(1){animation-delay:0s}
 .typing-indicator span:nth-child(2){animation-delay:.2s}
 .typing-indicator span:nth-child(3){animation-delay:.4s}
-.chat-bubble h1,.chat-bubble h2,.chat-bubble h3,.chat-bubble h4,.chat-bubble h5,.chat-bubble h6{color:var(--text);margin:16px 0 8px;font-weight:700;line-height:1.4}
+.chat-bubble h1,.chat-bubble h2,.chat-bubble h3,.chat-bubble h4,.chat-bubble h5,.chat-bubble h6{color:var(--green);margin:16px 0 8px;font-weight:700;line-height:1.4}
 .chat-bubble h1:first-child,.chat-bubble h2:first-child,.chat-bubble h3:first-child{margin-top:0}
 .chat-bubble h1{font-size:17px}
 .chat-bubble h2{font-size:16px}
@@ -190,13 +190,13 @@ a{color:inherit;text-decoration:none}
 .chat-bubble p{margin:0 0 12px}.chat-bubble p:last-child{margin-bottom:0}
 .chat-bubble ul,.chat-bubble ol{margin:4px 0 12px 0;padding-left:20px}
 .chat-bubble li{margin-bottom:4px;line-height:1.75}
-.chat-bubble li::marker{color:var(--text-dim)}
+.chat-bubble li::marker{color:var(--green-dim)}
 .chat-bubble ol ol,.chat-bubble ul ul,.chat-bubble ol ul,.chat-bubble ul ol{margin:2px 0}
-.chat-bubble blockquote{border-left:3px solid var(--border);padding:8px 14px;margin:10px 0;color:var(--text-dim);background:var(--bg-panel-2);border-radius:0 8px 8px 0}
+.chat-bubble blockquote{border-left:3px solid var(--green-dim);padding:8px 14px;margin:10px 0;color:var(--text-dim);background:rgba(0,255,136,0.03);border-radius:0 8px 8px 0}
 .chat-bubble blockquote p{margin:0}
 .chat-bubble a{color:var(--green);text-decoration:none}
 .chat-bubble a:hover{text-decoration:underline}
-.chat-bubble strong{font-weight:700}
+.chat-bubble strong{color:var(--green);font-weight:700}
 .chat-bubble em{font-style:italic}
 .chat-bubble del{opacity:.5}
 .chat-bubble hr{border:none;border-top:1px solid var(--border);margin:16px 0}
@@ -204,15 +204,15 @@ a{color:inherit;text-decoration:none}
 .chat-bubble table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13px}
 .chat-bubble thead{background:var(--bg-panel-2)}
 .chat-bubble th,.chat-bubble td{border:1px solid var(--border);padding:8px 12px;text-align:left}
-.chat-bubble th{font-weight:600;font-size:12px}
+.chat-bubble th{font-weight:700;color:var(--green);font-size:12px}
 .chat-bubble tr:hover td{background:var(--bg-panel-2)}
-.chat-bubble code:not(pre code){font-family:'JetBrains Mono',monospace;background:var(--bg-panel-2);color:var(--text);padding:1.5px 5px;border-radius:4px;font-size:12.5px}
+.chat-bubble code:not(pre code){font-family:'JetBrains Mono',monospace;background:rgba(0,255,136,0.08);color:var(--green);padding:1.5px 5px;border-radius:4px;font-size:12.5px;border:1px solid rgba(0,255,136,0.1)}
 .chat-bubble .nx-code{position:relative;margin:12px 0;border-radius:10px;overflow:hidden;border:1px solid var(--border);background:#0d1117}
 .chat-bubble .nx-code-head{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:rgba(255,255,255,0.04);border-bottom:1px solid var(--border)}
 .chat-bubble .nx-code-lang{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px}
 .chat-bubble .nx-code-lang-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 .chat-bubble .nx-code-copy{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:6px;font-size:11px;color:var(--text-dimmer);background:transparent;border:none;cursor:pointer;transition:all .15s;font-family:inherit}
-.chat-bubble .nx-code-copy:hover{color:var(--text);background:rgba(255,255,255,0.06)}
+.chat-bubble .nx-code-copy:hover{color:var(--green);background:rgba(0,255,136,0.06)}
 .chat-bubble .nx-code-copy.done{color:var(--green)}
 .chat-bubble .nx-code-copy svg{width:13px;height:13px}
 .chat-bubble pre{margin:0!important;background:transparent!important;border:none!important;padding:14px 16px!important;overflow-x:auto;font-size:12.5px;line-height:1.7;border-radius:0!important;-webkit-overflow-scrolling:touch}
@@ -229,13 +229,12 @@ a{color:inherit;text-decoration:none}
 .chat-bubble .nx-mermaid-err{color:var(--danger);font-size:12px;padding:8px}
 .chat-bubble .katex-display{margin:12px 0;overflow-x:auto;overflow-y:hidden;padding:6px 0}
 .chat-bubble .katex{font-size:1.05em}
-.nx-cursor::after{content:'';display:inline-block;width:2px;height:18px;background:var(--text-dim);margin-left:1px;vertical-align:text-bottom;animation:nxCursorPulse 1s ease-in-out infinite}
+.nx-cursor::after{content:'';display:inline-block;width:2px;height:18px;background:var(--green);margin-left:1px;vertical-align:text-bottom;animation:nxCursorPulse 1s ease-in-out infinite}
 @keyframes nxCursorPulse{0%,100%{opacity:1}50%{opacity:0}}
 @keyframes nxFadeIn{from{opacity:0}to{opacity:1}}
 @keyframes nxMsgSlideIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 @keyframes nxBounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-4px)}}
 @keyframes nxPulse{0%,100%{opacity:1}50%{opacity:.4}}
-@keyframes nxToastIn{from{opacity:0;transform:translate(-50%,12px)}to{opacity:1;transform:translate(-50%,0)}}
 @keyframes nxToastIn{from{opacity:0;transform:translate(-50%,12px)}to{opacity:1;transform:translate(-50%,0)}}
 .voice-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:30px 20px}
 .voice-status{font-size:13px;color:var(--text-dim);text-align:center}
