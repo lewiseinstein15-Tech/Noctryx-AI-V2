@@ -135,8 +135,9 @@ a{color:inherit;text-decoration:none}
 .chat-message.user .chat-bubble{background:rgba(0,255,136,0.07);border-color:rgba(0,255,136,0.18);border-radius:16px 16px 4px 16px}
 .chat-bubble.error{border-color:rgba(255,107,107,0.3);color:var(--danger)}
 .chat-message-wrap{display:flex;flex-direction:column;gap:0}
-.chat-actions-bar{display:flex;gap:4px;padding:4px 0 0 38px;opacity:0;transition:opacity .2s;pointer-events:none}
-.chat-message:hover .chat-actions-bar,.chat-message-wrap:hover .chat-actions-bar{opacity:1;pointer-events:auto}
+.chat-actions-bar{display:flex;gap:4px;padding:6px 0 2px 38px;opacity:.6;transition:opacity .2s}
+.chat-message:hover .chat-actions-bar,.chat-message-wrap:hover .chat-actions-bar{opacity:1}
+@media (hover:none){.chat-actions-bar{opacity:.7;pointer-events:auto}}
 .chat-act-btn{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:8px;font-size:10px;color:var(--text-dimmer);background:var(--bg-panel-2);border:1px solid var(--border);transition:all .15s}
 .chat-act-btn:hover{color:var(--green);border-color:var(--green-dim);background:rgba(0,255,136,0.06)}
 .chat-act-btn:active{transform:scale(.96)}
@@ -221,20 +222,7 @@ a{color:inherit;text-decoration:none}
 .streaming-cursor::after{content:'▊';animation:blink 1s step-end infinite;color:var(--green);margin-left:1px;font-size:13px}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
 @keyframes chatMsgIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.code-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;font-size:10px;color:var(--text-dimmer)}
-.code-copy{background:none;border:none;color:var(--text-dim);font-size:10px;cursor:pointer}
-.chat-actions{display:flex;gap:12px;padding:8px 16px}
-.chat-action{color:var(--text-dim);background:none;border:none}
-.chat-input-wrap{padding:10px 16px calc(10px + env(safe-area-inset-bottom));border-top:1px solid var(--border);background:var(--bg)}
-.chat-form{display:flex;align-items:center;gap:8px;background:var(--bg-panel);border:1px solid var(--border);border-radius:14px;padding:8px 10px}
-.chat-form input{flex:1;background:none;border:none;outline:none;color:var(--text);font-family:inherit;font-size:13px}
-.chat-form input::placeholder{color:var(--text-dimmer)}
-.typing-indicator{display:none;align-items:center;gap:4px;padding:0 0 8px 4px}
-.typing-indicator.active{display:flex}
-.typing-indicator span{width:6px;height:6px;background:var(--green-dim);border-radius:50%;animation:typingBounce 1.4s ease-in-out infinite}
-.typing-indicator span:nth-child(1){animation-delay:0s}
-.typing-indicator span:nth-child(2){animation-delay:.2s}
-.typing-indicator span:nth-child(3){animation-delay:.4s}
+/* (old duplicate chat CSS removed) */
 .voice-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:30px 20px}
 .voice-status{font-size:13px;color:var(--text-dim);text-align:center}
 .voice-transcript{min-height:40px;max-width:100%;text-align:center;font-size:13px;color:var(--text);padding:0 20px;line-height:1.5}
@@ -909,7 +897,7 @@ function renderMarkdown(text) {
 }
 
 /* ── Copy Code Block ── */
-function copyCodeBlock(btn, codeId) {
+window.copyCodeBlock = function(btn, codeId) {
   var code = _codeStore.get(codeId);
   if (!code) return;
   navigator.clipboard.writeText(code).then(function() {
@@ -1044,8 +1032,8 @@ function finishStreamMessage() {
   return reply;
 }
 
-/* ── Action Button Handlers ── */
-function copyResponse(msgId) {
+/* ── Action Button Handlers (exposed to global scope for onclick) ── */
+window.copyResponse = function(msgId) {
   var el = document.getElementById(msgId);
   if (!el) return;
   var bubble = el.querySelector('.chat-bubble');
@@ -1056,7 +1044,7 @@ function copyResponse(msgId) {
   }).catch(function() { toast('Failed to copy', true); });
 }
 
-function copyAllCode(msgId) {
+window.copyAllCode = function(msgId) {
   var el = document.getElementById(msgId);
   if (!el) return;
   var codes = el.querySelectorAll('pre code');
@@ -1067,7 +1055,7 @@ function copyAllCode(msgId) {
   }).catch(function() { toast('Failed to copy', true); });
 }
 
-function regenerateResponse() {
+window.regenerateResponse = function() {
   var lastUser = ChatState.history.slice().reverse().find(function(m) { return m.role === 'user'; });
   if (lastUser) {
     var container = document.getElementById('chatContainer');
