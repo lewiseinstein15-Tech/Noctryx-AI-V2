@@ -330,6 +330,8 @@ a{color:inherit;text-decoration:none}
 @media (max-width:380px){.dashboard-grid{grid-template-columns:1fr}.more-grid{grid-template-columns:repeat(3,1fr)}.overview-grid{grid-template-columns:1fr 1fr;gap:8px}.overview-panel{padding:10px}}
 @media (display-mode:standalone){.app{padding-bottom:100px}.bottom-nav{padding-bottom:calc(14px + env(safe-area-inset-bottom))}}
 @media (prefers-reduced-motion:reduce){.orb,.orb-ring,.status-wave span,.listening-wave span{animation:none!important}}
+
+/* Redesigned Home: System Status Card */.home-status-card{background:var(--bg-panel);border:1px solid var(--border);border-radius:20px;padding:20px;margin:0 20px}.status-metrics{display:flex;flex-direction:column;gap:0}.status-metric{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(23,35,31,0.8)}.status-metric:last-of-type{border-bottom:none}.status-metric-label{font-size:11px;letter-spacing:1.5px;color:var(--text-dimmer);text-transform:uppercase;font-weight:600}.status-metric-value{font-size:13px;color:var(--text-dim);font-weight:500}.status-metric-value.live{color:var(--green)}.status-center{display:flex;flex-direction:column;align-items:center;padding:20px 0 8px;gap:6px}.status-ring-outer{width:80px;height:80px;border-radius:50%;border:2px solid rgba(23,35,31,0.8);display:flex;align-items:center;justify-content:center;position:relative}.status-ring-pulse{position:absolute;inset:-6px;border-radius:50%;border:1px solid rgba(0,255,136,0.15);animation:statusPulse 2s ease-in-out infinite}.status-ring-icon{color:var(--text-dimmer)}.status-ring-icon.online{color:var(--green)}.status-backend-label{font-size:9px;letter-spacing:1.5px;color:var(--text-dimmer);text-transform:uppercase;margin-top:4px}.status-backend-value{font-size:12px;font-weight:700;color:var(--green);letter-spacing:1px;text-transform:uppercase}.status-backend-value.offline{color:var(--danger)}@keyframes statusPulse{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:.8;transform:scale(1.05)}}/* Redesigned Today's Overview */.home-overview{margin:16px 20px 0}.overview-card{background:var(--bg-panel);border:1px solid var(--border);border-radius:20px;padding:16px}.overview-2x2{display:grid;grid-template-columns:1fr 1fr;gap:16px 24px}.overview-stat{display:flex;align-items:center;gap:12px}.overview-stat-icon{width:40px;height:40px;border-radius:10px;background:var(--bg-panel-2);display:flex;align-items:center;justify-content:center;color:var(--green);flex-shrink:0}.overview-stat-num{font-size:18px;font-weight:700;color:var(--text);line-height:1}.overview-stat-label{font-size:11px;color:var(--text-dim);margin-top:2px}/* Redesigned Active Agents */.home-agents{margin:16px 20px 0}.agents-card{background:var(--bg-panel);border:1px solid var(--border);border-radius:20px;padding:16px}.agents-3x2{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.agent-card{display:flex;flex-direction:column;align-items:center;gap:8px;padding:12px 4px;border-radius:14px;cursor:pointer;transition:background .15s}.agent-card:active{background:var(--bg-panel-2)}.agent-card-icon{width:48px;height:48px;border-radius:50%;background:var(--bg-panel-2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--green)}.agent-card-name{font-size:10px;color:var(--text-dim);text-align:center;letter-spacing:.3px}.agent-card-status{display:flex;align-items:center;gap:4px;font-size:8px;letter-spacing:1px;text-transform:uppercase;font-weight:600}.agent-card-status .dot{width:5px;height:5px;border-radius:50%}.agent-card-status.active .dot{background:var(--green);box-shadow:0 0 6px var(--green)}.agent-card-status.active{color:var(--green)}.agent-card-status.idle .dot{background:var(--text-dimmer)}.agent-card-status.idle{color:var(--text-dimmer)}/* Redesigned Recent Projects */.home-projects{margin:16px 20px 0;padding-bottom:16px}.projects-card{background:var(--bg-panel);border:1px solid var(--border);border-radius:20px;padding:16px;min-height:80px}.project-card-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}.project-card-row:last-child{border-bottom:none}.project-card-icon{width:36px;height:36px;border-radius:10px;background:var(--bg-panel-2);display:flex;align-items:center;justify-content:center;color:var(--green);flex-shrink:0}.project-card-info{flex:1;min-width:0}.project-card-name{font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.project-card-meta{font-size:9px;color:var(--text-dimmer);margin-top:2px}.project-card-bar{height:3px;border-radius:2px;background:rgba(255,255,255,0.05);margin-top:6px;overflow:hidden}.project-card-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--green-dim),var(--green))}.project-card-pct{font-size:10px;color:var(--green);font-weight:700;flex-shrink:0;margin-left:8px}.projects-empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 0;gap:4px}.projects-empty-state .empty-text{font-size:12px;color:var(--text-dim)}.projects-empty-state .empty-sub{font-size:10px;color:var(--text-dimmer)}
 </style>
 
 <!-- Noctryx Chat Redesign: External Libraries -->
@@ -383,7 +385,7 @@ a{color:inherit;text-decoration:none}
         <div class="greeting">
           <div class="line1" id="greetingLine">Good evening,</div>
           <div class="name">Master 👑</div>
-          <div class="sub">I am Noctryx. How can I assist you today?</div>
+          <div class="sub">I am Noctryx, your AI assistant. How can I help you today?</div>
           <div class="status-line">
             <span class="status-dot offline" id="aiStatusDot"></span>
             <span id="aiStatusText">BACKEND: CHECKING...</span>
@@ -392,14 +394,12 @@ a{color:inherit;text-decoration:none}
         </div>
       </div>
     </div>
-
     <form class="search-bar" id="searchForm">
       <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       <input type="text" id="askInput" placeholder="Ask Noctryx anything..." autocomplete="off">
       <button type="button" class="input-action" id="homeVoiceBtn" aria-label="Voice"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4"/></svg></button>
       <button type="submit" class="input-action send" aria-label="Send"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg></button>
     </form>
-
     <div class="quick-actions">
       <button class="qa-item" data-action="chat"><div class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-9 8.4A8.5 8.5 0 1 1 21 11.5z"/></svg></div><div class="qa-label">New Chat</div></button>
       <button class="qa-item" data-action="code"><div class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div><div class="qa-label">Write Code</div></button>
@@ -407,60 +407,57 @@ a{color:inherit;text-decoration:none}
       <button class="qa-item" data-action="voice"><div class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4"/></svg></div><div class="qa-label">Voice</div></button>
       <button class="qa-item" data-action="projects"><div class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div><div class="qa-label">Projects</div></button>
     </div>
-
-    <div class="dashboard-grid">
-      <div class="section">
-        <div class="section-title">⚡ System Status</div>
-        <div class="panel status-panel">
-          <div class="status-bars">
-            <div class="stat-row"><div class="stat-label"><span>STORAGE</span><span id="storageVal">--</span></div><div class="stat-track"><div class="stat-fill" id="storageFill" style="width:0%"></div></div></div>
-            <div class="stat-row"><div class="stat-label"><span>NETWORK</span><span id="networkVal">--</span></div><div class="stat-track"><div class="stat-fill" id="networkFill" style="width:0%"></div></div></div>
-            <div class="stat-row"><div class="stat-label"><span>SESSION</span><span id="sessionVal">00:00</span></div><div class="stat-track"><div class="stat-fill" id="sessionFill" style="width:0%"></div></div></div>
-            <div class="stat-row"><div class="stat-label"><span>LATENCY</span><span id="latencyVal">--</span></div><div class="stat-track"><div class="stat-fill" id="latencyFill" style="width:0%"></div></div></div>
-          </div>
-          <div class="core-gauge">
-            <svg width="90" height="90" viewBox="0 0 90 90">
-              <circle cx="45" cy="45" r="38" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="6"/>
-              <circle id="coreRing" cx="45" cy="45" r="38" fill="none" stroke="#00ff88" stroke-width="6" stroke-linecap="round" stroke-dasharray="238.7" stroke-dashoffset="238.7"/>
-            </svg>
-            <div class="pct" id="corePct">--</div>
-            <div class="cap">BACKEND</div>
-            <div class="status-text" id="coreStatusText">CHECKING</div>
-          </div>
-        </div>
+    <!-- System Status -->
+    <div class="home-status-card">
+      <div class="status-metrics">
+        <div class="status-metric"><span class="status-metric-label">Storage</span><span class="status-metric-value" id="homeStorageVal">--</span></div>
+        <div class="status-metric"><span class="status-metric-label">Network</span><span class="status-metric-value" id="homeNetworkVal">--</span></div>
+        <div class="status-metric"><span class="status-metric-label">Session</span><span class="status-metric-value live" id="homeSessionVal">00:00</span></div>
+        <div class="status-metric"><span class="status-metric-label">Latency</span><span class="status-metric-value" id="homeLatencyVal">--</span></div>
       </div>
-
-      <div class="section">
-        <div class="section-title">📋 Today's Overview</div>
-        <div class="panel overview-panel">
-          <div class="overview-grid">
-            <div class="overview-item"><div class="overview-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div><div class="overview-num" id="taskCount">0</div><div class="overview-label">Tasks</div></div></div>
-            <div class="overview-item"><div class="overview-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div><div><div class="overview-num" id="completedCount">0</div><div class="overview-label">Completed</div></div></div>
-            <div class="overview-item"><div class="overview-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><div><div class="overview-num" id="messageCount">0</div><div class="overview-label">Messages</div></div></div>
-            <div class="overview-item"><div class="overview-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><div><div class="overview-num" id="researchCount">0</div><div class="overview-label">Vision Scans</div></div></div>
-          </div>
+      <div class="status-center">
+        <div class="status-ring-outer">
+          <div class="status-ring-pulse"></div>
+          <div class="status-ring-icon" id="homeStatusIcon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="12" x2="4.01" y2="12"/><line x1="8" y1="12" x2="8.01" y2="12"/><line x1="12" y1="12" x2="12.01" y2="12"/><line x1="16" y1="12" x2="16.01" y2="12"/><line x1="20" y1="12" x2="20.01" y2="12"/></svg></div>
+        </div>
+        <div class="status-backend-label">BACKEND</div>
+        <div class="status-backend-value" id="homeBackendStatus">CHECKING</div>
+      </div>
+    </div>
+    <!-- Today's Overview -->
+    <div class="home-overview">
+      <div class="section-title">📋 Today's Overview</div>
+      <div class="overview-card">
+        <div class="overview-2x2">
+          <div class="overview-stat"><div class="overview-stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div><div class="overview-stat-num" id="taskCount">0</div><div class="overview-stat-label">Tasks</div></div></div>
+          <div class="overview-stat"><div class="overview-stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div><div><div class="overview-stat-num" id="completedCount">0</div><div class="overview-stat-label">Completed</div></div></div>
+          <div class="overview-stat"><div class="overview-stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><div><div class="overview-stat-num" id="messageCount">0</div><div class="overview-stat-label">Messages</div></div></div>
+          <div class="overview-stat"><div class="overview-stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div><div><div class="overview-stat-num" id="researchCount">0</div><div class="overview-stat-label">Vision Scans</div></div></div>
         </div>
       </div>
     </div>
-
-    <div class="section">
+    <!-- Active Agents -->
+    <div class="home-agents">
       <div class="section-title">Active Agents <span class="view-all" data-nav="more">View All ></span></div>
-      <div class="panel agents-panel">
-        <div class="agents-grid">
-          <button class="agent-item" data-agent-nav="projects"><div class="agent-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><div class="agent-label">Research</div></button>
-          <button class="agent-item" data-agent-nav="projects"><div class="agent-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></div><div class="agent-label">GitHub</div></button>
-          <button class="agent-item" data-agent-nav="chat"><div class="agent-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div><div class="agent-label">Code</div></button>
-          <button class="agent-item" data-agent-nav="memory"><div class="agent-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.5H7a2.5 2.5 0 0 1 0-5H4.5a2.5 2.5 0 0 1 0-5H5a2.5 2.5 0 0 1 0-5h.04A2.5 2.5 0 0 1 9.5 2z"/></svg></div><div class="agent-label">Memory</div></button>
-          <button class="agent-item" data-agent-nav="vision"><div class="agent-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div><div class="agent-label">Vision</div></button>
-          <button class="agent-item" data-agent-nav="tasks"><div class="agent-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div><div class="agent-label">Automation</div></button>
+      <div class="agents-card">
+        <div class="agents-3x2">
+          <div class="agent-card" data-agent-nav="projects"><div class="agent-card-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><div class="agent-card-name">Research</div><div class="agent-card-status idle" id="agentStatusResearch"><span class="dot"></span>Idle</div></div>
+          <div class="agent-card" data-agent-nav="projects"><div class="agent-card-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></div><div class="agent-card-name">GitHub</div><div class="agent-card-status idle" id="agentStatusGithub"><span class="dot"></span>Idle</div></div>
+          <div class="agent-card" data-agent-nav="chat"><div class="agent-card-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div><div class="agent-card-name">Code</div><div class="agent-card-status idle" id="agentStatusCode"><span class="dot"></span>Idle</div></div>
+          <div class="agent-card" data-agent-nav="memory"><div class="agent-card-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.5H7a2.5 2.5 0 0 1 0-5H4.5a2.5 2.5 0 0 1 0-5H5a2.5 2.5 0 0 1 0-5h.04A2.5 2.5 0 0 1 9.5 2z"/></svg></div><div class="agent-card-name">Memory</div><div class="agent-card-status idle" id="agentStatusMemory"><span class="dot"></span>Idle</div></div>
+          <div class="agent-card" data-agent-nav="vision"><div class="agent-card-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div><div class="agent-card-name">Vision</div><div class="agent-card-status idle" id="agentStatusVision"><span class="dot"></span>Idle</div></div>
+          <div class="agent-card" data-agent-nav="tasks"><div class="agent-card-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div><div class="agent-card-name">Automation</div><div class="agent-card-status idle" id="agentStatusAuto"><span class="dot"></span>Idle</div></div>
         </div>
       </div>
     </div>
-
-    <div class="section">
+    <!-- Recent Projects -->
+    <div class="home-projects">
       <div class="section-title">Recent Projects <span class="view-all" data-nav="projects">View All ></span></div>
-      <div class="panel" id="projectsPanel">
-        <div class="project-item project-empty"><div class="project-info"><div class="project-name">Loading repositories...</div><div class="project-meta">Set a GitHub username in Settings</div></div></div>
+      <div class="projects-card" id="homeProjectsCard">
+        <div class="projects-empty-state" id="homeProjectsEmpty">
+          <div class="empty-text">Loading repositories...</div>
+          <div class="empty-sub">Set a GitHub username in Settings</div>
+        </div>
       </div>
     </div>
   </div>
@@ -954,8 +951,6 @@ window._cr = function(id) {
   var b = el.querySelector('.chat-bubble'); if (!b) return;
   navigator.clipboard.writeText(b.innerText || b.textContent).then(function() { toast('Response copied'); }).catch(function() { toast('Copy failed', true); });
 };
-  navigator.clipboard.writeText(all).then(function() { toast('Code copied'); }).catch(function() { toast('Copy failed', true); });
-};
 window._rg = function(id) {
   var el = document.getElementById(id); if (!el) return;
   var b = el.querySelector('.chat-bubble'); if (!b) return;
@@ -1019,6 +1014,7 @@ async function sendChatMessage(message) {
   document.getElementById('typingIndicator').classList.add('active');
   ChatState.isStreaming = true;
   document.getElementById('nxContinueBtn').classList.remove('show');
+  setAgentStatus('code', true);
   _sAbort = new AbortController();
   try {
     var res = await fetch(api('/api/chat'), {
@@ -1454,47 +1450,52 @@ const sessionStart = Date.now();
 
 function updateSessionTimer() {
   const secs = Math.floor((Date.now() - sessionStart) / 1000);
-  const m = String(Math.floor(secs / 60)).padStart(2, '0');
+  const h = String(Math.floor(secs / 3600)).padStart(2, '0');
+  const m = String(Math.floor((secs % 3600) / 60)).padStart(2, '0');
   const s = String(secs % 60).padStart(2, '0');
-  document.getElementById('sessionVal').textContent = `${m}:${s}`;
-  document.getElementById('sessionFill').style.width = `${Math.min(100, secs / 6)}%`;
+  var el = document.getElementById('homeSessionVal');
+  if (el) el.textContent = h + ':' + m + ':' + s;
 }
 
 async function updateStorageStat() {
   try {
     const est = await navigator.storage.estimate();
     const pct = est.quota ? Math.round((est.usage / est.quota) * 100) : 0;
-    document.getElementById('storageVal').textContent = `${pct}%`;
-    document.getElementById('storageFill').style.width = `${pct}%`;
+    const usedMb = (est.usage / 1e6).toFixed(1);
+    const totalMb = (est.quota / 1e6).toFixed(0);
+    var el = document.getElementById('homeStorageVal');
+    if (el) el.textContent = pct + '% (' + usedMb + 'MB / ' + totalMb + 'MB)';
   } catch {
-    document.getElementById('storageVal').textContent = 'N/A';
+    var el = document.getElementById('homeStorageVal');
+    if (el) el.textContent = 'N/A';
   }
 }
 
 function updateNetworkStat() {
   const conn = navigator.connection;
-  if (!conn) { document.getElementById('networkVal').textContent = 'N/A'; return; }
-  document.getElementById('networkVal').textContent = (conn.effectiveType || '?').toUpperCase();
-  const speedPct = Math.min(100, ((conn.downlink || 1) / 10) * 100);
-  document.getElementById('networkFill').style.width = `${speedPct}%`;
+  var el = document.getElementById('homeNetworkVal');
+  if (!conn) { if (el) el.textContent = 'N/A'; return; }
+  var speed = conn.downlink ? conn.downlink.toFixed(1) : '?';
+  var type = (conn.effectiveType || '?').toUpperCase();
+  if (el) el.textContent = type + ' · ' + speed + ' Mbps';
 }
 
 async function refreshBackendStatus() {
   const dot = document.getElementById('aiStatusDot');
   const text = document.getElementById('aiStatusText');
-  const corePct = document.getElementById('corePct');
-  const coreStatus = document.getElementById('coreStatusText');
-  const ring = document.getElementById('coreRing');
+  const homeIcon = document.getElementById('homeStatusIcon');
+  const homeStatus = document.getElementById('homeBackendStatus');
+  const homeLatency = document.getElementById('homeLatencyVal');
   const sysBackend = document.getElementById('sysBackendStatus');
   const sysProviders = document.getElementById('sysProviders');
 
   if (!Config.apiBase) {
     dot.classList.add('offline'); text.textContent = 'BACKEND: NOT CONFIGURED';
-    corePct.textContent = '--'; coreStatus.textContent = 'NOT SET';
-    ring.style.strokeDashoffset = 238.7;
+    if (homeIcon) homeIcon.classList.remove('online');
+    if (homeStatus) { homeStatus.textContent = 'NOT SET'; homeStatus.classList.add('offline'); }
+    if (homeLatency) homeLatency.textContent = '--';
     if (sysBackend) sysBackend.textContent = 'Not configured';
     if (sysProviders) sysProviders.textContent = '--';
-    document.getElementById('latencyVal').textContent = '--';
     return;
   }
 
@@ -1509,22 +1510,18 @@ async function refreshBackendStatus() {
     if (!res.ok || !data.ok) throw new Error('unhealthy');
 
     dot.classList.remove('offline'); text.textContent = 'BACKEND: CONNECTED';
-    corePct.textContent = '100%'; coreStatus.textContent = 'CONNECTED';
-    ring.style.strokeDashoffset = 0;
-    document.getElementById('latencyVal').textContent = rtt + 'ms';
-    const latencyPct = Math.max(5, 100 - rtt / 5);
-    document.getElementById('latencyFill').style.width = latencyPct + '%';
-
+    if (homeIcon) homeIcon.classList.add('online');
+    if (homeStatus) { homeStatus.textContent = 'ONLINE'; homeStatus.classList.remove('offline'); }
+    if (homeLatency) homeLatency.textContent = rtt + 'ms';
     const enabled = Object.entries(data.providers || {}).filter(([, v]) => v).map(([k]) => k);
     if (sysBackend) sysBackend.textContent = 'Online (' + rtt + 'ms)';
     if (sysProviders) sysProviders.textContent = enabled.length ? enabled.join(', ') : 'None configured';
   } catch (err) {
     clearTimeout(timeoutId);
     dot.classList.add('offline'); text.textContent = 'BACKEND: OFFLINE';
-    corePct.textContent = '0%'; coreStatus.textContent = 'OFFLINE';
-    ring.style.strokeDashoffset = 238.7;
-    document.getElementById('latencyVal').textContent = 'timeout';
-    document.getElementById('latencyFill').style.width = '0%';
+    if (homeIcon) homeIcon.classList.remove('online');
+    if (homeStatus) { homeStatus.textContent = 'OFFLINE'; homeStatus.classList.add('offline'); }
+    if (homeLatency) homeLatency.textContent = 'timeout';
     if (sysBackend) sysBackend.textContent = 'Unreachable';
     if (sysProviders) sysProviders.textContent = '--';
   }
@@ -1557,6 +1554,15 @@ if (typeof mermaid !== 'undefined') {
   });
 }
 
+
+/* Real-time agent status tracking */
+function setAgentStatus(name, isActive) {
+  var idMap = {research:'agentStatusResearch',github:'agentStatusGithub',code:'agentStatusCode',memory:'agentStatusMemory',vision:'agentStatusVision',auto:'agentStatusAuto'};
+  var el = document.getElementById(idMap[name]);
+  if (!el) return;
+  if (isActive) { el.className = 'agent-card-status active'; el.innerHTML = '<span class="dot"></span>Active'; }
+  else { el.className = 'agent-card-status idle'; el.innerHTML = '<span class="dot"></span>Idle'; }
+}
 function init() {
   updateGreeting();
   renderTasks();
@@ -1571,6 +1577,8 @@ function init() {
   else {
     document.getElementById('projectsPanel').innerHTML =
       '<div class="project-item project-empty"><div class="project-info"><div class="project-name">No GitHub username set</div><div class="project-meta">Add one in More → Settings</div></div></div>';
+    var hpc = document.getElementById('homeProjectsCard');
+    if (hpc) hpc.innerHTML = '<div class="projects-empty-state"><div class="empty-text">No GitHub username set</div><div class="empty-sub">Add one in More → Settings</div></div>';
   }
 }
 
