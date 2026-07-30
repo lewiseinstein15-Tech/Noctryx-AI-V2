@@ -38,19 +38,28 @@ export const FALLBACK_ORDER = ['cerebras', 'groq', 'openrouter', 'gemini'];
 
 async function callOpenAICompatible(providerKey, messages) {
   const p = PROVIDERS[providerKey];
-  const res = await fetch(p.url, {
-    method: 'POST',
-    headers: p.headers(),
-    body: JSON.stringify({ model: p.model, messages, temperature: 0.7, max_tokens: 4096 })
-  });
-  if (!res.ok) {
-    const errText = await res.text().catch(() => '');
-    throw new Error(`${providerKey} HTTP ${res.status}: ${errText.slice(0, 300)}`);
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 12000);
+  try {
+    const res = await fetch(p.url, {
+      method: 'POST',
+      headers: p.headers(),
+      signal: controller.signal,
+      body: JSON.stringify({ model: p.model, messages, temperature: 0.7, max_tokens: 4096, stream: false })
+    });
+    clearTimeout(timeoutId);
+    if (!res.ok) {
+      const errText = await res.text().catch(() => '');
+      throw new Error(`${providerKey} HTTP ${res.status}: ${errText.slice(0, 200)}`);
+    }
+    const data = await res.json();
+    const reply = data?.choices?.[0]?.message?.content;
+    if (!reply) throw new Error(`${providerKey} returned no content`);
+    return { reply, provider: providerKey };
+  } catch (err) {
+    clearTimeout(timeoutId);
+    throw err;
   }
-  const data = await res.json();
-  const reply = data?.choices?.[0]?.message?.content;
-  if (!reply) throw new Error(`${providerKey} returned no content`);
-  return { reply, provider: providerKey };
 }
 
 export async function callGemini(messages) {
@@ -60,22 +69,29 @@ export async function callGemini(messages) {
     .map(m => ({ role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] }));
   const systemMsg = messages.find(m => m.role === 'system');
 
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${p.model}:generateContent?key=${process.env.GEMINI_API_KEY}`;
-  const body = {
-    contents,
-    ...(systemMsg ? { systemInstruction: { parts: [{ text: systemMsg.content }] } } : {}),
-    generationConfig: { temperature: 0.7, maxOutputTokens: 8192 }
-  };
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 15000);
+  try {
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${p.model}:generateContent?key=${process.env.GEMINI_API_KEY}`;
+    const body = {
+      contents,
+      ...(systemMsg ? { systemInstruction: { parts: [{ text: systemMsg.content }] } } : {}),
+      generationConfig: { temperature: 0.7, maxOutputTokens: 8192 }
+    };
 
-  const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-  if (!res.ok) {
-    const errText = await res.text().catch(() => '');
-    throw new Error(`gemini HTTP ${res.status}: ${errText.slice(0, 300)}`);
+    const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: controller.signal, body: JSON.stringify(body) });
+    if (!res.ok) {
+      const errText = await res.text().catch(() => '');
+      throw new Error(`gemini HTTP ${res.status}: ${errText.slice(0, 200)}`);
+    }
+    const data = await res.json();
+    const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (!reply) throw new Error('gemini returned no content');
+    return { reply, provider: 'gemini' };
+  } catch (err) {
+    clearTimeout(timeoutId);
+    throw err;
   }
-  const data = await res.json();
-  const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-  if (!reply) throw new Error('gemini returned no content');
-  return { reply, provider: 'gemini' };
 }
 
 export async function chatWithFallback(messages) {
