@@ -1,6 +1,20 @@
 {
-  "name": "noctryx-backend",
+  "name": "noctryx-ai",
   "version": "2.0.0",
-  "private": true,
-  "description": "Noctryx AI V2 backend — Vercel serverless functions (multi-provider chat, vision, GitHub proxy)"
+  "description": "Noctryx AI V2 - Native App",
+  "scripts": {
+    "build": "mkdir -p dist && cp index.html dist/ && cp manifest.json dist/",
+    "sync": "npx cap sync",
+    "android": "npx cap open android",
+    "build:android": "npm run build && npx cap sync android && cd android && ./gradlew assembleDebug"
+  },
+  "dependencies": {
+    "@capacitor/android": "^6.0.0",
+    "@capacitor/core": "^6.0.0",
+    "@capacitor/splash-screen": "^6.0.0",
+    "@capacitor/status-bar": "^6.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^6.0.0"
+  }
 }
