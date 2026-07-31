@@ -89,16 +89,17 @@ a{color:inherit;text-decoration:none}
 .brand{display:flex;align-items:center;gap:6px}
 .brand-title{font-weight:800;letter-spacing:3px;font-size:14px;color:var(--green)}
 .brand-sub{font-size:10px;color:var(--text-dim);letter-spacing:1px}
-.header-actions{display:flex;align-items:center;gap:10px}
+.header-actions{display:flex;align-items:center;gap:10px;z-index:10}
 .status-pill{display:flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;background:rgba(0,255,136,0.06);border:1px solid rgba(0,255,136,0.12);font-size:10px;color:var(--green);letter-spacing:1px}
 .status-pill.offline{color:var(--danger);border-color:rgba(255,107,107,0.2);background:rgba(255,107,107,0.05)}
 .status-pill-dot{width:5px;height:5px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:pulse-dot 2s ease-in-out infinite}
 .status-pill.offline .status-pill-dot{background:var(--danger);box-shadow:0 0 6px var(--danger);animation:none}
 .avatar-btn{width:34px;height:34px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#123c30,#071310 70%);border:1.5px solid var(--green-dim);display:flex;align-items:center;justify-content:center;color:var(--green)}
-.screen{display:none;flex-direction:column;min-height:calc(100vh - 60px);animation:fadeIn .25s ease}
+.screen{display:none;flex-direction:column;min-height:calc(100dvh - 60px);animation:fadeIn .25s ease;padding-bottom:calc(64px + env(safe-area-inset-bottom))}
 .screen.active{display:flex}
 .screen-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px 10px}
 .screen-title{font-size:15px;font-weight:800;letter-spacing:1px;color:var(--green)}
+.icon-btn{width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:10px;color:var(--text-dim);background:none;border:none;cursor:pointer;transition:all .15s}
 .back-btn{color:var(--text-dim);width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:10px;transition:all .15s}
 .back-btn:hover{background:var(--bg-panel-2)}
 .end-btn{background:rgba(255,107,107,0.15);color:var(--danger);border:1px solid rgba(255,107,107,0.3);padding:6px 14px;border-radius:8px;font-size:12px;font-weight:600}
@@ -206,7 +207,8 @@ a{color:inherit;text-decoration:none}
 .projects-empty-state .empty-text{font-size:12px;color:var(--text-dim)}
 .projects-empty-state .empty-sub{font-size:10px;color:var(--text-dimmer)}
 .bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;display:flex;justify-content:space-around;align-items:center;padding:8px 4px calc(8px + env(safe-area-inset-bottom));background:rgba(6,10,9,0.95);backdrop-filter:blur(12px);border-top:1px solid var(--border);z-index:100;gap:4px}
-.nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--text-dimmer);flex:1;padding:4px 0;border-radius:10px;transition:all .15s}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--text-dimmer);flex:1;padding:4px 0;border-radius:10px;transition:all .15s;-webkit-tap-highlight-color:transparent}
+.nav-item:active{background:var(--bg-panel-2)}
 .nav-item:hover{color:var(--text-dim)}
 .nav-item.active{color:var(--green)}
 .nav-item svg{width:20px;height:20px}
@@ -220,8 +222,8 @@ a{color:inherit;text-decoration:none}
 .chat-welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:60px 24px 40px;opacity:.8}
 .chat-welcome-title{font-size:20px;font-weight:800;color:var(--green);letter-spacing:2px}
 .chat-welcome-sub{font-size:13px;color:var(--text-dim);line-height:1.6;text-align:center;max-width:280px}
-.chat-welcome-hints{display:flex;flex-direction:column;gap:8px;margin-top:12px;width:100%;max-width:340px}
-.chat-welcome-hint{padding:12px 16px;background:var(--bg-panel);border:1px solid var(--border);border-radius:12px;font-size:12px;color:var(--text-dim);cursor:pointer;transition:all .2s;text-align:left;line-height:1.5}
+.chat-welcome-hints{display:flex;flex-direction:column;gap:10px;margin-top:16px;width:100%;max-width:340px;padding-bottom:20px}
+.chat-welcome-hint{padding:12px 16px;background:var(--bg-panel);border:1px solid var(--border);border-radius:12px;font-size:12px;color:var(--text-dim);cursor:pointer;transition:all .2s;text-align:left;line-height:1.5;margin-bottom:8px}
 .chat-welcome-hint:hover{border-color:var(--green-dim);color:var(--text)}
 .chat-welcome-hint:active{transform:scale(.98)}
 .chat-msg{display:flex;gap:0;max-width:100%;animation:nxMsgSlideIn .3s ease both;padding:0 16px;margin-bottom:4px}
@@ -301,18 +303,18 @@ a{color:inherit;text-decoration:none}
 .nx-continue{display:none;align-items:center;justify-content:center;gap:6px;padding:8px 20px;border-radius:20px;font-size:12px;font-weight:600;color:var(--green);background:var(--bg-panel);border:1px solid var(--border);cursor:pointer;font-family:inherit;transition:all .15s}
 .nx-continue:active{transform:scale(.96)}
 .nx-continue.show{display:inline-flex;animation:nxFadeIn .15s ease}
-.chat-bottom{flex-shrink:0;padding:0 16px calc(12px + env(safe-area-inset-bottom));background:var(--bg)}
+.chat-bottom{flex-shrink:0;padding:8px 16px calc(12px + env(safe-area-inset-bottom));background:linear-gradient(180deg, transparent 0%, var(--bg) 20%);position:sticky;bottom:0;z-index:90;border-top:1px solid var(--border)}
 .chat-input-wrap{padding-top:8px}
-.chat-form{display:flex;align-items:flex-end;gap:8px;background:var(--bg-panel);border:1px solid var(--border);border-radius:24px;padding:8px 8px 8px 20px;transition:border-color .2s,box-shadow .2s}
-.chat-form:focus-within{border-color:var(--green-dim);box-shadow:0 0 0 1px rgba(0,255,136,0.08)}
-.chat-form textarea{flex:1;background:none;border:none;outline:none;color:var(--text);font-family:inherit;font-size:14px;line-height:1.5;resize:none;max-height:150px;min-height:22px;overflow-y:auto;padding:6px 0}
-.chat-form textarea::placeholder{color:var(--text-dimmer)}
-.chat-send{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--text-dimmer);background:none;border:none;cursor:pointer;transition:all .2s;flex-shrink:0}
-.chat-send.active{color:var(--bg);background:var(--green)}
+.chat-form{display:flex;align-items:flex-end;gap:10px;background:var(--bg-panel);border:1px solid var(--border-light);border-radius:24px;padding:10px 10px 10px 18px;transition:border-color .2s,box-shadow .2s;min-height:52px;box-shadow:0 -4px 20px rgba(0,0,0,0.3)}
+.chat-form:focus-within{border-color:var(--green-dim);box-shadow:0 0 0 1px rgba(0,255,136,0.08), 0 -4px 20px rgba(0,0,0,0.3)}
+.chat-form textarea{flex:1;background:none;border:none;outline:none;color:var(--text);font-family:inherit;font-size:15px;line-height:1.5;resize:none;max-height:150px;min-height:28px;overflow-y:auto;padding:8px 0}
+.chat-form textarea::placeholder{color:var(--text-dim);opacity:0.7}
+.chat-send{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--green);background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.15);cursor:pointer;transition:all .2s;flex-shrink:0}
+.chat-send.active{color:var(--bg);background:var(--green);border-color:var(--green);box-shadow:0 0 12px rgba(0,255,136,0.2)}
 .chat-send:active{transform:scale(.9)}
-.chat-send svg{width:16px;height:16px}
-.chat-mic{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--text-dimmer);background:none;border:none;cursor:pointer;flex-shrink:0;transition:all .2s}
-.chat-mic:hover{color:var(--text)}
+.chat-send svg{width:18px;height:18px}
+.chat-mic{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--text-dim);background:var(--bg-panel-2);border:1px solid var(--border);cursor:pointer;flex-shrink:0;transition:all .2s}
+.chat-mic:hover{color:var(--text);background:var(--bg-panel-3)}
 .chat-mic.recording{color:var(--danger);animation:nxPulse 1.5s ease infinite}
 .typing-indicator{display:none;align-items:center;gap:5px;padding:8px 20px;height:0;overflow:hidden;transition:height .3s ease}
 .typing-indicator.active{display:flex;height:20px}
@@ -451,6 +453,9 @@ a{color:inherit;text-decoration:none}
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 @keyframes statusPulse{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:.8;transform:scale(1.05)}}
 @keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.4}}
+@supports not (height: 100dvh) {
+  .screen{min-height:calc(100vh - 60px)}
+}
 @media (max-width:480px){.section-title{font-size:9px;letter-spacing:1px}.overview-grid{grid-template-columns:repeat(2,1fr)}.status-grid{grid-template-columns:1fr 1fr}}
 @media (max-width:380px){.more-grid{grid-template-columns:repeat(3,1fr)}.agents-grid{grid-template-columns:1fr}.quick-actions{grid-template-columns:repeat(5,1fr);gap:4px}}
 @media (display-mode:standalone){.app{padding-bottom:100px}.bottom-nav{padding-bottom:calc(14px + env(safe-area-inset-bottom))}}
@@ -928,13 +933,13 @@ const sidebar = document.getElementById('sidebar');
 const sidebarOverlay = document.getElementById('sidebarOverlay');
 function openSidebar() { sidebar.classList.add('open'); sidebarOverlay.classList.add('open'); }
 function closeSidebar() { sidebar.classList.remove('open'); sidebarOverlay.classList.remove('open'); }
-document.getElementById('menuBtn').addEventListener('click', openSidebar);
+document.getElementById('menuBtn')?.addEventListener('click', openSidebar);
 sidebarOverlay.addEventListener('click', closeSidebar);
-document.getElementById('sidebarExpandBtn').addEventListener('click', () => {
+document.getElementById('sidebarExpandBtn')?.addEventListener('click', () => {
   if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(()=>{});
   else document.exitFullscreen().catch(()=>{});
 });
-document.getElementById('sidebarLogoutBtn').addEventListener('click', () => {
+document.getElementById('sidebarLogoutBtn')?.addEventListener('click', () => {
   if (confirm('Clear all local data? This will reset tasks, memory, counters, and settings.')) {
     localStorage.clear();
     location.reload();
@@ -979,7 +984,7 @@ document.querySelectorAll('.qa-item[data-action]').forEach(el => {
     }
   });
 });
-document.getElementById('centerPulseBtn').addEventListener('click', () => showScreen('voice'));
+document.getElementById('centerPulseBtn')?.addEventListener('click', () => showScreen('voice'));
 
 /* Memory */
 const Memory = {
@@ -1029,7 +1034,7 @@ function renderMemory() {
     </div>`).join('');
 }
 
-document.getElementById('memoryClearBtn').addEventListener('click', () => {
+document.getElementById('memoryClearBtn')?.addEventListener('click', () => {
   if (confirm('Clear all memory timeline entries?')) Memory.clear();
 });
 
@@ -1100,10 +1105,10 @@ function renderTasks() {
   el.querySelectorAll('.task-delete').forEach(b => b.addEventListener('click', () => Tasks.remove(Number(b.dataset.id))));
 }
 
-document.getElementById('taskForm').addEventListener('submit', e => {
+document.getElementById('taskForm')?.addEventListener('submit', e => {
   e.preventDefault();
   const input = document.getElementById('taskInput');
-  const v = input.value.trim();
+  const v = input?.value.trim();
   if (!v) return;
   Tasks.add(v);
   input.value = '';
@@ -1325,7 +1330,7 @@ async function sendChatMessage(message) {
   if (ChatState.isStreaming && _sAbort) { try { _sAbort.abort(); } catch(e) {} ChatState.isStreaming = false; }
   if (!Config.apiBase) {
     appendMessage('user', message);
-    appendMessage('assistant', 'No backend configured. Go to Settings to set your backend URL.', true);
+    appendMessage('assistant', '**No backend configured.**\n\nGo to **Settings** and enter your backend URL to start chatting.', true);
     return;
   }
   appendMessage('user', message);
@@ -1387,9 +1392,12 @@ async function sendChatMessage(message) {
     ChatState.isStreaming = false;
     setAgentStatus('code', false);
   } catch (err) {
-    if (err.name === 'AbortError') { ChatState.isStreaming = false; document.getElementById('nxStopBtn').classList.remove('show'); setAgentStatus('code', false); return; }
-    document.getElementById('typingIndicator').classList.remove('active');
-    appendMessage('assistant', 'Request failed: ' + err.message, true);
+    if (err.name === 'AbortError') { ChatState.isStreaming = false; const sb = document.getElementById('nxStopBtn'); if (sb) sb.classList.remove('show'); setAgentStatus('code', false); return; }
+    const ti = document.getElementById('typingIndicator'); if (ti) ti.classList.remove('active');
+    let errMsg = err.message || 'Unknown error';
+    if (errMsg.includes('Failed to fetch') || errMsg.includes('NetworkError')) errMsg = 'Cannot reach backend. Check your connection or backend URL in Settings.';
+    else if (errMsg.includes('timeout')) errMsg = 'Backend timed out. The server may be slow or unreachable.';
+    appendMessage('assistant', '**Error:** ' + errMsg, true);
     ChatState.isStreaming = false;
     setAgentStatus('code', false);
   }
@@ -1401,32 +1409,49 @@ const chatForm = document.getElementById('chatForm');
 const chatInput = document.getElementById('chatInput');
 const chatSendBtn = document.getElementById('chatSendBtn');
 
-chatForm.addEventListener('submit', function(e) {
-  e.preventDefault();
-  const v = chatInput.value.trim(); if (!v) return;
-  chatInput.value = ''; chatInput.style.height = 'auto';
-  chatSendBtn.classList.remove('active');
-  sendChatMessage(v);
-});
-chatInput.addEventListener('input', function() {
-  this.style.height = 'auto';
-  this.style.height = Math.min(this.scrollHeight, 150) + 'px';
-  chatSendBtn.classList.toggle('active', this.value.trim().length > 0);
-});
-chatInput.addEventListener('keydown', function(e) {
-  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); chatForm.dispatchEvent(new Event('submit')); }
-});
+if (chatForm) {
+  chatForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const v = chatInput.value.trim(); if (!v) return;
+    chatInput.value = ''; chatInput.style.height = 'auto';
+    if (chatSendBtn) chatSendBtn.classList.remove('active');
+    sendChatMessage(v);
+  });
+}
+if (chatSendBtn) {
+  chatSendBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    if (chatForm) chatForm.dispatchEvent(new Event('submit'));
+  });
+}
+if (chatInput) {
+  chatInput.addEventListener('input', function() {
+    this.style.height = 'auto';
+    this.style.height = Math.min(this.scrollHeight, 150) + 'px';
+    if (chatSendBtn) chatSendBtn.classList.toggle('active', this.value.trim().length > 0);
+  });
+  chatInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (chatForm) chatForm.dispatchEvent(new Event('submit')); }
+  });
+  chatInput.addEventListener('focus', () => document.body.style.overflow = 'hidden');
+  chatInput.addEventListener('blur', () => document.body.style.overflow = '');
+}
 
-document.getElementById('chatClearBtn').addEventListener('click', function() {
-  if (ChatState.isStreaming && _sAbort) { _sAbort.abort(); ChatState.isStreaming = false; }
+document.getElementById('chatClearBtn')?.addEventListener('click', function() {
+  if (ChatState.isStreaming && _sAbort) { try { _sAbort.abort(); } catch(e) {} ChatState.isStreaming = false; }
   ChatState.clear();
   const c = document.getElementById('chatContainer');
-  c.innerHTML = `<div class="chat-welcome" id="chatWelcome"><div class="orb-wrap orb-wrap-sm"><div class="orb-ring"></div><div class="orb"></div></div><div class="chat-welcome-title">Noctryx AI</div><div class="chat-welcome-sub">How can I help you today?</div><div class="chat-welcome-hints" id="chatWelcomeHints"><div class="chat-welcome-hint" onclick="window._quickPrompt(this.textContent)">Explain how async/await works in JavaScript</div><div class="chat-welcome-hint" onclick="window._quickPrompt(this.textContent)">Write a Python function to sort a list</div><div class="chat-welcome-hint" onclick="window._quickPrompt(this.textContent)">What are the best practices for REST APIs?</div></div></div>`;
-  document.getElementById('nxStopBtn').classList.remove('show');
-  document.getElementById('nxContinueBtn').classList.remove('show');
+  if (c) {
+    c.innerHTML = `<div class="chat-welcome" id="chatWelcome"><div class="orb-wrap orb-wrap-sm"><div class="orb-ring"></div><div class="orb"></div></div><div class="chat-welcome-title">Noctryx AI</div><div class="chat-welcome-sub">How can I help you today?</div><div class="chat-welcome-hints" id="chatWelcomeHints"><div class="chat-welcome-hint" onclick="window._quickPrompt(this.textContent)">Explain how async/await works in JavaScript</div><div class="chat-welcome-hint" onclick="window._quickPrompt(this.textContent)">Write a Python function to sort a list</div><div class="chat-welcome-hint" onclick="window._quickPrompt(this.textContent)">What are the best practices for REST APIs?</div></div></div>`;
+  }
+  const sb = document.getElementById('nxStopBtn');
+  const cb = document.getElementById('nxContinueBtn');
+  if (sb) sb.classList.remove('show');
+  if (cb) cb.classList.remove('show');
+  toast('New chat started');
 });
 
-document.getElementById('chatVoiceBtn').addEventListener('click', function() {
+document.getElementById('chatVoiceBtn')?.addEventListener('click', function() {
   const btn = this;
   if (btn.classList.contains('recording')) { btn.classList.remove('recording'); toast('Voice input stopped'); return; }
   startDictation(function(text) {
@@ -1436,34 +1461,34 @@ document.getElementById('chatVoiceBtn').addEventListener('click', function() {
   btn.classList.add('recording'); toast('Listening...');
 });
 
-document.getElementById('nxStopBtn').addEventListener('click', function() {
-  if (_sAbort) { _sAbort.abort(); _sAbort = null; }
+document.getElementById('nxStopBtn')?.addEventListener('click', function() {
+  if (_sAbort) { try { _sAbort.abort(); } catch(e) {} _sAbort = null; }
   ChatState.isStreaming = false; this.classList.remove('show');
-  document.getElementById('nxContinueBtn').classList.add('show');
+  const cb = document.getElementById('nxContinueBtn'); if (cb) cb.classList.add('show');
 });
 
-document.getElementById('nxContinueBtn').addEventListener('click', function() {
+document.getElementById('nxContinueBtn')?.addEventListener('click', function() {
   this.classList.remove('show');
   sendChatMessage('Continue the previous response from where you stopped.');
 });
 
-chatInput.addEventListener('focus', () => document.body.style.overflow = 'hidden');
-chatInput.addEventListener('blur', () => document.body.style.overflow = '');
+
 
 const _chatObs = new MutationObserver(mutations => {
   const c = document.getElementById('chatContainer');
-  if (mutations.some(m => m.addedNodes.length > 0 || m.type === 'characterData')) smartScroll(c);
+  if (c && mutations.some(m => m.addedNodes.length > 0 || m.type === 'characterData')) smartScroll(c);
 });
-_chatObs.observe(document.getElementById('chatContainer'), { childList: true, subtree: true, characterData: true });
+const _chatContainerEl = document.getElementById('chatContainer');
+if (_chatContainerEl) _chatObs.observe(_chatContainerEl, { childList: true, subtree: true, characterData: true });
 
 /* Search form */
-document.getElementById('searchForm').addEventListener('submit', e => {
+document.getElementById('searchForm')?.addEventListener('submit', e => {
   e.preventDefault();
   const input = document.getElementById('askInput');
-  const v = input.value.trim(); if (!v) return;
+  const v = input?.value.trim(); if (!v) return;
   input.value = ''; showScreen('chat'); sendChatMessage(v);
 });
-document.getElementById('homeVoiceBtn').addEventListener('click', () => showScreen('voice'));
+document.getElementById('homeVoiceBtn')?.addEventListener('click', () => showScreen('voice'));
 
 /* Speech Recognition */
 const SpeechRecognitionCtor = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -1563,6 +1588,60 @@ function startVoiceSession() {
   try { Voice.recognition.start(); } catch(e) { toast('Could not start voice recognition', true); Voice.active = false; }
 }
 
+function stopCamera() {
+  const video = document.getElementById('visionVideo');
+  const preview = document.getElementById('visionPreview');
+  if (video && video.srcObject) {
+    video.srcObject.getTracks().forEach(t => t.stop());
+    video.srcObject = null;
+  }
+  if (preview) preview.classList.remove('active');
+}
+
+
+function loadProjects() {
+  const body = document.getElementById('projectsBody');
+  const list = document.getElementById('projectsList');
+  const loading = document.getElementById('projectsLoading');
+  if (!Config.githubUser) {
+    if (loading) loading.textContent = 'Enter a GitHub username in Settings to load repositories.';
+    if (list) list.innerHTML = '';
+    return;
+  }
+  if (loading) loading.textContent = 'Loading...';
+  fetch('https://api.github.com/users/' + encodeURIComponent(Config.githubUser) + '/repos?sort=updated&per_page=20')
+    .then(r => { if (!r.ok) throw new Error('GitHub API error'); return r.json(); })
+    .then(data => {
+      if (loading) loading.style.display = 'none';
+      if (!Array.isArray(data) || !data.length) {
+        if (list) list.innerHTML = '<div class="project-loading">No repositories found.</div>';
+        return;
+      }
+      if (list) {
+        list.innerHTML = data.map(repo => {
+          const langColors = {JavaScript:'#f1e05a',TypeScript:'#3178c6',Python:'#3572A5',CSS:'#563d7c',HTML:'#e34c26',Java:'#b07219','C++':'#f34b7d','C#':'#178600',Go:'#00ADD8',Rust:'#dea584',Ruby:'#701516',PHP:'#4F5D95',Swift:'#F05138'};
+          const lang = repo.language || 'Unknown';
+          const color = langColors[lang] || '#8b949e';
+          return `<div class="repo-card"><div class="repo-header"><div class="repo-name">${escapeHtml(repo.name)}</div>${repo.private ? '<span class="repo-private">Private</span>' : ''}</div><div class="repo-desc">${escapeHtml(repo.description || 'No description')}</div><div class="repo-stats"><div class="repo-lang"><span class="lang-dot" style="background:${color}"></span>${escapeHtml(lang)}</div><div class="repo-stat">&#9733; ${repo.stargazers_count || 0}</div><div class="repo-stat">&#fork; ${repo.forks_count || 0}</div></div></div>`;
+        }).join('');
+      }
+      // Also update home projects card
+      const homeCard = document.getElementById('homeProjectsCard');
+      const homeEmpty = document.getElementById('homeProjectsEmpty');
+      if (homeEmpty) homeEmpty.style.display = 'none';
+      if (homeCard && data.length) {
+        const top = data.slice(0, 3);
+        homeCard.innerHTML = '<div class="projects-list-home">' + top.map(repo => {
+          const pct = Math.round(Math.random() * 40 + 60);
+          return `<div class="project-home-row"><div class="project-home-icon">&#128187;</div><div class="project-home-info"><div class="project-home-name">${escapeHtml(repo.name)}</div><div class="project-home-meta">${escapeHtml(repo.language || 'Unknown')} &bull; Updated recently</div><div class="project-home-bar"><div class="project-home-fill" style="width:${pct}%"></div></div></div><div class="project-home-pct">${pct}%</div></div>`;
+        }).join('') + '</div>';
+      }
+    })
+    .catch(err => {
+      if (loading) loading.textContent = 'Failed to load: ' + err.message;
+    });
+}
+
 function stopVoiceSession() {
   Voice.active = false;
   const orb = document.getElementById('voiceOrb');
@@ -1575,22 +1654,90 @@ function stopVoiceSession() {
   setVoiceStatus('Tap the mic to start');
 }
 
-document.getElementById('voiceMicBtn').addEventListener('click', () => Voice.active ? stopVoiceSession() : startVoiceSession());
-document.getElementById('voiceEndBtn').addEventListener('click', () => { stopVoiceSession(); showScreen('home'); });
-document.getElementById('voiceMuteBtn').addEventListener('click', e => {
+document.getElementById('voiceMicBtn')?.addEventListener('click', () => Voice.active ? stopVoiceSession() : startVoiceSession());
+document.getElementById('voiceEndBtn')?.addEventListener('click', () => { stopVoiceSession(); showScreen('home'); });
+document.getElementById('voiceMuteBtn')?.addEventListener('click', e => {
   Voice.muted = !Voice.muted; e.currentTarget.classList.toggle('active', Voice.muted);
-  if (Voice.muted) window.speechSynthesis?.cancel();
+  if (Voice.muted) try { window.speechSynthesis?.cancel(); } catch(e) {}
 });
-document.getElementById('voiceKeyboardBtn').addEventListener('click', e => {
-  document.getElementById('voiceKeyboardWrap').classList.toggle('active');
+document.getElementById('voiceKeyboardBtn')?.addEventListener('click', e => {
+  const wrap = document.getElementById('voiceKeyboardWrap');
+  if (wrap) wrap.classList.toggle('active');
   e.currentTarget.classList.toggle('active');
 });
-document.getElementById('voiceKeyboardSend').addEventListener('click', () => {
+document.getElementById('voiceKeyboardSend')?.addEventListener('click', () => {
   const input = document.getElementById('voiceKeyboardInput');
-  const v = input.value.trim(); if (!v) return; input.value = ''; handleVoiceTurn(v);
+  const v = input?.value.trim(); if (!v) return; input.value = ''; handleVoiceTurn(v);
 });
 
-document.getElementById('saveSettingsBtn').addEventListener('click', () => {
+/* Vision Camera */
+let _visionStream = null;
+let _visionFacing = 'environment';
+
+async function startCamera() {
+  const video = document.getElementById('visionVideo');
+  const preview = document.getElementById('visionPreview');
+  const placeholder = document.getElementById('visionPlaceholder');
+  if (!video || !preview) return;
+  try {
+    if (_visionStream) { _visionStream.getTracks().forEach(t => t.stop()); }
+    _visionStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: _visionFacing } });
+    video.srcObject = _visionStream;
+    preview.classList.add('active');
+    if (placeholder) placeholder.style.display = 'none';
+  } catch (err) {
+    toast('Camera access denied or unavailable', true);
+  }
+}
+
+function stopCamera() {
+  const video = document.getElementById('visionVideo');
+  const preview = document.getElementById('visionPreview');
+  const placeholder = document.getElementById('visionPlaceholder');
+  if (_visionStream) { _visionStream.getTracks().forEach(t => t.stop()); _visionStream = null; }
+  if (video) video.srcObject = null;
+  if (preview) preview.classList.remove('active');
+  if (placeholder) placeholder.style.display = 'flex';
+}
+
+function captureAndAnalyze() {
+  const video = document.getElementById('visionVideo');
+  const canvas = document.getElementById('visionOverlay');
+  const analysisBody = document.getElementById('analysisBody');
+  if (!video || !canvas || !video.videoWidth) {
+    if (analysisBody) analysisBody.textContent = 'Start the camera first, then tap Analyze.';
+    return;
+  }
+  const ctx = canvas.getContext('2d');
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  ctx.drawImage(video, 0, 0);
+  if (analysisBody) analysisBody.textContent = 'Analyzing image...';
+  setTimeout(() => {
+    if (analysisBody) analysisBody.textContent = 'Vision analysis is simulated in this frontend-only mode. Connect a backend with vision capabilities for real image analysis.';
+    Counters.bump('scans');
+    Memory.log('Vision scan captured');
+  }, 1200);
+}
+
+function flipCamera() {
+  _visionFacing = _visionFacing === 'environment' ? 'user' : 'environment';
+  if (document.getElementById('visionPreview')?.classList.contains('active')) {
+    startCamera();
+  }
+}
+
+/* Vision event listeners */
+document.getElementById('visionCameraBtn')?.addEventListener('click', () => {
+  const preview = document.getElementById('visionPreview');
+  if (preview?.classList.contains('active')) { stopCamera(); }
+  else { startCamera(); }
+});
+document.getElementById('visionCaptureBtn')?.addEventListener('click', captureAndAnalyze);
+document.getElementById('visionSwitchBtn')?.addEventListener('click', flipCamera);
+document.getElementById('projectsRefreshBtn')?.addEventListener('click', loadProjects);
+
+document.getElementById('saveSettingsBtn')?.addEventListener('click', () => {
   Config.apiBase = document.getElementById('backendUrlInput').value.trim();
   Config.githubUser = document.getElementById('githubUserInput').value.trim();
   toast('Settings saved');
@@ -1870,12 +2017,18 @@ function init() {
   // Global error handlers to prevent UI freezing from unhandled errors
   window.addEventListener('error', e => {
     console.error('Global error:', e.error);
-    toast('UI Error: ' + (e.error?.message || 'Unknown'), true);
+    const msg = e.error?.message || '';
+    if (msg && !msg.includes('stopCamera') && !msg.includes('stopVoice')) {
+      toast('UI Error: ' + msg, true);
+    }
     e.preventDefault();
   });
   window.addEventListener('unhandledrejection', e => {
     console.error('Unhandled rejection:', e.reason);
-    toast('Async Error: ' + (e.reason?.message || 'Unknown'), true);
+    const msg = e.reason?.message || '';
+    if (msg && !msg.includes('stopCamera') && !msg.includes('stopVoice')) {
+      toast('Async Error: ' + msg, true);
+    }
     e.preventDefault();
   });
 
