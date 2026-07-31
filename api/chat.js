@@ -1,4 +1,4 @@
-// api/chat.js — Vercel Serverless Function
+// api/chat.js — Vercel Node.js Serverless Function
 // Handles: /api/chat, /api/vision, /api/github/:user, /api/health
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY || "";
@@ -13,7 +13,7 @@ const COHERE_API_KEY = process.env.COHERE_API_KEY || "";
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN || "";
 const DEFAULT_PROVIDER = (process.env.DEFAULT_PROVIDER || "openai").toLowerCase();
 const DEFAULT_MODEL = process.env.DEFAULT_MODEL || "";
-const SYSTEM_PROMPT = process.env.SYSTEM_PROMPT || "You are Noctryx AI, a helpful, knowledgeable, and precise AI assistant. Provide clear, well-structured responses. Use markdown formatting. Be concise but thorough.";
+const SYSTEM_PROMPT = process.env.SYSTEM_PROMPT || "You are Noctryx AI, a helpful, knowledgeable, and precise AI assistant. Provide clear, well-structured responses. Use markdown formatting. For math, use LaTeX with $...$ for inline and $$...$$ for display. For code, use fenced code blocks with language tags. Be concise but thorough.";
 
 const PROVIDERS = {
   openai: { name: "OpenAI", key: OPENAI_API_KEY, models: ["gpt-4o", "gpt-4o-mini", "gpt-4-turbo", "gpt-3.5-turbo"], endpoint: "https://api.openai.com/v1/chat/completions", supportsStream: true },
@@ -21,7 +21,7 @@ const PROVIDERS = {
   gemini: { name: "Google Gemini", key: GEMINI_API_KEY, models: ["gemini-1.5-pro-latest", "gemini-1.5-flash-latest"], endpoint: "https://generativelanguage.googleapis.com/v1beta/models", supportsStream: true },
   groq: { name: "Groq", key: GROQ_API_KEY, models: ["llama-3.1-70b-versatile", "llama-3.1-8b-instant", "mixtral-8x7b-32768", "gemma2-9b-it"], endpoint: "https://api.groq.com/openai/v1/chat/completions", supportsStream: true },
   deepseek: { name: "DeepSeek", key: DEEPSEEK_API_KEY, models: ["deepseek-chat", "deepseek-coder"], endpoint: "https://api.deepseek.com/chat/completions", supportsStream: true },
-  xai: { name: "xAI (Grok)", key: XAI_API_KEY, models: ["grok-beta", "grok-vision-beta"], endpoint: "https://api.x.ai/v1/chat/completions", supportsStream: true },
+  xai: { name: "xAI (Grok)", key: XAI_API_KEY, models: ["grok-2-latest", "grok-beta", "grok-vision-beta"], endpoint: "https://api.x.ai/v1/chat/completions", supportsStream: true },
   perplexity: { name: "Perplexity", key: PERPLEXITY_API_KEY, models: ["llama-3.1-sonar-large-128k-online", "llama-3.1-sonar-small-128k-online"], endpoint: "https://api.perplexity.ai/chat/completions", supportsStream: true },
   huggingface: { name: "Hugging Face", key: HUGGINGFACE_API_KEY, models: ["meta-llama/Meta-Llama-3.1-70B-Instruct"], endpoint: "https://api-inference.huggingface.co/models", supportsStream: false },
   cohere: { name: "Cohere", key: COHERE_API_KEY, models: ["command-r-plus", "command-r", "command"], endpoint: "https://api.cohere.ai/v1/chat", supportsStream: true },
@@ -42,7 +42,6 @@ function getModel(provider, requested) {
   return provider.models[0];
 }
 
-// CORS headers
 function corsHeaders(origin) {
   return {
     "Access-Control-Allow-Origin": origin || "*",
@@ -52,50 +51,62 @@ function corsHeaders(origin) {
   };
 }
 
-// Streaming helpers
-function createStreamResponse(readable, headers) {
-  return new Response(readable, { status: 200, headers: { "Content-Type": "text/event-stream", "Cache-Control": "no-cache", "Connection": "keep-alive", ...headers } });
-}
-
 function encodeSSE(data) {
   return "data: " + JSON.stringify(data) + "\n\n";
 }
 
-// OpenAI-compatible streaming
-async function streamOpenAI(provider, body, encoder, controller) {
+function parseBody(req) {
+  return new Promise((resolve, reject) => {
+    let body = "";
+    req.on("data", chunk => body += chunk);
+    req.on("end", () => {
+      try { resolve(JSON.parse(body || "{}")); } catch (e) { resolve({}); }
+    });
+    req.on("error", reject);
+  });
+}
+
+async function streamOpenAICompatible(provider, body, res) {
   const model = getModel(provider, body.model);
   const messages = [{ role: "system", content: SYSTEM_PROMPT }];
-  if (body.history) messages.push(...body.history);
+  if (body.history) messages.push(...body.history.filter(m => m.role === "user" || m.role === "assistant"));
   messages.push({ role: "user", content: body.message });
 
-  const res = await fetch(provider.endpoint, {
+  const upstream = await fetch(provider.endpoint, {
     method: "POST",
     headers: { "Authorization": "Bearer " + provider.key, "Content-Type": "application/json" },
     body: JSON.stringify({ model, messages, stream: true, temperature: 0.7, max_tokens: 4096 }),
   });
 
-  if (!res.ok) {
-    const err = await res.text();
-    controller.enqueue(encoder.encode(encodeSSE({ object: "error", message: err })));
-    controller.close();
+  if (!upstream.ok) {
+    const err = await upstream.text();
+    res.write(encodeSSE({ object: "error", message: err }));
+    res.end();
     return;
   }
 
-  const reader = res.body.getReader();
+  const reader = upstream.body.getReader();
+  const decoder = new TextDecoder();
   try {
     while (true) {
       const { done, value } = await reader.read();
       if (done) break;
-      controller.enqueue(encoder.encode(new TextDecoder().decode(value)));
+      const text = decoder.decode(value, { stream: true });
+      const lines = text.split("\n");
+      for (const line of lines) {
+        if (!line.trim() || !line.startsWith("data: ")) continue;
+        const data = line.slice(6);
+        if (data === "[DONE]") continue;
+        res.write(line + "\n\n");
+      }
     }
   } finally {
-    controller.enqueue(encoder.encode("data: [DONE]\n\n"));
-    controller.close();
+    res.write("data: [DONE]\n\n");
+    res.end();
   }
 }
 
-// Anthropic streaming
-async function streamAnthropic(provider, body, encoder, controller) {
+async function streamAnthropic(provider, body, res) {
   const model = getModel(provider, body.model);
   const messages = [];
   if (body.history) {
@@ -106,20 +117,20 @@ async function streamAnthropic(provider, body, encoder, controller) {
   }
   messages.push({ role: "user", content: body.message });
 
-  const res = await fetch(provider.endpoint, {
+  const upstream = await fetch(provider.endpoint, {
     method: "POST",
     headers: { "x-api-key": provider.key, "anthropic-version": "2023-06-01", "Content-Type": "application/json" },
     body: JSON.stringify({ model, max_tokens: 4096, system: SYSTEM_PROMPT, messages, stream: true }),
   });
 
-  if (!res.ok) {
-    const err = await res.text();
-    controller.enqueue(encoder.encode(encodeSSE({ object: "error", message: err })));
-    controller.close();
+  if (!upstream.ok) {
+    const err = await upstream.text();
+    res.write(encodeSSE({ object: "error", message: err }));
+    res.end();
     return;
   }
 
-  const reader = res.body.getReader();
+  const reader = upstream.body.getReader();
   const decoder = new TextDecoder();
   try {
     while (true) {
@@ -134,19 +145,18 @@ async function streamAnthropic(provider, body, encoder, controller) {
         try {
           const parsed = JSON.parse(data);
           if (parsed.type === "content_block_delta" && parsed.delta?.text) {
-            controller.enqueue(encoder.encode(encodeSSE({ choices: [{ delta: { content: parsed.delta.text } }] })));
+            res.write(encodeSSE({ choices: [{ delta: { content: parsed.delta.text } }] }));
           }
         } catch {}
       }
     }
   } finally {
-    controller.enqueue(encoder.encode("data: [DONE]\n\n"));
-    controller.close();
+    res.write("data: [DONE]\n\n");
+    res.end();
   }
 }
 
-// Gemini streaming
-async function streamGemini(provider, body, encoder, controller) {
+async function streamGemini(provider, body, res) {
   const model = getModel(provider, body.model);
   const contents = [];
   if (body.history) {
@@ -157,20 +167,20 @@ async function streamGemini(provider, body, encoder, controller) {
   contents.push({ role: "user", parts: [{ text: body.message }] });
 
   const url = provider.endpoint + "/" + model + ":streamGenerateContent?alt=sse&key=" + provider.key;
-  const res = await fetch(url, {
+  const upstream = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ contents, generationConfig: { temperature: 0.7, maxOutputTokens: 4096 }, systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] } }),
   });
 
-  if (!res.ok) {
-    const err = await res.text();
-    controller.enqueue(encoder.encode(encodeSSE({ object: "error", message: err })));
-    controller.close();
+  if (!upstream.ok) {
+    const err = await upstream.text();
+    res.write(encodeSSE({ object: "error", message: err }));
+    res.end();
     return;
   }
 
-  const reader = res.body.getReader();
+  const reader = upstream.body.getReader();
   const decoder = new TextDecoder();
   try {
     while (true) {
@@ -181,22 +191,20 @@ async function streamGemini(provider, body, encoder, controller) {
       for (const line of lines) {
         if (!line.trim() || !line.startsWith("data: ")) continue;
         const data = line.slice(6);
-        if (data === "[DONE]") continue;
         try {
           const parsed = JSON.parse(data);
-          const text = parsed.candidates?.[0]?.content?.parts?.[0]?.text || "";
-          if (text) controller.enqueue(encoder.encode(encodeSSE({ choices: [{ delta: { content: text } }] })));
+          const txt = parsed.candidates?.[0]?.content?.parts?.[0]?.text || "";
+          if (txt) res.write(encodeSSE({ choices: [{ delta: { content: txt } }] }));
         } catch {}
       }
     }
   } finally {
-    controller.enqueue(encoder.encode("data: [DONE]\n\n"));
-    controller.close();
+    res.write("data: [DONE]\n\n");
+    res.end();
   }
 }
 
-// Cohere streaming
-async function streamCohere(provider, body, encoder, controller) {
+async function streamCohere(provider, body, res) {
   const model = getModel(provider, body.model);
   const chatHistory = [];
   if (body.history) {
@@ -206,20 +214,20 @@ async function streamCohere(provider, body, encoder, controller) {
     }
   }
 
-  const res = await fetch(provider.endpoint, {
+  const upstream = await fetch(provider.endpoint, {
     method: "POST",
     headers: { "Authorization": "Bearer " + provider.key, "Content-Type": "application/json" },
     body: JSON.stringify({ model, message: body.message, chat_history: chatHistory, preamble: SYSTEM_PROMPT, stream: true, temperature: 0.7 }),
   });
 
-  if (!res.ok) {
-    const err = await res.text();
-    controller.enqueue(encoder.encode(encodeSSE({ object: "error", message: err })));
-    controller.close();
+  if (!upstream.ok) {
+    const err = await upstream.text();
+    res.write(encodeSSE({ object: "error", message: err }));
+    res.end();
     return;
   }
 
-  const reader = res.body.getReader();
+  const reader = upstream.body.getReader();
   const decoder = new TextDecoder();
   try {
     while (true) {
@@ -233,18 +241,17 @@ async function streamCohere(provider, body, encoder, controller) {
         try {
           const parsed = JSON.parse(data);
           if (parsed.eventType === "text-generation" && parsed.text) {
-            controller.enqueue(encoder.encode(encodeSSE({ choices: [{ delta: { content: parsed.text } }] })));
+            res.write(encodeSSE({ choices: [{ delta: { content: parsed.text } }] }));
           }
         } catch {}
       }
     }
   } finally {
-    controller.enqueue(encoder.encode("data: [DONE]\n\n"));
-    controller.close();
+    res.write("data: [DONE]\n\n");
+    res.end();
   }
 }
 
-// Non-streaming fallback
 async function nonStreamingChat(provider, body) {
   const model = getModel(provider, body.model);
   const messages = [{ role: "system", content: SYSTEM_PROMPT }];
@@ -266,7 +273,6 @@ async function nonStreamingChat(provider, body) {
   return data.choices?.[0]?.message?.content || data.response || data.text || "No response";
 }
 
-// Hugging Face non-streaming
 async function huggingfaceChat(provider, body) {
   const model = getModel(provider, body.model);
   const messages = [{ role: "system", content: SYSTEM_PROMPT }];
@@ -289,7 +295,6 @@ async function huggingfaceChat(provider, body) {
   return data.generated_text || JSON.stringify(data);
 }
 
-// Vision analysis
 async function analyzeVision(body) {
   const provider = getProvider("openai");
   if (!provider || !provider.key) throw new Error("Vision requires OpenAI API key");
@@ -319,109 +324,131 @@ async function analyzeVision(body) {
   return data.choices?.[0]?.message?.content || "No analysis available";
 }
 
-// GitHub repos
 async function fetchGitHubRepos(username) {
   const headers = GITHUB_TOKEN ? { "Authorization": "token " + GITHUB_TOKEN, "User-Agent": "Noctryx-AI" } : { "User-Agent": "Noctryx-AI" };
   const res = await fetch("https://api.github.com/users/" + encodeURIComponent(username) + "/repos?sort=updated&per_page=30", { headers });
   if (!res.ok) throw new Error("GitHub API error: " + res.status);
   const repos = await res.json();
   return repos.map(r => ({
-    name: r.name,
-    description: r.description,
-    language: r.language,
-    stars: r.stargazers_count,
-    forks: r.forks_count,
-    private: r.private,
-    updated_at: r.updated_at,
-    html_url: r.html_url,
+    name: r.name, description: r.description, language: r.language,
+    stars: r.stargazers_count, forks: r.forks_count, private: r.private,
+    updated_at: r.updated_at, html_url: r.html_url,
   }));
 }
 
-// Main handler
 export default async function handler(req, res) {
   const origin = req.headers.origin || "*";
   const headers = corsHeaders(origin);
 
   if (req.method === "OPTIONS") {
-    return new Response(null, { status: 204, headers });
+    res.writeHead(204, headers);
+    res.end();
+    return;
   }
 
-  const url = new URL(req.url, "http://localhost");
-  const path = url.pathname;
+  for (const [k, v] of Object.entries(headers)) res.setHeader(k, v);
 
-  // Health check
+  const path = req.url.split("?")[0];
+
   if (path === "/api/health") {
     const enabled = getEnabledProviders();
-    return new Response(JSON.stringify({ status: "ok", providers: enabled, defaultProvider: DEFAULT_PROVIDER, timestamp: new Date().toISOString() }), { status: 200, headers: { ...headers, "Content-Type": "application/json" } });
+    res.statusCode = 200;
+    res.setHeader("Content-Type", "application/json");
+    res.end(JSON.stringify({ status: "ok", providers: enabled, defaultProvider: DEFAULT_PROVIDER, timestamp: new Date().toISOString() }));
+    return;
   }
 
-  // GitHub repos
   if (path.startsWith("/api/github/")) {
     const username = decodeURIComponent(path.replace("/api/github/", ""));
-    if (!username) return new Response(JSON.stringify({ error: "Username required" }), { status: 400, headers: { ...headers, "Content-Type": "application/json" } });
+    if (!username) {
+      res.statusCode = 400;
+      res.end(JSON.stringify({ error: "Username required" }));
+      return;
+    }
     try {
       const repos = await fetchGitHubRepos(username);
-      return new Response(JSON.stringify(repos), { status: 200, headers: { ...headers, "Content-Type": "application/json" } });
+      res.statusCode = 200;
+      res.end(JSON.stringify(repos));
     } catch (err) {
-      return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: { ...headers, "Content-Type": "application/json" } });
+      res.statusCode = 500;
+      res.end(JSON.stringify({ error: err.message }));
     }
+    return;
   }
 
-  // Vision
   if (path === "/api/vision") {
     try {
-      const body = await req.json();
-      if (!body.imageBase64) return new Response(JSON.stringify({ error: "imageBase64 required" }), { status: 400, headers: { ...headers, "Content-Type": "application/json" } });
+      const body = await parseBody(req);
+      if (!body.imageBase64) {
+        res.statusCode = 400;
+        res.end(JSON.stringify({ error: "imageBase64 required" }));
+        return;
+      }
       const analysis = await analyzeVision(body);
-      return new Response(JSON.stringify({ analysis }), { status: 200, headers: { ...headers, "Content-Type": "application/json" } });
+      res.statusCode = 200;
+      res.end(JSON.stringify({ analysis }));
     } catch (err) {
-      return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: { ...headers, "Content-Type": "application/json" } });
+      res.statusCode = 500;
+      res.end(JSON.stringify({ error: err.message }));
     }
+    return;
   }
 
-  // Chat
   if (path === "/api/chat") {
     try {
-      const body = await req.json();
-      if (!body.message) return new Response(JSON.stringify({ error: "message required" }), { status: 400, headers: { ...headers, "Content-Type": "application/json" } });
+      const body = await parseBody(req);
+      if (!body.message) {
+        res.statusCode = 400;
+        res.end(JSON.stringify({ error: "message required" }));
+        return;
+      }
 
       const providerName = (body.provider || DEFAULT_PROVIDER).toLowerCase();
       const provider = getProvider(providerName);
-      if (!provider) return new Response(JSON.stringify({ error: "Provider not configured: " + providerName }), { status: 400, headers: { ...headers, "Content-Type": "application/json" } });
-      if (!provider.key) return new Response(JSON.stringify({ error: "API key not set for " + provider.name }), { status: 400, headers: { ...headers, "Content-Type": "application/json" } });
-
-      // Streaming
-      if (body.stream !== false && provider.supportsStream) {
-        const encoder = new TextEncoder();
-        const { readable, writable } = new TransformStream();
-        const writer = writable.getWriter();
-
-        const streamPromise = (async () => {
-          try {
-            if (providerName === "anthropic") await streamAnthropic(provider, body, encoder, writer);
-            else if (providerName === "gemini") await streamGemini(provider, body, encoder, writer);
-            else if (providerName === "cohere") await streamCohere(provider, body, encoder, writer);
-            else await streamOpenAI(provider, body, encoder, writer);
-          } catch (err) {
-            writer.write(encoder.encode(encodeSSE({ object: "error", message: err.message })));
-            writer.close();
-          }
-        })();
-
-        return createStreamResponse(readable, headers);
+      if (!provider) {
+        res.statusCode = 400;
+        res.end(JSON.stringify({ error: "Provider not configured: " + providerName }));
+        return;
+      }
+      if (!provider.key) {
+        res.statusCode = 400;
+        res.end(JSON.stringify({ error: "API key not set for " + provider.name }));
+        return;
       }
 
-      // Non-streaming
+      if (body.stream !== false && provider.supportsStream) {
+        res.setHeader("Content-Type", "text/event-stream");
+        res.setHeader("Cache-Control", "no-cache");
+        res.setHeader("Connection", "keep-alive");
+        res.statusCode = 200;
+
+        try {
+          if (providerName === "anthropic") await streamAnthropic(provider, body, res);
+          else if (providerName === "gemini") await streamGemini(provider, body, res);
+          else if (providerName === "cohere") await streamCohere(provider, body, res);
+          else await streamOpenAICompatible(provider, body, res);
+        } catch (err) {
+          res.write(encodeSSE({ object: "error", message: err.message }));
+          res.end();
+        }
+        return;
+      }
+
       let reply;
       if (providerName === "huggingface") reply = await huggingfaceChat(provider, body);
       else reply = await nonStreamingChat(provider, body);
 
-      return new Response(JSON.stringify({ reply, provider: providerName, model: getModel(provider, body.model) }), { status: 200, headers: { ...headers, "Content-Type": "application/json" } });
+      res.statusCode = 200;
+      res.setHeader("Content-Type", "application/json");
+      res.end(JSON.stringify({ reply, provider: providerName, model: getModel(provider, body.model) }));
 
     } catch (err) {
-      return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: { ...headers, "Content-Type": "application/json" } });
+      res.statusCode = 500;
+      res.end(JSON.stringify({ error: err.message }));
     }
+    return;
   }
 
-  return new Response(JSON.stringify({ error: "Not found" }), { status: 404, headers: { ...headers, "Content-Type": "application/json" } });
+  res.statusCode = 404;
+  res.end(JSON.stringify({ error: "Not found" }));
 }
