@@ -39,6 +39,7 @@
 <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
 <style>
 :root{--bg:#060a09;--bg-panel:#0c1210;--bg-panel-2:#0f1614;--bg-panel-3:#131b18;--border:#1a2b25;--border-light:#22332c;--green:#00ff88;--green-dim:#0d7a58;--green-dark:#06281e;--green-glow:rgba(0,255,136,0.22);--text:#e7f5ef;--text-dim:#8ba89d;--text-dimmer:#4e6259;--danger:#ff6b6b;--danger-dim:#5c2a2a;--radius:16px;--radius-sm:12px;--sidebar-width:260px}
+[data-theme="light"]{--bg:#f0f4f3;--bg-panel:#e4eae8;--bg-panel-2:#dde5e2;--bg-panel-3:#d5ddd9;--border:#c5d1cc;--border-light:#b8c4bf;--green:#00a854;--green-dim:#0d7a58;--green-dark:#06281e;--green-glow:rgba(0,255,136,0.12);--text:#1a2b25;--text-dim:#4e6259;--text-dimmer:#8ba89d;--danger:#ff6b6b;--danger-dim:#5c2a2a}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
 body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;-webkit-font-smoothing:antialiased;overflow-x:hidden}
@@ -888,11 +889,24 @@ a{color:inherit;text-decoration:none}
 'use strict';
 
 const Config = {
-  get apiBase() { return localStorage.getItem('noctryx_api_base') || ''; },
-  set apiBase(v) { localStorage.setItem('noctryx_api_base', v.replace(/\/$/, '')); },
-  get githubUser() { return localStorage.getItem('noctryx_github_user') || ''; },
-  set githubUser(v) { localStorage.setItem('noctryx_github_user', v); }
+  get apiBase() { try { return localStorage.getItem('noctryx_api_base') || ''; } catch { return ''; } },
+  set apiBase(v) { try { localStorage.setItem('noctryx_api_base', v.replace(/\/$/, '')); } catch {} },
+  get githubUser() { try { return localStorage.getItem('noctryx_github_user') || ''; } catch { return ''; } },
+  set githubUser(v) { try { localStorage.setItem('noctryx_github_user', v); } catch {} }
 };
+
+function fetchWithTimeout(url, options = {}, timeout = 6000) {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort('timeout'), timeout);
+  return fetch(url, { ...options, signal: controller.signal }).finally(() => clearTimeout(id));
+}
+
+function safeJSONParse(key, fallback) {
+  try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; } catch { return fallback; }
+}
+function safeJSONSet(key, value) {
+  try { localStorage.setItem(key, JSON.stringify(value)); } catch {}
+}
 
 function api(path) { return Config.apiBase + path; }
 
@@ -970,14 +984,14 @@ document.getElementById('centerPulseBtn').addEventListener('click', () => showSc
 /* Memory */
 const Memory = {
   KEY: 'noctryx_memory',
-  all() { try { return JSON.parse(localStorage.getItem(this.KEY)) || []; } catch { return []; } },
+  all() { return safeJSONParse(this.KEY, []); },
   log(text) {
     const events = this.all();
     events.unshift({ text, ts: Date.now() });
-    localStorage.setItem(this.KEY, JSON.stringify(events.slice(0, 200)));
+    safeJSONSet(this.KEY, events.slice(0, 200));
     renderMemory();
   },
-  clear() { localStorage.removeItem(this.KEY); renderMemory(); }
+  clear() { try { localStorage.removeItem(this.KEY); } catch {} renderMemory(); }
 };
 
 function timeAgoLabel(ts) {
@@ -994,6 +1008,7 @@ function dayLabel(ts) {
 function renderMemory() {
   const events = Memory.all();
   const el = document.getElementById('memoryTimeline');
+  if (!el) return;
   if (!events.length) {
     el.innerHTML = '<div class="timeline-empty">No activity yet. Use chat, voice, or vision and it will show up here.</div>';
     return;
@@ -1021,21 +1036,27 @@ document.getElementById('memoryClearBtn').addEventListener('click', () => {
 /* Counters */
 const Counters = {
   KEY: 'noctryx_counters',
-  get() { try { return Object.assign({ messages: 0, scans: 0, tasks: 0, completed: 0 }, JSON.parse(localStorage.getItem(this.KEY))); } catch { return { messages: 0, scans: 0, tasks: 0, completed: 0 }; } },
-  bump(field) { const c = this.get(); c[field] = (c[field] || 0) + 1; localStorage.setItem(this.KEY, JSON.stringify(c)); renderOverview(); renderAnalytics(); }
+  get() { return Object.assign({ messages: 0, scans: 0, tasks: 0, completed: 0 }, safeJSONParse(this.KEY, {})); },
+  bump(field) { const c = this.get(); c[field] = (c[field] || 0) + 1; safeJSONSet(this.KEY, c); renderOverview(); renderAnalytics(); }
 };
 
 function renderOverview() {
   const c = Counters.get();
   const tasks = Tasks.all();
-  document.getElementById('taskCount').textContent = tasks.length;
-  document.getElementById('completedCount').textContent = tasks.filter(t => t.done).length;
-  document.getElementById('messageCount').textContent = c.messages;
-  document.getElementById('researchCount').textContent = c.scans;
+  const taskEl = document.getElementById('taskCount');
+  const compEl = document.getElementById('completedCount');
+  const msgEl = document.getElementById('messageCount');
+  const scanEl = document.getElementById('researchCount');
+  const prodVal = document.getElementById('productivityValue');
+  const prodSub = document.getElementById('productivitySub');
+  if (taskEl) taskEl.textContent = tasks.length;
+  if (compEl) compEl.textContent = tasks.filter(t => t.done).length;
+  if (msgEl) msgEl.textContent = c.messages;
+  if (scanEl) scanEl.textContent = c.scans;
   const total = tasks.length + c.messages + c.scans;
   const pct = total > 0 ? Math.min(100, Math.round((c.completed + c.messages + c.scans) / (total + 5) * 100)) : 0;
-  document.getElementById('productivityValue').textContent = pct + '%';
-  document.getElementById('productivitySub').textContent = pct > 50 ? 'Above average today' : 'Keep going!';
+  if (prodVal) prodVal.textContent = pct + '%';
+  if (prodSub) prodSub.textContent = pct > 50 ? 'Above average today' : 'Keep going!';
   drawOverviewChart();
 }
 
@@ -1047,7 +1068,7 @@ function drawOverviewChart() {
   const w = 400, h = 100;
   const step = w / (data.length - 1);
   const points = data.map((v, i) => `${i * step},${h - (v / max) * (h - 10) - 5}`).join(' ');
-  const area = `M0,${h} L` + data.map((v, i) => `${i * step},${h - (v / max) * (h - 10) - 5}`).join(' L') + ` L${w},${h} Z`;
+  const area = 'M0,' + h + ' L' + data.map((v, i) => `${i * step},${h - (v / max) * (h - 10) - 5}`).join(' L') + ' L' + w + ',' + h + ' Z';
   const line = document.getElementById('overviewChartLine');
   const areaPath = document.getElementById('overviewChartArea');
   if (line) line.setAttribute('points', points);
@@ -1057,8 +1078,8 @@ function drawOverviewChart() {
 /* Tasks */
 const Tasks = {
   KEY: 'noctryx_tasks',
-  all() { try { return JSON.parse(localStorage.getItem(this.KEY)) || []; } catch { return []; } },
-  save(list) { localStorage.setItem(this.KEY, JSON.stringify(list)); renderTasks(); renderOverview(); },
+  all() { return safeJSONParse(this.KEY, []); },
+  save(list) { safeJSONSet(this.KEY, list); renderTasks(); renderOverview(); },
   add(text) { const list = this.all(); list.unshift({ id: Date.now(), text, done: false }); this.save(list); Memory.log('Added task: "' + text + '"'); Counters.bump('tasks'); },
   toggle(id) { const list = this.all().map(t => t.id === id ? { ...t, done: !t.done } : t); this.save(list); if (list.find(t=>t.id===id)?.done) Counters.bump('completed'); },
   remove(id) { this.save(this.all().filter(t => t.id !== id)); }
@@ -1067,6 +1088,7 @@ const Tasks = {
 function renderTasks() {
   const list = Tasks.all();
   const el = document.getElementById('taskList');
+  if (!el) return;
   if (!list.length) { el.innerHTML = '<div class="task-empty">No tasks yet. Add one above.</div>'; return; }
   el.innerHTML = list.map(t => `
     <div class="task-item">
@@ -1130,6 +1152,7 @@ function renderMarkdown(text) {
 }
 
 async function renderMermaidBlocks(container) {
+  if (!window.mermaid) return;
   const els = container.querySelectorAll('.mermaid-src');
   for (let i = 0; i < els.length; i++) {
     const src = els[i], outId = src.id + '-out', out = document.getElementById(outId);
@@ -1140,7 +1163,7 @@ async function renderMermaidBlocks(container) {
 }
 
 function isNearBottom(el) { return el.scrollHeight - el.scrollTop - el.clientHeight < 120; }
-function smartScroll(el, force) { if (force || isNearBottom(el)) el.scrollTo({ top: el.scrollHeight, behavior: force ? 'instant' : 'auto' }); }
+function smartScroll(el, force) { if (!el) return; if (force || isNearBottom(el)) el.scrollTo({ top: el.scrollHeight, behavior: force ? 'auto' : 'smooth' }); }
 
 function _buildActions(id) {
   return `<div class="nx-actions" data-mid="${id}">
@@ -1175,28 +1198,32 @@ function appendMessage(role, text, isError) {
 let _sId = null, _sBubble = null, _sBuf = '', _sTimer = null;
 function startStreamMessage() {
   const c = document.getElementById('chatContainer');
+  if (!c) return;
   const w = document.getElementById('chatWelcome'); if (w) w.remove();
   _sId = 'm' + Date.now() + Math.random().toString(36).slice(2,6); _sBuf = '';
   const wrap = document.createElement('div'); wrap.className = 'chat-msg'; wrap.id = _sId;
   wrap.innerHTML = `<div class="chat-msg-inner"><div class="chat-msg-avatar ai">NX</div><div class="chat-msg-body"><div class="chat-bubble nx-cursor" id="sBubble"></div></div></div>`;
   c.appendChild(wrap); _sBubble = document.getElementById('sBubble');
   smartScroll(c, true);
-  document.getElementById('nxStopBtn').classList.add('show');
-  document.getElementById('nxContinueBtn').classList.remove('show');
+  const stopBtn = document.getElementById('nxStopBtn');
+  const contBtn = document.getElementById('nxContinueBtn');
+  if (stopBtn) stopBtn.classList.add('show');
+  if (contBtn) contBtn.classList.remove('show');
 }
 function updateStreamMessage(token) {
   _sBuf += token;
   if (_sTimer) clearTimeout(_sTimer);
   _sTimer = setTimeout(() => {
     if (!_sBubble) return;
-    _sBubble.innerHTML = renderMarkdown(_sBuf);
-    smartScroll(document.getElementById('chatContainer'));
+    try { _sBubble.innerHTML = renderMarkdown(_sBuf); } catch(e) { _sBubble.textContent = _sBuf; }
+    const c = document.getElementById('chatContainer');
+    if (c) smartScroll(c);
   }, 60);
 }
 function finishStreamMessage(stopped) {
   if (_sTimer) clearTimeout(_sTimer);
   if (!_sBubble || !_sId) return;
-  _sBubble.innerHTML = renderMarkdown(_sBuf);
+  try { _sBubble.innerHTML = renderMarkdown(_sBuf); } catch(e) { _sBubble.textContent = _sBuf; }
   _sBubble.classList.remove('nx-cursor');
   const wrapEl = document.getElementById(_sId);
   if (wrapEl) {
@@ -1204,9 +1231,12 @@ function finishStreamMessage(stopped) {
     if (mw) mw.insertAdjacentHTML('beforeend', _buildActions(_sId));
     renderMermaidBlocks(wrapEl);
   }
-  document.getElementById('nxStopBtn').classList.remove('show');
-  if (stopped) document.getElementById('nxContinueBtn').classList.add('show');
-  smartScroll(document.getElementById('chatContainer'), true);
+  const stopBtn = document.getElementById('nxStopBtn');
+  const contBtn = document.getElementById('nxContinueBtn');
+  const chatContainer = document.getElementById('chatContainer');
+  if (stopBtn) stopBtn.classList.remove('show');
+  if (stopped && contBtn) contBtn.classList.add('show');
+  if (chatContainer) smartScroll(chatContainer, true);
   const reply = _sBuf;
   ChatState.history.push({ role: 'assistant', content: reply });
   ChatState.lastReply = reply;
@@ -1278,13 +1308,11 @@ const ChatState = {
   lastReply: '',
   get STORAGE_KEY() { return 'noctryx_chat_history'; },
   load() { 
-    try { 
-      const saved = localStorage.getItem(this.STORAGE_KEY); 
-      if (saved) this.history = JSON.parse(saved); 
-    } catch(e) {} 
+    const saved = safeJSONParse(this.STORAGE_KEY, null); 
+    if (saved) this.history = saved; 
   },
   save() { 
-    try { localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.history)); } catch(e) {} 
+    safeJSONSet(this.STORAGE_KEY, this.history); 
   },
   clear() { 
     this.history = []; this.lastReply = ''; 
@@ -1294,7 +1322,7 @@ const ChatState = {
 let _sAbort = null;
 
 async function sendChatMessage(message) {
-  if (ChatState.isStreaming && _sAbort) { _sAbort.abort(); ChatState.isStreaming = false; }
+  if (ChatState.isStreaming && _sAbort) { try { _sAbort.abort(); } catch(e) {} ChatState.isStreaming = false; }
   if (!Config.apiBase) {
     appendMessage('user', message);
     appendMessage('assistant', 'No backend configured. Go to Settings to set your backend URL.', true);
@@ -1308,11 +1336,11 @@ async function sendChatMessage(message) {
   setAgentStatus('code', true);
   _sAbort = new AbortController();
   try {
-    const res = await fetch(api('/api/chat'), {
+    const res = await fetchWithTimeout(api('/api/chat'), {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ message: message, history: ChatState.history, stream: true }),
       signal: _sAbort.signal
-    });
+    }, 60000);
     const ct = res.headers.get('content-type') || '';
     if (ct.indexOf('text/event-stream') !== -1 || ct.indexOf('text/plain') !== -1) {
       document.getElementById('typingIndicator').classList.remove('active');
@@ -1459,15 +1487,17 @@ async function startVoiceVisualizer() {
     const source = Voice.audioCtx.createMediaStreamSource(Voice.micStream);
     Voice.analyser = Voice.audioCtx.createAnalyser(); Voice.analyser.fftSize = 64;
     source.connect(Voice.analyser); drawVisualizer();
-  } catch (err) { toast('Microphone access denied', true); }
+  } catch (err) { toast('Microphone access denied', true); Voice.analyser = null; }
 }
 
 function drawVisualizer() {
   const canvas = document.getElementById('voiceVisualizer');
+  if (!canvas || !Voice.analyser) return;
   const ctx = canvas.getContext('2d');
   const bufferLength = Voice.analyser.frequencyBinCount;
   const dataArray = new Uint8Array(bufferLength);
   function draw() {
+    if (!Voice.analyser) return;
     Voice.rafId = requestAnimationFrame(draw);
     Voice.analyser.getByteFrequencyData(dataArray);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -1491,8 +1521,10 @@ function speak(text) {
   if (Voice.muted || !window.speechSynthesis) return;
   window.speechSynthesis.cancel();
   const utter = new SpeechSynthesisUtterance(text); utter.rate = 1.0;
-  document.getElementById('voiceOrb').classList.add('speaking');
-  utter.onend = () => document.getElementById('voiceOrb').classList.remove('speaking');
+  const orb = document.getElementById('voiceOrb');
+  if (orb) orb.classList.add('speaking');
+  utter.onend = () => { if (orb) orb.classList.remove('speaking'); };
+  utter.onerror = () => { if (orb) orb.classList.remove('speaking'); };
   window.speechSynthesis.speak(utter);
 }
 
@@ -1501,7 +1533,7 @@ async function handleVoiceTurn(transcript) {
   setVoiceStatus('Thinking...');
   if (!Config.apiBase) { setVoiceStatus('Set a backend URL in Settings first'); return; }
   try {
-    const res = await fetch(api('/api/chat'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: transcript, history: ChatState.history }) });
+    const res = await fetchWithTimeout(api('/api/chat'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: transcript, history: ChatState.history }) }, 30000);
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'HTTP ' + res.status);
     setVoiceStatus('Noctryx is speaking...');
@@ -1517,24 +1549,28 @@ async function handleVoiceTurn(transcript) {
 function startVoiceSession() {
   if (!SpeechRecognitionCtor) { toast('Speech recognition not supported', true); return; }
   Voice.active = true;
-  document.getElementById('voiceOrb').classList.add('listening');
-  document.getElementById('voiceMicBtn').classList.add('active');
+  const orb = document.getElementById('voiceOrb');
+  const micBtn = document.getElementById('voiceMicBtn');
+  if (orb) orb.classList.add('listening');
+  if (micBtn) micBtn.classList.add('active');
   startVoiceVisualizer();
   Voice.recognition = new SpeechRecognitionCtor();
   Voice.recognition.lang = 'en-US'; Voice.recognition.continuous = true; Voice.recognition.interimResults = false;
   setVoiceStatus('Listening...');
   Voice.recognition.onresult = e => { handleVoiceTurn(e.results[e.results.length - 1][0].transcript); };
   Voice.recognition.onerror = e => { if (e.error !== 'no-speech') toast('Mic error: ' + e.error, true); };
-  Voice.recognition.onend = () => { if (Voice.active) Voice.recognition.start(); };
-  Voice.recognition.start();
+  Voice.recognition.onend = () => { if (Voice.active && Voice.recognition) { try { Voice.recognition.start(); } catch(e) {} } };
+  try { Voice.recognition.start(); } catch(e) { toast('Could not start voice recognition', true); Voice.active = false; }
 }
 
 function stopVoiceSession() {
   Voice.active = false;
-  document.getElementById('voiceOrb').classList.remove('listening', 'speaking');
-  document.getElementById('voiceMicBtn').classList.remove('active');
+  const orb = document.getElementById('voiceOrb');
+  const micBtn = document.getElementById('voiceMicBtn');
+  if (orb) orb.classList.remove('listening', 'speaking');
+  if (micBtn) micBtn.classList.remove('active');
   try { Voice.recognition?.stop(); } catch {}
-  window.speechSynthesis?.cancel();
+  try { window.speechSynthesis?.cancel(); } catch {}
   stopVoiceVisualizer();
   setVoiceStatus('Tap the mic to start');
 }
@@ -1561,6 +1597,28 @@ document.getElementById('saveSettingsBtn').addEventListener('click', () => {
   refreshBackendStatus();
 });
 
+function setImmediateStatus() {
+  const pill = document.getElementById('headerStatusPill');
+  const text = document.getElementById('headerStatusText');
+  const dot = document.getElementById('aiStatusDot');
+  const aiText = document.getElementById('aiStatusText');
+  const homeBackend = document.getElementById('homeBackendStatus');
+  const homeIcon = document.getElementById('homeStatusIcon');
+  const sidebarBackend = document.getElementById('sidebarBackend');
+  if (!Config.apiBase) {
+    if (pill) { pill.className = 'status-pill'; text.textContent = 'READY'; }
+    if (dot) { dot.className = 'status-dot'; aiText.textContent = 'BACKEND: STANDALONE'; }
+    if (homeBackend) { homeBackend.textContent = 'STANDALONE'; homeBackend.className = 'status-backend-value'; }
+    if (homeIcon) { homeIcon.className = 'status-ring-icon online'; homeIcon.innerHTML = '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>'; }
+    if (sidebarBackend) { sidebarBackend.textContent = 'Standalone'; sidebarBackend.className = 'sidebar-status-value live'; }
+  } else {
+    if (pill) { pill.className = 'status-pill'; text.textContent = 'CHECKING'; }
+    if (dot) { dot.className = 'status-dot'; aiText.textContent = 'BACKEND: CHECKING'; }
+    if (homeBackend) { homeBackend.textContent = 'CHECKING'; homeBackend.className = 'status-backend-value'; }
+    if (sidebarBackend) { sidebarBackend.textContent = 'Checking...'; sidebarBackend.className = 'sidebar-status-value'; }
+  }
+}
+
 async function loadSettingsScreen() {
   const backendInput = document.getElementById('backendUrlInput');
   const githubInput = document.getElementById('githubUserInput');
@@ -1573,13 +1631,14 @@ async function loadSettingsScreen() {
   if (camEl) camEl.textContent = navigator.mediaDevices?.getUserMedia ? 'Supported' : 'Not supported';
   if (connEl) connEl.textContent = navigator.onLine ? (navigator.connection?.effectiveType || 'Online') : 'Offline';
   navigator.storage?.estimate?.().then(est => {
-    const used = (est.usage / 1e6).toFixed(1), quota = (est.quota / 1e6).toFixed(0);
+    const used = est.usage ? (est.usage / 1e6).toFixed(1) : '0.0';
+    const quota = est.quota ? (est.quota / 1e6).toFixed(0) : '?';
     const el = document.getElementById('sysStorageQuota'); if (el) el.textContent = used + 'MB / ' + quota + 'MB';
   }).catch(() => { const el = document.getElementById('sysStorageQuota'); if (el) el.textContent = 'Not available'; });
   refreshBackendStatus();
 }
 
-function refreshBackendStatus() {
+async function refreshBackendStatus() {
   const el = document.getElementById('sysBackendStatus');
   const pill = document.getElementById('headerStatusPill');
   const text = document.getElementById('headerStatusText');
@@ -1588,24 +1647,8 @@ function refreshBackendStatus() {
   const homeBackend = document.getElementById('homeBackendStatus');
   const homeIcon = document.getElementById('homeStatusIcon');
   const sidebarBackend = document.getElementById('sidebarBackend');
-  if (!Config.apiBase) {
-    if (el) el.textContent = 'Not configured';
-    if (pill) { pill.className = 'status-pill offline'; text.textContent = 'OFFLINE'; }
-    if (dot) { dot.className = 'status-dot offline'; aiText.textContent = 'BACKEND: NOT SET'; }
-    if (homeBackend) { homeBackend.textContent = 'NOT SET'; homeBackend.className = 'status-backend-value offline'; }
-    if (homeIcon) { homeIcon.className = 'status-ring-icon'; homeIcon.innerHTML = '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="12" x2="4.01" y2="12"/><line x1="8" y1="12" x2="8.01" y2="12"/><line x1="12" y1="12" x2="12.01" y2="12"/><line x1="16" y1="12" x2="16.01" y2="12"/><line x1="20" y1="12" x2="20.01" y2="12"/></svg>'; }
-    if (sidebarBackend) { sidebarBackend.textContent = 'Not set'; sidebarBackend.className = 'sidebar-status-value'; }
-    return;
-  }
-  // Try /api/health first, then fallback to base URL HEAD request
-  let triedFallback = false;
-  async function tryPing(url) {
-    const start = performance.now();
-    const res = await fetch(url, { method: 'GET', mode: 'cors', cache: 'no-store' });
-    const latency = Math.round(performance.now() - start);
-    return { res, latency };
-  }
-  async function markOnline(latency, providers) {
+
+  function markOnline(latency, providers) {
     if (pill) { pill.className = 'status-pill'; text.textContent = 'ONLINE'; }
     if (dot) { dot.className = 'status-dot'; aiText.textContent = 'BACKEND: ONLINE'; }
     if (homeBackend) { homeBackend.textContent = 'ONLINE'; homeBackend.className = 'status-backend-value'; }
@@ -1617,8 +1660,7 @@ function refreshBackendStatus() {
     const latSub = document.getElementById('homeLatencySub'); if (latSub) latSub.textContent = 'Optimal';
     const sideLat = document.getElementById('sidebarLatency'); if (sideLat) sideLat.textContent = latency + 'ms';
   }
-  async function markConfigured() {
-    // URL is set but health endpoint doesn't exist — still show as configured
+  function markConfigured() {
     if (pill) { pill.className = 'status-pill'; text.textContent = 'CONFIGURED'; }
     if (dot) { dot.className = 'status-dot'; aiText.textContent = 'BACKEND: CONFIGURED'; }
     if (homeBackend) { homeBackend.textContent = 'CONFIGURED'; homeBackend.className = 'status-backend-value'; }
@@ -1629,7 +1671,7 @@ function refreshBackendStatus() {
     const latSub = document.getElementById('homeLatencySub'); if (latSub) latSub.textContent = 'N/A';
     const sideLat = document.getElementById('sidebarLatency'); if (sideLat) sideLat.textContent = '--';
   }
-  async function markOffline(reason) {
+  function markOffline(reason) {
     if (pill) { pill.className = 'status-pill offline'; text.textContent = 'OFFLINE'; }
     if (dot) { dot.className = 'status-dot offline'; aiText.textContent = 'BACKEND: OFFLINE'; }
     if (homeBackend) { homeBackend.textContent = 'OFFLINE'; homeBackend.className = 'status-backend-value offline'; }
@@ -1640,24 +1682,27 @@ function refreshBackendStatus() {
     const latSub = document.getElementById('homeLatencySub'); if (latSub) latSub.textContent = '--';
     const sideLat = document.getElementById('sidebarLatency'); if (sideLat) sideLat.textContent = '--';
   }
+
+  if (!Config.apiBase) {
+    markConfigured(); // Standalone mode shows as ready
+    return;
+  }
+
   try {
-    const { res, latency } = await tryPing(api('/api/health'));
+    const start = performance.now();
+    const res = await fetchWithTimeout(api('/api/health'), { method: 'GET', mode: 'cors', cache: 'no-store' }, 6000);
+    const latency = Math.round(performance.now() - start);
     if (res.ok) {
       const data = await res.json().catch(() => ({}));
       markOnline(latency, data.providers ? data.providers.join(', ') : 'Unknown');
       return;
     }
-    // Health endpoint returned non-OK (e.g. 404) — try base URL as fallback
-    const baseRes = await fetch(Config.apiBase, { method: 'HEAD', mode: 'cors', cache: 'no-store' }).catch(() => null);
-    if (baseRes && (baseRes.ok || baseRes.status === 405)) {
-      markConfigured();
-    } else {
-      markOffline('No response');
-    }
+    const baseRes = await fetchWithTimeout(Config.apiBase, { method: 'HEAD', mode: 'cors', cache: 'no-store' }, 5000).catch(() => null);
+    if (baseRes && (baseRes.ok || baseRes.status === 405)) { markConfigured(); }
+    else { markOffline('No response'); }
   } catch (err) {
-    // Network/CORS error — try base URL HEAD
     try {
-      const baseRes = await fetch(Config.apiBase, { method: 'HEAD', mode: 'cors', cache: 'no-store' });
+      const baseRes = await fetchWithTimeout(Config.apiBase, { method: 'HEAD', mode: 'cors', cache: 'no-store' }, 5000);
       if (baseRes.ok || baseRes.status === 405) { markConfigured(); }
       else { markOffline('Unreachable'); }
     } catch {
@@ -1668,14 +1713,18 @@ function refreshBackendStatus() {
 
 /* Agent status helpers */
 function setAgentStatus(agent, active) {
-  const statusEl = document.getElementById('agentStatus' + agent.charAt(0).toUpperCase() + agent.slice(1));
-  const descEl = document.getElementById('agentDesc' + agent.charAt(0).toUpperCase() + agent.slice(1));
-  const detailStatusEl = document.getElementById('agentDetailStatus' + agent.charAt(0).toUpperCase() + agent.slice(1));
+  const cap = agent.charAt(0).toUpperCase() + agent.slice(1);
+  const statusEl = document.getElementById('agentStatus' + cap);
+  const descEl = document.getElementById('agentDesc' + cap);
+  const detailStatusEl = document.getElementById('agentDetailStatus' + cap);
   if (statusEl) {
     statusEl.className = 'agent-card-status ' + (active ? 'active' : 'idle');
     statusEl.innerHTML = '<span class="dot"></span>' + (active ? 'Active' : 'Idle');
   }
-  if (descEl) descEl.textContent = active ? 'Processing...' : (agent === 'research' ? 'Scanning web...' : agent === 'code' ? 'Writing code...' : agent === 'vision' ? 'Analyzing...' : 'Running tasks...');
+  if (descEl) {
+    const idleDesc = agent === 'research' ? 'Scanning web...' : agent === 'code' ? 'Writing code...' : agent === 'vision' ? 'Analyzing...' : 'Running tasks...';
+    descEl.textContent = active ? 'Processing...' : idleDesc;
+  }
   if (detailStatusEl) {
     detailStatusEl.className = 'agent-detail-status ' + (active ? 'active' : 'idle');
     detailStatusEl.innerHTML = '<span class="dot"></span>' + (active ? 'Active' : 'Idle');
@@ -1695,10 +1744,14 @@ function renderAgentsDetail() {
 /* Analytics */
 function renderAnalytics() {
   const c = Counters.get();
-  document.getElementById('analyticsMessages').textContent = c.messages;
-  document.getElementById('analyticsScans').textContent = c.scans;
-  document.getElementById('analyticsTasks').textContent = c.tasks;
-  document.getElementById('analyticsDone').textContent = c.completed;
+  const msgEl = document.getElementById('analyticsMessages');
+  const scanEl = document.getElementById('analyticsScans');
+  const taskEl = document.getElementById('analyticsTasks');
+  const doneEl = document.getElementById('analyticsDone');
+  if (msgEl) msgEl.textContent = c.messages;
+  if (scanEl) scanEl.textContent = c.scans;
+  if (taskEl) taskEl.textContent = c.tasks;
+  if (doneEl) doneEl.textContent = c.completed;
   drawAnalyticsCharts();
 }
 
@@ -1707,7 +1760,6 @@ function drawAnalyticsCharts() {
   const data = [];
   for (let i = 0; i < days; i++) {
     const d = new Date(); d.setDate(d.getDate() - (days - 1 - i));
-    const dayKey = d.toISOString().split('T')[0];
     const count = Math.max(0, Math.round((Counters.get().messages / days) + (Math.random() - 0.5) * 4));
     data.push(count);
   }
@@ -1736,23 +1788,31 @@ function drawAnalyticsCharts() {
 /* System info */
 function updateSystemInfo() {
   navigator.storage?.estimate?.().then(est => {
-    const usedMb = (est.usage / 1e6).toFixed(1);
-    const quotaMb = (est.quota / 1e6).toFixed(0);
-    const pct = Math.round((est.usage / est.quota) * 100);
-    document.getElementById('homeStorageVal').textContent = pct + '%';
-    document.getElementById('homeStorageSub').textContent = usedMb + 'MB / ' + quotaMb + 'MB';
+    const used = est.usage || 0;
+    const quota = est.quota || 1;
+    const usedMb = (used / 1e6).toFixed(1);
+    const quotaMb = (quota / 1e6).toFixed(0);
+    const pct = quota > 0 ? Math.round((used / quota) * 100) : 0;
+    const valEl = document.getElementById('homeStorageVal');
+    const subEl = document.getElementById('homeStorageSub');
+    if (valEl) valEl.textContent = pct + '%';
+    if (subEl) subEl.textContent = usedMb + 'MB / ' + quotaMb + 'MB';
   }).catch(() => {
-    document.getElementById('homeStorageVal').textContent = '--';
-    document.getElementById('homeStorageSub').textContent = 'N/A';
+    const valEl = document.getElementById('homeStorageVal');
+    const subEl = document.getElementById('homeStorageSub');
+    if (valEl) valEl.textContent = '--';
+    if (subEl) subEl.textContent = 'N/A';
   });
 
   const conn = navigator.connection;
-  if (conn) {
-    document.getElementById('homeNetworkVal').textContent = 'Excellent';
-    document.getElementById('homeNetworkSub').textContent = (conn.downlink || '?') + ' Mbps';
-  } else {
-    document.getElementById('homeNetworkVal').textContent = 'Online';
-    document.getElementById('homeNetworkSub').textContent = navigator.onLine ? 'Connected' : 'Offline';
+  const netVal = document.getElementById('homeNetworkVal');
+  const netSub = document.getElementById('homeNetworkSub');
+  if (conn && netVal && netSub) {
+    netVal.textContent = 'Excellent';
+    netSub.textContent = (conn.downlink || '?') + ' Mbps';
+  } else if (netVal && netSub) {
+    netVal.textContent = 'Online';
+    netSub.textContent = navigator.onLine ? 'Connected' : 'Offline';
   }
 }
 
@@ -1764,10 +1824,11 @@ function updateUptime() {
   const m = String(Math.floor((elapsed % 3600) / 60)).padStart(2, '0');
   const s = String(elapsed % 60).padStart(2, '0');
   const str = h + ':' + m + ':' + s;
-  document.getElementById('homeSessionVal').textContent = str;
-  document.getElementById('sidebarUptime').textContent = str;
+  const homeSession = document.getElementById('homeSessionVal');
+  const sidebarUptime = document.getElementById('sidebarUptime');
+  if (homeSession) homeSession.textContent = str;
+  if (sidebarUptime) sidebarUptime.textContent = str;
 
-  // Update uptime chart
   const line = document.getElementById('sidebarUptimeLine');
   if (line) {
     const pts = line.getAttribute('points') || '';
@@ -1789,35 +1850,61 @@ function updateGreeting() {
 
 /* Init */
 function loadChatHistory() {
-  ChatState.load();
   if (!ChatState.history.length) return;
   const welcome = document.getElementById('chatWelcome');
   if (welcome) welcome.remove();
-  const container = document.getElementById('chatContainer');
-  // Render all persisted messages
-  for (const msg of ChatState.history) {
-    if (msg.role === 'user') {
-      appendMessage('user', msg.content);
-    } else if (msg.role === 'assistant') {
-      appendMessage('assistant', msg.content);
+  const msgs = ChatState.history.filter(m => m.role === 'user' || m.role === 'assistant');
+  let i = 0;
+  function renderChunk() {
+    const chunk = msgs.slice(i, i + 3);
+    for (const msg of chunk) {
+      try { appendMessage(msg.role, msg.content); } catch(e) { console.error('Failed to render message', e); }
     }
+    i += 3;
+    if (i < msgs.length) requestAnimationFrame(renderChunk);
   }
+  renderChunk();
 }
 
 function init() {
-  mermaid.initialize({ startOnLoad: false, theme: 'dark', securityLevel: 'strict' });
+  // Global error handlers to prevent UI freezing from unhandled errors
+  window.addEventListener('error', e => {
+    console.error('Global error:', e.error);
+    toast('UI Error: ' + (e.error?.message || 'Unknown'), true);
+    e.preventDefault();
+  });
+  window.addEventListener('unhandledrejection', e => {
+    console.error('Unhandled rejection:', e.reason);
+    toast('Async Error: ' + (e.reason?.message || 'Unknown'), true);
+    e.preventDefault();
+  });
+
+  // Initialize external libraries safely
+  try { if (window.mermaid) mermaid.initialize({ startOnLoad: false, theme: 'dark', securityLevel: 'strict' }); } catch(e) { console.warn('Mermaid init failed', e); }
+
   ChatState.load();
-  loadChatHistory();
+  // Defer history loading so UI renders immediately
+  setTimeout(() => {
+    try { loadChatHistory(); } catch(e) { console.error('History load failed', e); }
+  }, 50);
+
   updateGreeting();
   updateSystemInfo();
   renderOverview();
   renderTasks();
   renderMemory();
   renderAnalytics();
-  refreshBackendStatus();
+  setImmediateStatus();
+  // Defer backend check so status is visible immediately
+  setTimeout(() => {
+    try { refreshBackendStatus(); } catch(e) { console.error('Backend check failed', e); }
+  }, 100);
+
   setInterval(updateUptime, 1000);
   setInterval(updateSystemInfo, 30000);
-  setInterval(refreshBackendStatus, 30000);
+  setInterval(() => {
+    try { refreshBackendStatus(); } catch(e) { console.error('Backend check failed', e); }
+  }, 30000);
   setInterval(() => { if (currentScreen === 'home') renderOverview(); }, 5000);
 
   // Keyboard shortcut
@@ -1840,6 +1927,20 @@ function init() {
     if (now - lastTouch <= 300) e.preventDefault();
     lastTouch = now;
   }, { passive: false });
+
+  // Theme toggle
+  const themeBtn = document.getElementById('themeToggleBtn');
+  if (themeBtn) {
+    themeBtn.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', next);
+      try { localStorage.setItem('noctryx_theme', next); } catch {}
+      toast('Theme: ' + next.charAt(0).toUpperCase() + next.slice(1));
+    });
+  }
+  const savedTheme = localStorage.getItem('noctryx_theme');
+  if (savedTheme) document.documentElement.setAttribute('data-theme', savedTheme);
 }
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
