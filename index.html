@@ -162,454 +162,342 @@ a{color:inherit;text-decoration:none}
 .status-cell-sub{font-size:10px;color:var(--text-dimmer)}
 .status-center{display:flex;flex-direction:column;align-items:center;padding:16px 0 4px;gap:6px;grid-column:1 / -1}
 .status-ring-outer{width:70px;height:70px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;position:relative}
-.status-ring-pulse{position:absolute;inset:-6px;border-radius:50%;border:1px solid rgba(0,255,136,0.15);animation:statusPulse 2s ease-in-out infinite}
-.status-ring-icon{color:var(--text-dimmer)}
+.status-ring-pulse{position:absolute;inset:-4px;border-radius:50%;border:2px solid var(--green);opacity:0;animation:ring-pulse 2s ease-out infinite}
+.status-ring-icon{color:var(--text-dimmer);transition:all .3s ease}
 .status-ring-icon.online{color:var(--green)}
-.status-backend-label{font-size:9px;letter-spacing:1.5px;color:var(--text-dimmer);text-transform:uppercase;margin-top:2px}
-.status-backend-value{font-size:12px;font-weight:700;color:var(--green);letter-spacing:1px;text-transform:uppercase}
+.status-backend-label{font-size:9px;letter-spacing:1px;color:var(--text-dimmer);text-transform:uppercase}
+.status-backend-value{font-size:13px;font-weight:800;color:var(--text-dim);letter-spacing:1px}
+.status-backend-value.online{color:var(--green)}
 .status-backend-value.offline{color:var(--danger)}
-.overview-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
-.overview-stat{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 4px}
-.overview-stat-icon{width:32px;height:32px;border-radius:8px;background:var(--bg-panel-2);display:flex;align-items:center;justify-content:center;color:var(--green)}
-.overview-stat-num{font-size:18px;font-weight:700;color:var(--text);line-height:1}
-.overview-stat-label{font-size:9px;color:var(--text-dim);text-align:center;letter-spacing:.3px}
-.overview-chart-wrap{height:100px;width:100%;position:relative;margin-top:8px}
-.overview-chart{position:absolute;inset:0}
-.overview-productivity{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px;background:var(--bg-panel-2);border-radius:10px;border:1px solid var(--border);margin-top:10px}
-.overview-productivity-label{font-size:9px;letter-spacing:1px;color:var(--text-dimmer);text-transform:uppercase}
-.overview-productivity-value{font-size:28px;font-weight:800;color:var(--green);line-height:1;margin-top:4px}
-.overview-productivity-sub{font-size:10px;color:var(--text-dim);margin-top:2px}
-.agents-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.agent-card{display:flex;align-items:center;gap:10px;padding:12px;background:var(--bg-panel-2);border-radius:var(--radius-sm);border:1px solid var(--border);cursor:pointer;transition:all .15s}
-.agent-card:hover{border-color:var(--border-light)}
-.agent-card:active{transform:scale(.98)}
-.agent-card-icon{width:40px;height:40px;border-radius:10px;background:var(--bg-panel);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--green);flex-shrink:0}
+.agents-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.agent-card{display:flex;align-items:center;gap:10px;padding:12px;background:var(--bg-panel-2);border-radius:12px;border:1px solid var(--border);transition:all .2s}
+.agent-card:hover{border-color:var(--green-dim);background:var(--bg-panel-3)}
+.agent-card-icon{width:32px;height:32px;border-radius:8px;background:var(--bg-panel-3);display:flex;align-items:center;justify-content:center;color:var(--green);border:1px solid var(--border)}
 .agent-card-info{flex:1;min-width:0}
-.agent-card-name{font-size:11px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.agent-card-desc{font-size:9px;color:var(--text-dimmer);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.agent-card-status{display:flex;align-items:center;gap:4px;font-size:9px;letter-spacing:.5px;text-transform:uppercase;font-weight:600;margin-top:4px}
-.agent-card-status .dot{width:5px;height:5px;border-radius:50%}
-.agent-card-status.active{color:var(--green)}
-.agent-card-status.active .dot{background:var(--green);box-shadow:0 0 6px var(--green)}
+.agent-card-name{font-size:10px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.agent-card-desc{font-size:8px;color:var(--text-dimmer);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.agent-card-status{display:flex;align-items:center;gap:4px;font-size:8px;margin-top:4px;font-weight:600}
 .agent-card-status.idle{color:var(--text-dimmer)}
-.agent-card-status.idle .dot{background:var(--text-dimmer)}
-.projects-list-home{display:flex;flex-direction:column;gap:8px}
-.project-home-row{display:flex;align-items:center;gap:12px;padding:12px;background:var(--bg-panel-2);border-radius:var(--radius-sm);border:1px solid var(--border);transition:all .15s}
-.project-home-row:hover{border-color:var(--border-light)}
-.project-home-icon{width:36px;height:36px;border-radius:10px;background:var(--bg-panel);display:flex;align-items:center;justify-content:center;color:var(--green);flex-shrink:0;font-size:14px}
+.agent-card-status.active{color:var(--green)}
+.agent-card-status .dot{width:4px;height:4px;border-radius:50%;background:currentColor}
+.agent-card-status.active .dot{box-shadow:0 0 4px var(--green);animation:pulse-dot 1.5s infinite}
+.projects-list-home{display:flex;flex-direction:column;gap:10px}
+.project-home-row{display:flex;align-items:center;gap:12px;padding:4px 0}
+.project-home-icon{width:34px;height:34px;border-radius:8px;background:var(--bg-panel-2);display:flex;align-items:center;justify-content:center;color:var(--text-dim);border:1px solid var(--border)}
 .project-home-info{flex:1;min-width:0}
-.project-home-name{font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.project-home-name{font-size:11px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .project-home-meta{font-size:9px;color:var(--text-dimmer);margin-top:2px}
-.project-home-bar{height:3px;border-radius:2px;background:rgba(255,255,255,0.05);margin-top:6px;overflow:hidden}
-.project-home-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--green-dim),var(--green));transition:width .5s ease}
-.project-home-pct{font-size:10px;color:var(--green);font-weight:700;flex-shrink:0;margin-left:8px}
-.projects-empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 0;gap:4px}
-.projects-empty-state .empty-text{font-size:12px;color:var(--text-dim)}
-.projects-empty-state .empty-sub{font-size:10px;color:var(--text-dimmer)}
-.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;display:flex;justify-content:space-around;align-items:center;padding:8px 4px calc(8px + env(safe-area-inset-bottom));background:rgba(6,10,9,0.95);backdrop-filter:blur(12px);border-top:1px solid var(--border);z-index:100;gap:4px}
-.nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--text-dimmer);flex:1;padding:4px 0;border-radius:10px;transition:all .15s;-webkit-tap-highlight-color:transparent}
-.nav-item:active{background:var(--bg-panel-2)}
-.nav-item:hover{color:var(--text-dim)}
-.nav-item.active{color:var(--green)}
-.nav-item svg{width:20px;height:20px}
-.nav-item span{font-size:9px;letter-spacing:.3px}
-.nav-center{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--green-dim),var(--green-dark));border:2px solid var(--green-dim);display:flex;align-items:center;justify-content:center;color:var(--green);margin-top:-20px;box-shadow:0 0 20px rgba(0,255,136,0.15);position:relative;overflow:hidden}
-.nav-center::before{content:'';position:absolute;inset:0;border-radius:50%;border:1px solid rgba(0,255,136,0.3);animation:ring 3s ease-in-out infinite}
-.nav-center:active{transform:scale(.95)}
-.nav-center svg{width:22px;height:22px}
-
-.chat-container{flex:1;overflow-y:auto;overflow-x:hidden;padding:12px 0;display:flex;flex-direction:column;scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
-.chat-welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:60px 24px 40px;opacity:.8}
-.chat-welcome-title{font-size:20px;font-weight:800;color:var(--green);letter-spacing:2px}
-.chat-welcome-sub{font-size:13px;color:var(--text-dim);line-height:1.6;text-align:center;max-width:280px}
-.chat-welcome-hints{display:flex;flex-direction:column;gap:10px;margin-top:16px;width:100%;max-width:340px;padding-bottom:20px}
-.chat-welcome-hint{padding:12px 16px;background:var(--bg-panel);border:1px solid var(--border);border-radius:12px;font-size:12px;color:var(--text-dim);cursor:pointer;transition:all .2s;text-align:left;line-height:1.5;margin-bottom:8px}
-.chat-welcome-hint:hover{border-color:var(--green-dim);color:var(--text)}
-.chat-welcome-hint:active{transform:scale(.98)}
-.chat-msg{display:flex;gap:0;max-width:100%;animation:nxMsgSlideIn .3s ease both;padding:0 16px;margin-bottom:4px}
-.chat-msg.user{justify-content:flex-end}
-.chat-msg-inner{display:flex;gap:12px;max-width:100%;width:100%}
-.chat-msg.user .chat-msg-inner{flex-direction:row-reverse;max-width:90%;justify-content:flex-end}
-.chat-msg-avatar{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:9px;font-weight:800;letter-spacing:.5px;margin-top:2px}
-.chat-msg-avatar.ai{background:var(--bg-panel-2);border:1px solid var(--border);color:var(--green);border-radius:50%}
-.chat-msg-avatar.human{background:var(--green);color:var(--bg);border-radius:50%}
-.chat-msg-body{display:flex;flex-direction:column;min-width:0;flex:1;gap:2px}
-.chat-msg.user .chat-msg-body{align-items:flex-end}
-.chat-bubble{padding:12px 18px;font-size:15px;line-height:1.75;word-break:break-word;overflow-wrap:break-word;position:relative;color:var(--text);letter-spacing:0.01em}
-.chat-msg.user .chat-bubble{background:var(--bg-panel-2);border-radius:20px 20px 4px 20px;padding:12px 18px;max-width:100%;border:1px solid var(--border);font-size:15px}
-.chat-msg:not(.user) .chat-bubble{background:transparent;padding:4px 0}
-.chat-bubble.error{color:var(--danger)}
-.chat-bubble h1,.chat-bubble h2,.chat-bubble h3,.chat-bubble h4,.chat-bubble h5,.chat-bubble h6{color:var(--green);margin:20px 0 12px;font-weight:700;line-height:1.35}
-.chat-bubble h1:first-child,.chat-bubble h2:first-child,.chat-bubble h3:first-child{margin-top:4px}
-.chat-bubble h1{font-size:20px;border-bottom:1px solid var(--border);padding-bottom:8px}
-.chat-bubble h2{font-size:18px;border-bottom:1px solid var(--border);padding-bottom:6px}
-.chat-bubble h3{font-size:16px}
-.chat-bubble h4{font-size:15px}
-.chat-bubble p{margin:0 0 12px}.chat-bubble p:last-child{margin-bottom:0}
-.chat-bubble ul,.chat-bubble ol{margin:8px 0 14px 0;padding-left:26px}
-.chat-bubble li{margin-bottom:6px;line-height:1.75}
-.chat-bubble li::marker{color:var(--green-dim)}
-.chat-bubble ul ul,.chat-bubble ol ol{margin:4px 0}
-.chat-bubble ol ol,.chat-bubble ul ul,.chat-bubble ol ul,.chat-bubble ul ol{margin:2px 0}
-.chat-bubble blockquote{border-left:3px solid var(--green-dim);padding:12px 18px;margin:14px 0;color:var(--text-dim);background:rgba(0,255,136,0.03);border-radius:0 12px 12px 0;font-style:italic}
-.chat-bubble blockquote p{margin:0}
-.chat-bubble a{color:var(--green);text-decoration:none;border-bottom:1px solid rgba(0,255,136,0.2)}
-.chat-bubble a:hover{border-bottom-color:var(--green)}
-.chat-bubble strong{color:var(--green);font-weight:700}
-.chat-bubble em{font-style:italic}
-.chat-bubble del{opacity:.5}
-.chat-bubble hr{border:none;border-top:1px solid var(--border);margin:18px 0}
-.chat-bubble img{max-width:100%;border-radius:8px;margin:8px 0}
-.chat-bubble table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13.5px;border-radius:8px;overflow:hidden}
-.chat-bubble thead{background:var(--bg-panel-2)}
-.chat-bubble th,.chat-bubble td{border:1px solid var(--border);padding:10px 14px;text-align:left}
-.chat-bubble th{font-weight:700;color:var(--green);font-size:12.5px;text-transform:uppercase;letter-spacing:0.5px}
-.chat-bubble tr:nth-child(even){background:rgba(255,255,255,0.02)}
-.chat-bubble tr:hover td{background:var(--bg-panel-2)}
-.chat-bubble code:not(pre code){font-family:'JetBrains Mono',monospace;background:rgba(0,255,136,0.08);color:var(--green);padding:2px 7px;border-radius:5px;font-size:13px;border:1px solid rgba(0,255,136,0.12);font-weight:500}
-.chat-bubble .nx-code{position:relative;margin:16px 0;border-radius:12px;overflow:hidden;border:1px solid var(--border);background:#0d1117;box-shadow:0 4px 12px rgba(0,0,0,0.4)}
-.chat-bubble .nx-code-head{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:rgba(255,255,255,0.04);border-bottom:1px solid var(--border)}
-.chat-bubble .nx-code-lang{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px}
-.chat-bubble .nx-code-lang-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.chat-bubble .nx-code-copy{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;font-size:12px;color:var(--text-dim);background:var(--bg-panel-2);border:1px solid var(--border);cursor:pointer;transition:all .15s;font-family:inherit}
-.chat-bubble .nx-code-copy:hover{color:var(--green);background:rgba(0,255,136,0.08);border-color:var(--green-dim)}
-.chat-bubble .nx-code-copy:active{transform:scale(.95)}
-.chat-bubble .nx-code-copy:hover{color:var(--green);background:rgba(0,255,136,0.06)}
-.chat-bubble .nx-code-copy.done{color:var(--green)}
-.chat-bubble .nx-code-copy svg{width:13px;height:13px}
-.chat-bubble pre{margin:0!important;background:transparent!important;border:none!important;padding:16px 18px!important;overflow-x:auto;font-size:13px;line-height:1.75;border-radius:0!important;-webkit-overflow-scrolling:touch}
-.chat-bubble pre code{background:none!important;padding:0!important;font-size:12.5px;border:none!important;font-family:'JetBrains Mono',monospace}
-.chat-bubble .hljs{background:transparent!important;padding:0!important}
-.chat-bubble .nx-code.has-nums{padding-left:44px}
-.chat-bubble .nx-nums{position:absolute;left:0;top:37px;width:38px;padding:14px 6px 14px 0;text-align:right;font-size:11px;line-height:1.7;color:var(--text-dimmer);background:rgba(0,0,0,0.3);border-right:1px solid var(--border);user-select:none;overflow:hidden}
-.chat-bubble .nx-nums div{height:calc(12.5px * 1.7)}
-.chat-bubble .contains-task-list{list-style:none;padding-left:4px}
-.chat-bubble .task-list-item{display:flex;align-items:flex-start;gap:8px}
-.chat-bubble .task-list-item input[type="checkbox"]{accent-color:var(--green);margin-top:5px;flex-shrink:0;width:14px;height:14px}
-.chat-bubble .nx-mermaid{margin:14px 0;padding:16px;background:var(--bg-panel-2);border:1px solid var(--border);border-radius:10px;overflow-x:auto;text-align:center}
-.chat-bubble .nx-mermaid svg{max-width:100%;height:auto}
-.chat-bubble .nx-mermaid-err{color:var(--danger);font-size:12px;padding:8px}
-.chat-bubble .katex-display{margin:16px 0;overflow-x:auto;overflow-y:hidden;padding:8px 0}
-.chat-bubble .katex{font-size:1.08em}
-.chat-bubble .katex-display .katex{font-size:1.15em}
-.chat-bubble .katex .mfrac .frac-line{border-color:var(--green-dim)}
-.chat-bubble .katex .mathnormal{font-family:'KaTeX_Math','Times New Roman',serif}
-.nx-actions{display:flex;flex-wrap:wrap;gap:8px;padding:10px 0 4px;opacity:0;transition:opacity .2s ease}
-.chat-msg:hover .nx-actions{opacity:1}
-@media(hover:none){.nx-actions{opacity:.8;pointer-events:auto}}
-.nx-act{display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:8px;font-size:12px;color:var(--text-dim);transition:all .15s ease;cursor:pointer;font-family:inherit;white-space:nowrap;background:var(--bg-panel-2);border:1px solid var(--border)}
-.nx-act:hover{color:var(--text);background:var(--bg-panel-3);border-color:var(--border-light)}
-.nx-act:active{transform:scale(.95)}
-.nx-act svg{width:13px;height:13px;flex-shrink:0}
-.nx-act.liked{color:var(--green);border-color:rgba(0,255,136,0.3)}
-.nx-act.disliked{color:var(--danger);border-color:rgba(255,107,107,0.3)}
-.nx-stream-bar{display:flex;align-items:center;justify-content:center;gap:8px;padding:4px 0 8px}
-.nx-stop{display:none;align-items:center;justify-content:center;gap:6px;padding:8px 20px;border-radius:20px;font-size:12px;font-weight:600;color:#fff;background:var(--danger);border:none;cursor:pointer;font-family:inherit;transition:all .15s}
-.nx-stop:active{transform:scale(.96)}
-.nx-stop.show{display:inline-flex;animation:nxFadeIn .15s ease}
-.nx-continue{display:none;align-items:center;justify-content:center;gap:6px;padding:8px 20px;border-radius:20px;font-size:12px;font-weight:600;color:var(--green);background:var(--bg-panel);border:1px solid var(--border);cursor:pointer;font-family:inherit;transition:all .15s}
-.nx-continue:active{transform:scale(.96)}
-.nx-continue.show{display:inline-flex;animation:nxFadeIn .15s ease}
-.chat-bottom{flex-shrink:0;padding:8px 16px calc(12px + env(safe-area-inset-bottom));background:linear-gradient(180deg, transparent 0%, var(--bg) 20%);position:sticky;bottom:0;z-index:90;border-top:1px solid var(--border)}
-.chat-input-wrap{padding-top:8px}
-.chat-form{display:flex;align-items:flex-end;gap:10px;background:var(--bg-panel);border:1px solid var(--border-light);border-radius:24px;padding:10px 10px 10px 18px;transition:border-color .2s,box-shadow .2s;min-height:52px;box-shadow:0 -4px 20px rgba(0,0,0,0.3)}
-.chat-form:focus-within{border-color:var(--green-dim);box-shadow:0 0 0 1px rgba(0,255,136,0.08), 0 -4px 20px rgba(0,0,0,0.3)}
-.chat-form textarea{flex:1;background:none;border:none;outline:none;color:var(--text);font-family:inherit;font-size:15px;line-height:1.5;resize:none;max-height:150px;min-height:28px;overflow-y:auto;padding:8px 0}
+.project-home-bar{height:3px;width:100%;background:var(--border);border-radius:2px;margin-top:6px;overflow:hidden}
+.project-home-fill{height:100%;background:var(--green-dim);border-radius:2px}
+.project-home-pct{font-size:10px;font-weight:700;color:var(--text-dim)}
+.chat-screen{display:none;flex-direction:column;height:100dvh;background:var(--bg);position:fixed;inset:0;z-index:200;animation:slideUp .3s cubic-bezier(.4,0,.2,1)}
+.chat-screen.active{display:flex}
+.chat-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:rgba(6,10,9,0.8);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10}
+.chat-header-info{display:flex;align-items:center;gap:10px}
+.chat-header-orb{width:28px;height:28px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#a7ffe0,var(--green) 45%,#06231a 100%);box-shadow:0 0 10px var(--green-glow)}
+.chat-header-name{font-weight:800;font-size:13px;letter-spacing:1.5px;color:var(--green)}
+.chat-header-status{font-size:9px;color:var(--text-dimmer);margin-top:1px}
+.chat-container{flex:1;overflow-y:auto;padding:20px 16px;display:flex;flex-direction:column;gap:24px;scroll-behavior:smooth}
+.chat-welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;text-align:center;gap:16px;margin-top:20px}
+.chat-welcome-orb{width:60px;height:60px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#a7ffe0,var(--green) 45%,#06231a 100%);box-shadow:0 0 30px var(--green-glow);margin-bottom:10px}
+.chat-welcome-title{font-size:18px;font-weight:800;color:var(--text);letter-spacing:1px}
+.chat-welcome-text{font-size:12px;color:var(--text-dim);line-height:1.6;max-width:280px}
+.chat-welcome-hints{display:grid;grid-template-columns:1fr;gap:10px;width:100%;max-width:320px;margin-top:10px}
+.chat-welcome-hint{padding:12px 16px;background:var(--bg-panel);border:1px solid var(--border);border-radius:12px;font-size:11px;color:var(--text-dim);text-align:left;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:10px}
+.chat-welcome-hint:hover{background:var(--bg-panel-2);border-color:var(--green-dim);color:var(--text)}
+.chat-welcome-hint svg{width:14px;height:14px;color:var(--green-dim);flex-shrink:0}
+.message-wrap{display:flex;flex-direction:column;gap:8px;max-width:88%}
+.message-wrap.user{align-self:flex-end;align-items:flex-end}
+.message-wrap.assistant{align-self:flex-start;align-items:flex-start}
+.chat-bubble{padding:12px 16px;border-radius:18px;font-size:13px;line-height:1.6;position:relative;word-wrap:break-word;overflow-wrap:break-word}
+.user .chat-bubble{background:var(--green-dark);color:var(--text);border:1px solid var(--green-dim);border-bottom-right-radius:4px}
+.assistant .chat-bubble{background:var(--bg-panel);color:var(--text);border:1px solid var(--border);border-bottom-left-radius:4px}
+.chat-msg-header{display:flex;align-items:center;gap:8px;margin-bottom:4px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase}
+.user .chat-msg-header{color:var(--green-dim);flex-direction:row-reverse}
+.assistant .chat-msg-header{color:var(--text-dimmer)}
+.chat-msg-body p{margin-bottom:12px}
+.chat-msg-body p:last-child{margin-bottom:0}
+.chat-msg-body ul,.chat-msg-body ol{margin-bottom:12px;padding-left:20px}
+.chat-msg-body li{margin-bottom:6px}
+.chat-msg-body code{font-family:'JetBrains Mono',monospace;background:var(--bg-panel-2);padding:2px 5px;border-radius:4px;font-size:12px;color:var(--green)}
+.chat-msg-body pre{background:var(--bg-panel-2);padding:14px;border-radius:12px;overflow-x:auto;margin:12px 0;border:1px solid var(--border)}
+.chat-msg-body pre code{background:none;padding:0;color:inherit;font-size:11px}
+.chat-msg-body h1,.chat-msg-body h2,.chat-msg-body h3{color:var(--green);margin:16px 0 8px;font-size:14px;font-weight:800;letter-spacing:1px}
+.chat-msg-body blockquote{border-left:3px solid var(--green-dim);padding-left:12px;color:var(--text-dim);margin:12px 0;font-style:italic}
+.chat-msg-body table{width:100%;border-collapse:collapse;margin:12px 0;font-size:11px}
+.chat-msg-body th,.chat-msg-body td{border:1px solid var(--border);padding:8px;text-align:left}
+.chat-msg-body th{background:var(--bg-panel-3);color:var(--green-dim)}
+.chat-msg-actions{display:flex;align-items:center;gap:12px;margin-top:6px}
+.chat-msg-action{font-size:9px;color:var(--text-dimmer);display:flex;align-items:center;gap:4px;cursor:pointer;transition:color .15s}
+.chat-msg-action:hover{color:var(--text-dim)}
+.chat-msg-action svg{width:12px;height:12px}
+.typing-indicator{display:none;align-items:center;gap:4px;padding:8px 14px;background:var(--bg-panel);border:1px solid var(--border);border-radius:14px;width:fit-content;margin-left:16px;margin-bottom:20px}
+.typing-indicator.active{display:flex}
+.typing-dot{width:4px;height:4px;border-radius:50%;background:var(--green-dim);animation:typing 1.4s infinite ease-in-out}
+.typing-dot:nth-child(2){animation-delay:.2s}
+.typing-dot:nth-child(3){animation-delay:.4s}
+.chat-footer{padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:rgba(6,10,9,0.8);backdrop-filter:blur(10px);border-top:1px solid var(--border);position:relative}
+.chat-form{display:flex;align-items:flex-end;gap:10px;background:var(--bg-panel-2);border:1px solid var(--border);border-radius:20px;padding:8px 12px;transition:all .2s}
+.chat-form:focus-within{border-color:var(--green-dim);box-shadow:0 0 0 1px rgba(0,255,136,0.08)}
+.chat-form textarea{flex:1;background:none;border:none;outline:none;color:var(--text);font-family:inherit;font-size:13px;padding:8px 0;resize:none;max-height:120px;line-height:1.5}
 .chat-form textarea::placeholder{color:var(--text-dim);opacity:0.7}
-.chat-send{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--green);background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.15);cursor:pointer;transition:all .2s;flex-shrink:0}
-.chat-send.active{color:var(--bg);background:var(--green);border-color:var(--green);box-shadow:0 0 12px rgba(0,255,136,0.2)}
-.chat-send:active{transform:scale(.9)}
-.chat-send svg{width:18px;height:18px}
-.chat-mic{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--text-dim);background:var(--bg-panel-2);border:1px solid var(--border);cursor:pointer;flex-shrink:0;transition:all .2s}
-.chat-mic:hover{color:var(--text);background:var(--bg-panel-3)}
-.chat-mic.recording{color:var(--danger);animation:nxPulse 1.5s ease infinite}
-.typing-indicator{display:none;align-items:center;gap:5px;padding:8px 20px;height:0;overflow:hidden;transition:height .3s ease}
-.typing-indicator.active{display:flex;height:20px}
-.typing-indicator span{width:5px;height:5px;background:var(--text-dimmer);border-radius:50%;animation:nxBounce 1.4s ease-in-out infinite}
-.typing-indicator span:nth-child(1){animation-delay:0s}
-.typing-indicator span:nth-child(2){animation-delay:.2s}
-.typing-indicator span:nth-child(3){animation-delay:.4s}
-.nx-cursor::after{content:'';display:inline-block;width:2px;height:18px;background:var(--green);margin-left:2px;vertical-align:text-bottom;animation:nxCursorPulse 1s ease-in-out infinite}
-.voice-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:30px 20px}
-.voice-status{font-size:13px;color:var(--text-dim);text-align:center}
-.voice-transcript{min-height:40px;max-width:100%;text-align:center;font-size:13px;color:var(--text);padding:0 20px;line-height:1.5}
-.voice-controls{display:flex;gap:12px;margin-top:10px}
-.voice-ctrl{display:flex;align-items:center;gap:6px;background:var(--bg-panel);border:1px solid var(--border);border-radius:10px;padding:8px 14px;font-size:11px;color:var(--text-dim);transition:all .15s}
-.voice-ctrl.active{color:var(--green);border-color:var(--green-dim);background:rgba(0,255,136,0.06)}
-.voice-ctrl:hover{background:var(--bg-panel-2)}
-.voice-ctrl:active{background:var(--bg-panel-3)}
-#voiceVisualizer{width:280px;height:50px}
-.voice-keyboard-wrap{display:none;width:100%;padding:0 20px}
-.voice-keyboard-wrap.active{display:flex;gap:8px}
-.voice-keyboard-wrap input{flex:1;background:var(--bg-panel);border:1px solid var(--border);border-radius:10px;padding:10px 12px;color:var(--text);font-family:inherit;outline:none;font-size:13px}
-.vision-body{flex:1;display:flex;flex-direction:column;padding:6px 12px 16px;gap:10px;overflow-y:auto}
-.vision-preview{position:relative;width:100%;height:55vh;min-height:320px;max-height:70vh;background:var(--bg-panel);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;display:flex;align-items:center;justify-content:center}
+.chat-controls{display:flex;align-items:center;gap:4px;margin-bottom:4px}
+.chat-control-btn{width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:8px;color:var(--text-dimmer);transition:all .15s}
+.chat-control-btn:hover{color:var(--text-dim);background:var(--bg-panel-3)}
+.chat-control-btn.active{color:var(--green)}
+.chat-send-btn{width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:12px;background:var(--green-dark);color:var(--green);border:1px solid var(--green-dim);transition:all .2s;flex-shrink:0;margin-bottom:2px}
+.chat-send-btn:hover{background:var(--green-dim);color:white}
+.chat-send-btn:active{transform:scale(.92)}
+.chat-send-btn.stop{background:rgba(255,107,107,0.1);color:var(--danger);border-color:rgba(255,107,107,0.3)}
+.chat-stop-btn{display:none;position:absolute;top:-45px;left:50%;transform:translateX(-50%);background:var(--bg-panel-3);border:1px solid var(--border);color:var(--text-dim);padding:6px 14px;border-radius:20px;font-size:11px;font-weight:600;align-items:center;gap:6px;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,0.3);z-index:5}
+.chat-stop-btn.show{display:flex}
+.chat-stop-btn:hover{background:var(--bg-panel-2);color:var(--text)}
+.chat-continue-btn{display:none;position:absolute;top:-45px;left:50%;transform:translateX(-50%);background:var(--green-dark);border:1px solid var(--green-dim);color:var(--green);padding:6px 14px;border-radius:20px;font-size:11px;font-weight:600;align-items:center;gap:6px;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,0.3);z-index:5}
+.chat-continue-btn.show{display:flex}
+.vision-preview{display:none;padding:8px 12px;background:var(--bg-panel-3);border-top:1px solid var(--border);border-bottom:1px solid var(--border);align-items:center;gap:12px}
+.vision-preview.active{display:flex}
+.vision-thumb{width:44px;height:44px;border-radius:8px;object-fit:cover;border:1px solid var(--border)}
+.vision-info{flex:1;min-width:0}
+.vision-name{font-size:10px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vision-status{font-size:9px;color:var(--green);margin-top:2px}
+.vision-close{width:24px;height:24px;display:flex;align-items:center;justify-content:center;color:var(--text-dimmer)}
 .vision-placeholder{display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--text-dimmer);font-size:12px}
-.vision-preview video,.vision-preview canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .vision-preview.active .vision-placeholder{display:none}
-.vision-preview video{display:none}
-.vision-preview.active video{display:block}
-#visionOverlay{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2}
-.vision-actions{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
-.v-action{display:flex;flex-direction:column;align-items:center;gap:4px;background:var(--bg-panel);border:1px solid var(--border);border-radius:12px;padding:10px 8px;font-size:9px;color:var(--text-dim);min-width:56px;transition:all .15s}
-.v-action:hover{background:var(--bg-panel-2)}
-.v-action:active,.v-action.active{background:rgba(0,255,136,0.1);border-color:var(--green-dim);color:var(--green)}
-.v-action svg{margin-bottom:2px}
-.vision-analysis{font-size:12px;line-height:1.6}
-.analysis-header{display:flex;align-items:center;gap:6px;font-weight:700;color:var(--green);margin-bottom:8px;font-size:12px}
-.analysis-body{color:var(--text-dim);white-space:pre-wrap}
-.projects-body{flex:1;overflow-y:auto;padding:10px 16px}
-.project-loading{text-align:center;padding:30px;color:var(--text-dimmer);font-size:12px}
-.projects-list{display:flex;flex-direction:column;gap:8px}
-.repo-card{background:var(--bg-panel);border:1px solid var(--border);border-radius:var(--radius);padding:14px;transition:all .15s}
-.repo-card:hover{border-color:var(--border-light)}
-.repo-header{display:flex;align-items:center;gap:8px;margin-bottom:6px}
-.repo-name{font-size:13px;font-weight:700;color:var(--green);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.repo-private{font-size:8px;padding:2px 6px;border-radius:4px;background:rgba(255,107,107,0.1);color:var(--danger);border:1px solid rgba(255,107,107,0.2)}
-.repo-desc{font-size:10px;color:var(--text-dim);margin-bottom:8px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.repo-stats{display:flex;gap:12px;flex-wrap:wrap}
-.repo-stat{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text-dimmer)}
-.repo-stat svg{width:12px;height:12px}
-.repo-lang{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text-dimmer)}
-.lang-dot{width:8px;height:8px;border-radius:50%}
-.memory-body{flex:1;overflow-y:auto;padding:10px 16px}
-.timeline{display:flex;flex-direction:column;gap:12px}
-.timeline-group{display:flex;flex-direction:column;gap:8px}
-.timeline-date{font-size:11px;font-weight:700;color:var(--text-dim);margin-bottom:4px;letter-spacing:.5px}
-.timeline-item{display:flex;gap:10px;align-items:flex-start}
-.timeline-dot{width:8px;height:8px;border-radius:50%;background:var(--green);margin-top:4px;flex-shrink:0;box-shadow:0 0 6px var(--green)}
-.timeline-content{flex:1;background:var(--bg-panel);border:1px solid var(--border);border-radius:12px;padding:10px 12px;transition:all .15s}
-.timeline-content:hover{border-color:var(--border-light)}
-.timeline-text{font-size:12px;color:var(--text);line-height:1.4}
-.timeline-time{font-size:9px;color:var(--text-dimmer);margin-top:4px}
-.timeline-empty{text-align:center;padding:30px;color:var(--text-dimmer);font-size:12px}
-.task-form{display:flex;gap:8px;margin:12px 16px}
-.task-form input{flex:1;background:var(--bg-panel);border:1px solid var(--border);border-radius:10px;padding:10px 12px;color:var(--text);font-family:inherit;font-size:12px;outline:none;transition:border-color .2s}
-.task-form input:focus{border-color:var(--green-dim)}
-.task-form input::placeholder{color:var(--text-dimmer)}
-.task-form button.send{color:var(--green);padding:8px 12px;background:var(--bg-panel);border:1px solid var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;transition:all .15s}
-.task-form button.send:hover{background:var(--bg-panel-2)}
-.task-form button.send:active{transform:scale(.95)}
-.task-list{display:flex;flex-direction:column;gap:6px;padding:0 16px 16px;overflow-y:auto}
-.task-item{display:flex;align-items:center;gap:8px;background:var(--bg-panel-2);border-radius:10px;padding:10px 12px;font-size:12px;transition:all .15s;border:1px solid transparent}
-.task-item:hover{border-color:var(--border)}
-.task-check{width:18px;height:18px;border-radius:50%;border:2px solid var(--green-dim);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;color:var(--bg);transition:all .15s}
-.task-check.checked{background:var(--green);border-color:var(--green)}
-.task-check svg{display:none}
-.task-check.checked svg{display:block}
-.task-text{flex:1;transition:all .15s}
-.task-text.done{text-decoration:line-through;color:var(--text-dimmer)}
-.task-delete{color:var(--danger);opacity:0.6;background:none;border:none;width:24px;height:24px;display:flex;align-items:center;justify-content:center;border-radius:6px;transition:all .15s}
-.task-delete:hover{background:rgba(255,107,107,0.1);opacity:1}
-.task-delete:active{opacity:1;transform:scale(.9)}
-.task-empty{text-align:center;padding:30px;color:var(--text-dimmer);font-size:12px}
-.settings-body{padding:4px 0}
-.system-info-panel{display:flex;flex-direction:column;gap:2px;padding:14px;margin:10px 16px}
-.sys-row{display:flex;justify-content:space-between;align-items:center;font-size:11px;padding:10px 0;border-bottom:1px solid var(--border)}
-.sys-row:last-child{border-bottom:none}
-.sys-label{color:var(--text-dim)}
-.sys-value{color:var(--green);text-align:right;max-width:60%;word-break:break-word}
-.settings-input-wrap{margin:4px 16px 12px}
-.settings-input-wrap input{width:100%;background:var(--bg-panel);border:1px solid var(--border);border-radius:10px;padding:10px 12px;color:var(--text);font-family:inherit;font-size:12px;outline:none;transition:border-color .2s}
-.settings-input-wrap input:focus{border-color:var(--green-dim)}
-.settings-input-wrap input::placeholder{color:var(--text-dimmer)}
-.settings-save-btn{margin:0 16px 16px;width:calc(100% - 32px);padding:12px;background:rgba(0,255,136,0.08);border:1px solid var(--green-dim);color:var(--green);border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s}
-.settings-save-btn:hover{background:rgba(0,255,136,0.12)}
-.settings-save-btn:active{transform:scale(.98)}
-.analytics-body{flex:1;overflow-y:auto;padding:10px 16px}
-.analytics-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
-.analytics-card{background:var(--bg-panel);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;display:flex;flex-direction:column;gap:4px}
-.analytics-card-label{font-size:9px;letter-spacing:1px;color:var(--text-dimmer);text-transform:uppercase}
-.analytics-card-value{font-size:20px;font-weight:700;color:var(--green)}
-.analytics-card-sub{font-size:10px;color:var(--text-dim)}
-.analytics-chart-card{background:var(--bg-panel);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:10px}
-.analytics-chart-title{font-size:11px;letter-spacing:1px;color:var(--text-dim);text-transform:uppercase;margin-bottom:12px;font-weight:600}
-.analytics-chart{height:120px;width:100%}
-.agents-body{flex:1;overflow-y:auto;padding:10px 16px}
-.agents-detail-grid{display:grid;grid-template-columns:1fr;gap:10px}
-.agent-detail-card{background:var(--bg-panel);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;display:flex;align-items:flex-start;gap:12px;transition:all .15s}
-.agent-detail-card:hover{border-color:var(--border-light)}
-.agent-detail-icon{width:44px;height:44px;border-radius:12px;background:var(--bg-panel-2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--green);flex-shrink:0}
+.voice-screen{display:none;flex-direction:column;height:100dvh;background:radial-gradient(circle at center,#0c1a15 0%,#060a09 100%);position:fixed;inset:0;z-index:400;padding:20px;animation:fadeIn .4s ease}
+.voice-screen.active{display:flex}
+.voice-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:40px}
+.voice-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:40px;text-align:center}
+.voice-status{font-size:14px;color:var(--green);letter-spacing:2px;font-weight:600;text-transform:uppercase;height:20px}
+.voice-transcript{font-size:18px;color:var(--text-dim);line-height:1.5;max-width:300px;min-height:80px}
+.voice-visualizer{width:100%;height:60px;display:flex;align-items:center;justify-content:center;gap:4px}
+.voice-footer{display:flex;align-items:center;justify-content:center;gap:24px;margin-bottom:40px}
+.voice-btn{width:64px;height:64px;border-radius:50%;background:var(--bg-panel);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--text-dim);transition:all .2s}
+.voice-btn:hover{background:var(--bg-panel-2);color:var(--text)}
+.voice-btn.active{background:rgba(0,255,136,0.1);color:var(--green);border-color:var(--green-dim)}
+.voice-btn-lg{width:84px;height:84px;background:var(--green-dark);color:var(--green);border-color:var(--green-dim)}
+.voice-btn-lg.active{background:var(--green);color:var(--bg);box-shadow:0 0 30px var(--green-glow)}
+.voice-keyboard-wrap{display:none;width:100%;max-width:340px;margin-top:20px;background:var(--bg-panel);border:1px solid var(--border);border-radius:20px;padding:8px 12px;align-items:center;gap:10px}
+.voice-keyboard-wrap.active{display:flex}
+.voice-keyboard-wrap input{flex:1;background:none;border:none;outline:none;color:var(--text);font-family:inherit;font-size:14px;padding:8px 0}
+.agents-body{padding:0 20px 20px}
+.agents-detail-grid{display:flex;flex-direction:column;gap:16px}
+.agent-detail-card{background:var(--bg-panel);border:1px solid var(--border);border-radius:var(--radius);padding:20px;display:flex;gap:16px;transition:all .2s}
+.agent-detail-card:hover{border-color:var(--green-dim);transform:translateY(-2px)}
+.agent-detail-icon{width:48px;height:48px;border-radius:14px;background:var(--bg-panel-2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--green);flex-shrink:0}
 .agent-detail-info{flex:1}
-.agent-detail-name{font-size:13px;font-weight:700;color:var(--text)}
-.agent-detail-desc{font-size:11px;color:var(--text-dim);margin-top:2px;line-height:1.4}
-.agent-detail-status{display:flex;align-items:center;gap:4px;font-size:10px;letter-spacing:.5px;text-transform:uppercase;font-weight:600;margin-top:8px}
-.agent-detail-status .dot{width:5px;height:5px;border-radius:50%}
-.agent-detail-status.active{color:var(--green)}
-.agent-detail-status.active .dot{background:var(--green);box-shadow:0 0 6px var(--green)}
-.agent-detail-status.idle{color:var(--text-dimmer)}
-.agent-detail-status.idle .dot{background:var(--text-dimmer)}
-.agent-detail-meta{font-size:10px;color:var(--text-dimmer);margin-top:6px;display:flex;gap:12px;flex-wrap:wrap}
-.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:var(--bg-panel);border:1px solid var(--green-dim);color:var(--green);padding:10px 18px;border-radius:10px;font-size:12px;z-index:200;opacity:0;pointer-events:none;transition:opacity .25s ease, transform .25s ease;max-width:90%;text-align:center}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(-6px)}
-.toast.error{border-color:rgba(255,107,107,0.5);color:var(--danger)}
-.more-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:10px 16px}
-.more-item{display:flex;flex-direction:column;align-items:center;gap:6px;background:var(--bg-panel);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 4px;cursor:pointer;transition:all .15s}
-.more-item:hover{background:var(--bg-panel-2)}
-.more-item:active{transform:scale(.96)}
-.more-icon{width:36px;height:36px;border-radius:10px;background:var(--bg-panel-2);display:flex;align-items:center;justify-content:center;color:var(--green)}
-.more-label{font-size:9px;color:var(--text-dim);text-align:center}
-@keyframes nxCursorPulse{0%,100%{opacity:1}50%{opacity:0}}
-@keyframes nxFadeIn{from{opacity:0}to{opacity:1}}
-@keyframes nxMsgSlideIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-@keyframes nxBounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-4px)}}
-@keyframes nxPulse{0%,100%{opacity:1}50%{opacity:.4}}
-@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
-@keyframes ring{0%,100%{opacity:.4;transform:scale(1)}50%{opacity:.9;transform:scale(1.08)}}
-@keyframes wave{0%,100%{transform:scaleY(0.4)}50%{transform:scaleY(1)}}
-@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-@keyframes statusPulse{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:.8;transform:scale(1.05)}}
-@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.4}}
-@supports not (height: 100dvh) {
-  .screen{min-height:calc(100vh - 60px)}
-}
-@media (max-width:480px){.section-title{font-size:9px;letter-spacing:1px}.overview-grid{grid-template-columns:repeat(2,1fr)}.status-grid{grid-template-columns:1fr 1fr}}
-@media (max-width:380px){.more-grid{grid-template-columns:repeat(3,1fr)}.agents-grid{grid-template-columns:1fr}.quick-actions{grid-template-columns:repeat(5,1fr);gap:4px}}
-@media (display-mode:standalone){.app{padding-bottom:100px}.bottom-nav{padding-bottom:calc(14px + env(safe-area-inset-bottom))}}
-@media (prefers-reduced-motion:reduce){.orb,.orb-ring,.status-wave span,.status-ring-pulse{animation:none!important}}
+.agent-detail-name{font-size:15px;font-weight:800;color:var(--text);margin-bottom:6px}
+.agent-detail-desc{font-size:11px;color:var(--text-dim);line-height:1.6;margin-bottom:12px}
+.agent-detail-status{display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:700;padding:4px 10px;border-radius:20px}
+.agent-detail-status.idle{background:var(--bg-panel-2);color:var(--text-dimmer)}
+.agent-detail-status.active{background:rgba(0,255,136,0.1);color:var(--green)}
+.agent-detail-status .dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+.agent-detail-meta{display:flex;gap:16px;margin-top:12px;font-size:9px;color:var(--text-dimmer);text-transform:uppercase;letter-spacing:1px}
+.task-form{margin:0 20px 16px;display:flex;align-items:center;gap:10px;background:var(--bg-panel);border:1px solid var(--border);border-radius:16px;padding:10px 14px}
+.task-form input{flex:1;background:none;border:none;outline:none;color:var(--text);font-family:inherit;font-size:13px}
+.task-form input::placeholder{color:var(--text-dimmer)}
+.task-list{padding:0 20px 20px;display:flex;flex-direction:column;gap:10px}
+.task-item{background:var(--bg-panel);border:1px solid var(--border);border-radius:14px;padding:14px;display:flex;align-items:center;gap:12px;transition:all .15s}
+.task-item:hover{background:var(--bg-panel-2)}
+.task-checkbox{width:20px;height:20px;border-radius:6px;border:2px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.task-checkbox.checked{background:var(--green);border-color:var(--green);color:var(--bg)}
+.task-text{flex:1;font-size:13px;color:var(--text-dim);transition:all .15s}
+.task-checkbox.checked + .task-text{text-decoration:line-through;opacity:0.5}
+.task-delete{width:28px;height:28px;display:flex;align-items:center;justify-content:center;color:var(--text-dimmer);opacity:0;transition:all .15s}
+.task-item:hover .task-delete{opacity:1}
+.settings-body{padding:0 20px 20px;display:flex;flex-direction:column;gap:20px}
+.system-info-panel{background:var(--bg-panel);border:1px solid var(--border);border-radius:var(--radius);padding:16px;display:flex;flex-direction:column;gap:12px}
+.sys-row{display:flex;justify-content:space-between;align-items:center;padding-bottom:8px;border-bottom:1px solid var(--border-light)}
+.sys-row:last-child{padding-bottom:0;border-bottom:none}
+.sys-label{font-size:11px;color:var(--text-dim)}
+.sys-value{font-size:11px;font-weight:700;color:var(--text)}
+.settings-input-wrap{background:var(--bg-panel-2);border:1px solid var(--border);border-radius:12px;padding:10px 14px;display:flex;align-items:center}
+.settings-input-wrap input{flex:1;background:none;border:none;outline:none;color:var(--text);font-family:inherit;font-size:13px}
+.settings-input-wrap input::placeholder{color:var(--text-dimmer)}
+.settings-save-btn{background:var(--green-dark);color:var(--green);border:1px solid var(--green-dim);padding:14px;border-radius:var(--radius);font-weight:700;font-size:13px;letter-spacing:1px;transition:all .2s}
+.settings-save-btn:hover{background:var(--green-dim);color:white}
+.more-grid{padding:0 20px 20px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.more-item{background:var(--bg-panel);border:1px solid var(--border);border-radius:var(--radius);padding:20px;display:flex;flex-direction:column;align-items:center;gap:12px;transition:all .2s}
+.more-item:hover{border-color:var(--green-dim);background:var(--bg-panel-2)}
+.more-icon{width:44px;height:44px;border-radius:12px;background:var(--bg-panel-2);display:flex;align-items:center;justify-content:center;color:var(--green);border:1px solid var(--border)}
+.more-label{font-size:12px;font-weight:700;color:var(--text-dim)}
+.projects-body{padding:0 20px 20px;display:flex;flex-direction:column;gap:16px}
+.projects-refresh-btn{background:var(--bg-panel);border:1px solid var(--border);color:var(--text-dim);padding:10px;border-radius:12px;font-size:11px;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px}
+.repo-card{background:var(--bg-panel);border:1px solid var(--border);border-radius:var(--radius);padding:16px;display:flex;flex-direction:column;gap:10px;transition:all .2s}
+.repo-card:hover{border-color:var(--green-dim);transform:translateY(-2px)}
+.repo-header{display:flex;align-items:center;justify-content:space-between}
+.repo-name{font-size:14px;font-weight:800;color:var(--text)}
+.repo-private{font-size:8px;padding:2px 6px;border-radius:4px;background:var(--bg-panel-2);color:var(--text-dimmer);border:1px solid var(--border)}
+.repo-desc{font-size:11px;color:var(--text-dim);line-height:1.5}
+.repo-stats{display:flex;align-items:center;gap:16px;margin-top:4px}
+.repo-stat{font-size:10px;color:var(--text-dimmer);display:flex;align-items:center;gap:4px}
+.repo-lang{font-size:10px;color:var(--text-dim);display:flex;align-items:center;gap:6px}
+.lang-dot{width:8px;height:8px;border-radius:50%}
+.memory-body{padding:0 20px 20px}
+.timeline{position:relative;padding-left:24px;display:flex;flex-direction:column;gap:24px}
+.timeline::before{content:'';position:absolute;left:4px;top:8px;bottom:8px;width:2px;background:var(--border)}
+.timeline-item{position:relative}
+.timeline-dot{position:absolute;left:-24px;top:6px;width:10px;height:10px;border-radius:50%;background:var(--bg);border:2px solid var(--green-dim);z-index:1}
+.timeline-content{background:var(--bg-panel);border:1px solid var(--border);border-radius:14px;padding:14px}
+.timeline-time{font-size:9px;color:var(--text-dimmer);margin-bottom:6px;text-transform:uppercase;letter-spacing:1px}
+.timeline-text{font-size:12px;color:var(--text-dim);line-height:1.5}
+.analytics-body{padding:0 20px 20px;display:flex;flex-direction:column;gap:20px}
+.analytics-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.analytics-card{background:var(--bg-panel);border:1px solid var(--border);border-radius:var(--radius);padding:16px;display:flex;flex-direction:column;gap:6px}
+.analytics-card-label{font-size:9px;color:var(--text-dimmer);text-transform:uppercase;letter-spacing:1px}
+.analytics-card-value{font-size:22px;font-weight:800;color:var(--green)}
+.analytics-card-sub{font-size:9px;color:var(--text-dimmer)}
+.analytics-chart-card{background:var(--bg-panel);border:1px solid var(--border);border-radius:var(--radius);padding:16px;display:flex;flex-direction:column;gap:16px}
+.analytics-chart-title{font-size:10px;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;font-weight:700}
+.analytics-chart{width:100%;height:120px;background:var(--bg-panel-2);border-radius:8px;overflow:hidden}
+.terminal-body{padding:0 16px 20px;flex:1;display:flex;flex-direction:column;gap:12px}
+.terminal-header-bar{display:flex;align-items:center;gap:8px;background:var(--bg-panel);border:1px solid var(--border);border-radius:12px;padding:6px 12px}
+.terminal-tab{font-size:11px;font-weight:700;color:var(--text-dimmer);padding:6px 12px;border-radius:8px;transition:all .15s}
+.terminal-tab.active{background:var(--bg-panel-2);color:var(--green)}
+.terminal-lang-select{margin-left:auto;background:var(--bg-panel-2);border:1px solid var(--border);color:var(--text-dim);font-size:10px;padding:4px 8px;border-radius:6px;outline:none}
+.terminal-output{flex:1;background:#0d1117;border:1px solid var(--border);border-radius:12px;padding:14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#c9d1d9;overflow-y:auto;white-space:pre-wrap;line-height:1.6;min-height:200px}
+.terminal-code-input{flex:1;min-height:200px;display:flex;flex-direction:column}
+.terminal-code-input textarea{flex:1;background:#0d1117;border:1px solid var(--border);border-radius:12px;padding:14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#c9d1d9;outline:none;resize:none;line-height:1.6}
+.terminal-code-input textarea::placeholder{color:#6e7681}
+.terminal-actions-bar{display:flex;align-items:center;gap:10px}
+.terminal-run-btn{background:var(--green-dark);color:var(--green);border:1px solid var(--green-dim);padding:10px 24px;border-radius:10px;font-weight:700;font-size:12px;letter-spacing:1px}
+.terminal-clear-btn{background:var(--bg-panel);border:1px solid var(--border);color:var(--text-dim);padding:10px 16px;border-radius:10px;font-size:11px}
+.t-line{display:block;margin-bottom:2px}
+.t-muted{color:#6e7681}
+.t-info{color:#58a6ff}
+.t-error{color:#f85149}
+.t-success{color:#3fb950}
+.t-warn{color:#d29922}
+.bottom-nav{display:flex;align-items:center;justify-content:space-around;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:rgba(6,10,9,0.85);backdrop-filter:blur(12px);border-top:1px solid var(--border);position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 auto;z-index:100}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--text-dimmer);transition:all .2s;width:60px}
+.nav-item svg{width:22px;height:22px}
+.nav-item span{font-size:9px;font-weight:600;letter-spacing:.5px}
+.nav-item.active{color:var(--green)}
+.nav-center{width:52px;height:52px;border-radius:50%;background:var(--green-dark);border:1px solid var(--green-dim);color:var(--green);display:flex;align-items:center;justify-content:center;margin-top:-30px;box-shadow:0 4px 20px rgba(0,255,136,0.2);transition:all .2s}
+.nav-center svg{width:26px;height:26px}
+.nav-center:active{transform:scale(.9) translateY(4px)}
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-20px);background:var(--bg-panel-3);border:1px solid var(--border);color:var(--text);padding:10px 20px;border-radius:30px;font-size:12px;font-weight:600;z-index:1000;opacity:0;pointer-events:none;transition:all .3s cubic-bezier(.4,0,.2,1);box-shadow:0 8px 24px rgba(0,0,0,0.4);display:flex;align-items:center;gap:10px}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.error{border-color:var(--danger);color:var(--danger)}
+@keyframes pulse{0%{transform:scale(1);opacity:1}50%{transform:scale(1.05);opacity:.8}100%{transform:scale(1);opacity:1}}
+@keyframes ring{0%{transform:scale(1);opacity:.5}50%{transform:scale(1.1);opacity:.2}100%{transform:scale(1);opacity:.5}}
+@keyframes ring-pulse{0%{transform:scale(1);opacity:.5}100%{transform:scale(1.5);opacity:0}}
+@keyframes wave{0%,100%{transform:scaleY(0.5)}50%{transform:scaleY(1)}}
+@keyframes typing{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+@keyframes pulse-dot{0%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.2)}100%{opacity:1;transform:scale(1)}}
+@supports (-webkit-touch-callout: none){.app{min-height:-webkit-fill-available}.screen{min-height:calc(-webkit-fill-available - 60px)}}
 </style>
 </head>
 <body>
-
-<div class="sidebar-overlay" id="sidebarOverlay"></div>
-
-<aside class="sidebar" id="sidebar">
-  <div class="sidebar-brand">
-    <div class="sidebar-brand-icon">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-    </div>
-    <div>
-      <div class="sidebar-brand-text">NOCTRYX</div>
-      <div class="sidebar-brand-sub">AI V2</div>
-    </div>
-  </div>
-  <div class="sidebar-profile">
-    <div class="sidebar-profile-avatar">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
-    </div>
-    <div class="sidebar-profile-info">
-      <div class="sidebar-profile-name">Master</div>
-      <span class="sidebar-profile-badge">PRO</span>
-      <div class="sidebar-profile-role">Admin</div>
-    </div>
-  </div>
-  <nav class="sidebar-nav" id="sidebarNav">
-    <div class="sidebar-nav-item active" data-nav="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span class="sidebar-nav-label">Home</span></div>
-    <div class="sidebar-nav-item" data-nav="chat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-9 8.4A8.5 8.5 0 1 1 21 11.5z"/></svg><span class="sidebar-nav-label">Chat</span></div>
-    <div class="sidebar-nav-item" data-nav="vision"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg><span class="sidebar-nav-label">Vision</span></div>
-    <div class="sidebar-nav-item" data-nav="voice"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4"/></svg><span class="sidebar-nav-label">Voice</span></div>
-    <div class="sidebar-nav-item" data-nav="code"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg><span class="sidebar-nav-label">Code</span></div>
-    <div class="sidebar-nav-item" data-nav="projects"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span class="sidebar-nav-label">Projects</span></div>
-    <div class="sidebar-nav-item" data-nav="agents"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg><span class="sidebar-nav-label">Agents</span></div>
-    <div class="sidebar-nav-item" data-nav="memory"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.5H7a2.5 2.5 0 0 1 0-5H4.5a2.5 2.5 0 0 1 0-5H5a2.5 2.5 0 0 1 0-5h.04A2.5 2.5 0 0 1 9.5 2z"/></svg><span class="sidebar-nav-label">Memory</span></div>
-    <div class="sidebar-nav-item" data-nav="analytics"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg><span class="sidebar-nav-label">Analytics</span></div>
-    <div class="sidebar-nav-item" data-nav="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span class="sidebar-nav-label">Settings</span></div>
-  </nav>
-  <div class="sidebar-section-title">System Status</div>
-  <div class="sidebar-status">
-    <div class="sidebar-status-card">
-      <div class="sidebar-status-row"><span class="sidebar-status-label">Uptime</span><span class="sidebar-status-value live" id="sidebarUptime">00:00:00</span></div>
-      <div class="sidebar-status-row"><span class="sidebar-status-label">Backend</span><span class="sidebar-status-value" id="sidebarBackend">Checking...</span></div>
-      <div class="sidebar-status-row"><span class="sidebar-status-label">Latency</span><span class="sidebar-status-value" id="sidebarLatency">--</span></div>
-      <svg class="sidebar-uptime-chart" id="sidebarUptimeChart" viewBox="0 0 200 24" preserveAspectRatio="none"><polyline id="sidebarUptimeLine" fill="none" stroke="#00ff88" stroke-width="1.5" points=""/></svg>
-    </div>
-  </div>
-  <div class="sidebar-footer">
-    <button class="sidebar-footer-btn" id="themeToggleBtn" title="Toggle theme"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></button>
-    <button class="sidebar-footer-btn" id="sidebarExpandBtn" title="Expand"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></button>
-    <button class="sidebar-footer-btn" id="sidebarLogoutBtn" title="Clear all data"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>
-  </div>
-</aside>
-
 <div class="app">
-  <header class="top-header" id="mainHeader">
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-brand-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+      <div class="sidebar-brand-info">
+        <div class="sidebar-brand-text">NOCTRYX</div>
+        <div class="sidebar-brand-sub">AI CORE V2.0</div>
+      </div>
+    </div>
+    <div class="sidebar-profile">
+      <div class="sidebar-profile-avatar">LE</div>
+      <div class="sidebar-profile-info">
+        <div class="sidebar-profile-name">Lewis Einstein</div>
+        <div class="sidebar-profile-badge">DEVELOPER</div>
+      </div>
+    </div>
+    <div class="sidebar-nav">
+      <div class="sidebar-nav-item active" data-nav="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span class="sidebar-nav-label">Dashboard</span></div>
+      <div class="sidebar-nav-item" data-nav="chat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-9 8.4A8.5 8.5 0 1 1 21 11.5z"/></svg><span class="sidebar-nav-label">AI Chat</span></div>
+      <div class="sidebar-nav-item" data-nav="terminal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg><span class="sidebar-nav-label">Terminal</span></div>
+      <div class="sidebar-nav-item" data-nav="agents"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span class="sidebar-nav-label">Agents</span></div>
+      <div class="sidebar-nav-item" data-nav="projects"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg><span class="sidebar-nav-label">Projects</span></div>
+      <div class="sidebar-nav-item" data-nav="tasks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span class="sidebar-nav-label">Tasks</span></div>
+      <div class="sidebar-nav-item" data-nav="memory"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.5H7a2.5 2.5 0 0 1 0-5H4.5a2.5 2.5 0 0 1 0-5H5a2.5 2.5 0 0 1 0-5h.04A2.5 2.5 0 0 1 9.5 2z"/></svg><span class="sidebar-nav-label">Memory</span></div>
+      <div class="sidebar-nav-item" data-nav="analytics"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg><span class="sidebar-nav-label">Analytics</span></div>
+      <div class="sidebar-nav-item" data-nav="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span class="sidebar-nav-label">Settings</span></div>
+    </div>
+    <div class="sidebar-section-title">System Health</div>
+    <div class="sidebar-status">
+      <div class="sidebar-status-card">
+        <div class="sidebar-status-row"><span class="sidebar-status-label">Backend</span><span class="sidebar-status-value" id="sidebarBackend">Offline</span></div>
+        <div class="sidebar-status-row"><span class="sidebar-status-label">Latency</span><span class="sidebar-status-value" id="sidebarLatency">--</span></div>
+        <div class="sidebar-status-row"><span class="sidebar-status-label">Uptime</span><span class="sidebar-status-value">99.98%</span></div>
+      </div>
+    </div>
+    <div class="sidebar-footer">
+      <button class="sidebar-footer-btn" title="GitHub"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7a3.37 3.37 0 0 0-.94 2.58V22"/></svg></button>
+      <button class="sidebar-footer-btn" title="Help"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></button>
+      <button class="sidebar-footer-btn" title="Logout"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>
+    </div>
+  </aside>
+  <header class="top-header">
     <div class="top-header-left">
-      <button class="menu-btn" id="menuBtn" aria-label="Menu"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
-      <div class="brand"><span class="brand-title">NOCTRYX</span><span class="brand-sub">AI V2</span></div>
+      <button class="menu-btn" id="sidebarBtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+      <div class="brand">
+        <div class="brand-title">NOCTRYX</div>
+        <div class="brand-sub">AI</div>
+      </div>
     </div>
     <div class="header-actions">
-      <div class="status-pill offline" id="headerStatusPill"><span class="status-pill-dot"></span><span id="headerStatusText">OFFLINE</span></div>
-      <button class="avatar-btn" id="profileBtn" aria-label="Profile"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg></button>
+      <div class="status-pill" id="headerStatusPill"><span class="status-pill-dot"></span><span id="headerStatusText">READY</span></div>
+      <button class="avatar-btn" data-nav="settings">LE</button>
     </div>
   </header>
 
-  <!-- HOME -->
+  <!-- HOME SCREEN -->
   <div id="screen-home" class="screen active">
     <div class="hero">
       <div class="hero-row">
-        <div class="orb-wrap"><div class="orb-ring"></div><div class="orb-ring orb-ring-2"></div><div class="orb"></div></div>
+        <div class="orb-wrap">
+          <div class="orb" id="homeOrb"></div>
+          <div class="orb-ring"></div>
+          <div class="orb-ring-2"></div>
+        </div>
         <div class="greeting">
-          <div class="line1" id="greetingLine">Good evening,</div>
-          <div class="name">Master <span style="font-size:18px">&#9812;</span></div>
-          <div class="sub">I am Noctryx, your AI assistant. How can I help you today?</div>
+          <div class="line1">Welcome back,</div>
+          <div class="name">Lewis Einstein</div>
+          <div class="sub">System is optimized and ready for your commands.</div>
           <div class="status-line">
-            <span class="status-dot offline" id="aiStatusDot"></span>
-            <span id="aiStatusText">BACKEND: CHECKING...</span>
-            <span class="status-wave"><span></span><span></span><span></span><span></span><span></span></span>
+            <div class="status-dot" id="aiStatusDot"></div>
+            <span id="aiStatusText">BACKEND: ONLINE</span>
+            <div class="status-wave"><span></span><span></span><span></span><span></span><span></span></div>
           </div>
         </div>
       </div>
     </div>
-    <form class="search-bar" id="searchForm">
-      <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+
+    <div class="search-bar" id="homeSearchTrigger">
+      <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       <input type="text" id="askInput" placeholder="Ask Noctryx anything..." autocomplete="off">
-      <button type="button" class="input-action" id="homeVoiceBtn" aria-label="Voice"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4"/></svg></button>
-      <button type="submit" class="input-action send" aria-label="Send"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg></button>
-    </form>
+      <button class="input-action send"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>
+    </div>
+
     <div class="quick-actions">
-      <button class="qa-item" data-action="chat"><div class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-9 8.4A8.5 8.5 0 1 1 21 11.5z"/></svg></div><div class="qa-label">New Chat</div></button>
-      <button class="qa-item" data-action="code"><div class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div><div class="qa-label">Write Code</div></button>
-      <button class="qa-item" data-action="vision"><div class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div><div class="qa-label">Vision</div></button>
-      <button class="qa-item" data-action="voice"><div class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4"/></svg></div><div class="qa-label">Voice</div></button>
-      <button class="qa-item" data-action="projects"><div class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div><div class="qa-label">Projects</div></button>
+      <div class="qa-item" data-nav="chat"><div class="qa-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-9 8.4A8.5 8.5 0 1 1 21 11.5z"/></svg></div><div class="qa-label">Chat</div></div>
+      <div class="qa-item" data-nav="terminal"><div class="qa-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg></div><div class="qa-label">Terminal</div></div>
+      <div class="qa-item" data-nav="agents"><div class="qa-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><div class="qa-label">Agents</div></div>
+      <div class="qa-item" data-nav="projects"><div class="qa-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div><div class="qa-label">Projects</div></div>
+      <div class="qa-item" data-nav="settings"><div class="qa-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div><div class="qa-label">Settings</div></div>
     </div>
 
     <div class="section">
       <div class="section-header">
-        <div class="section-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> System Status</div>
-        <span class="view-all" data-nav="settings">View Details &gt;</span>
+        <div class="section-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg> System Status</div>
       </div>
       <div class="panel">
         <div class="status-grid">
-          <div class="status-cell"><span class="status-cell-label">Storage</span><span class="status-cell-value" id="homeStorageVal">--</span><span class="status-cell-sub" id="homeStorageSub">--</span></div>
-          <div class="status-cell"><span class="status-cell-label">Network</span><span class="status-cell-value live" id="homeNetworkVal">--</span><span class="status-cell-sub" id="homeNetworkSub">--</span></div>
-          <div class="status-cell"><span class="status-cell-label">Session</span><span class="status-cell-value live" id="homeSessionVal">00:00:00</span><span class="status-cell-sub">Active</span></div>
-          <div class="status-cell"><span class="status-cell-label">Latency</span><span class="status-cell-value" id="homeLatencyVal">--</span><span class="status-cell-sub" id="homeLatencySub">--</span></div>
+          <div class="status-cell"><div class="status-cell-label">Latency</div><div class="status-cell-value" id="homeLatencyVal">--</div><div class="status-cell-sub" id="homeLatencySub">Connecting...</div></div>
+          <div class="status-cell"><div class="status-cell-label">Load</div><div class="status-cell-value">12%</div><div class="status-cell-sub">Optimal</div></div>
           <div class="status-center">
             <div class="status-ring-outer">
               <div class="status-ring-pulse"></div>
-              <div class="status-ring-icon" id="homeStatusIcon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="12" x2="4.01" y2="12"/><line x1="8" y1="12" x2="8.01" y2="12"/><line x1="12" y1="12" x2="12.01" y2="12"/><line x1="16" y1="12" x2="16.01" y2="12"/><line x1="20" y1="12" x2="20.01" y2="12"/></svg></div>
+              <div class="status-ring-icon" id="homeStatusIcon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></div>
             </div>
-            <div class="status-backend-label">BACKEND</div>
-            <div class="status-backend-value" id="homeBackendStatus">CHECKING</div>
+            <div class="status-backend-label">Core Engine</div>
+            <div class="status-backend-value" id="homeBackendStatus">OFFLINE</div>
           </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="section">
-      <div class="section-header">
-        <div class="section-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Today's Overview</div>
-        <span class="view-all" data-nav="analytics">View All &gt;</span>
-      </div>
-      <div class="panel">
-        <div class="overview-grid">
-          <div class="overview-stat"><div class="overview-stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div class="overview-stat-num" id="taskCount">0</div><div class="overview-stat-label">Tasks</div></div>
-          <div class="overview-stat"><div class="overview-stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div><div class="overview-stat-num" id="completedCount">0</div><div class="overview-stat-label">Completed</div></div>
-          <div class="overview-stat"><div class="overview-stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><div class="overview-stat-num" id="messageCount">0</div><div class="overview-stat-label">Messages</div></div>
-          <div class="overview-stat"><div class="overview-stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div><div class="overview-stat-num" id="researchCount">0</div><div class="overview-stat-label">Vision Scans</div></div>
-        </div>
-        <div class="overview-chart-wrap">
-          <svg class="overview-chart" id="overviewChart" viewBox="0 0 400 100" preserveAspectRatio="none">
-            <defs><linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="rgba(0,255,136,0.2)"/><stop offset="100%" stop-color="rgba(0,255,136,0)"/></linearGradient></defs>
-            <path id="overviewChartArea" fill="url(#chartGrad)" d=""/>
-            <polyline id="overviewChartLine" fill="none" stroke="#00ff88" stroke-width="2" points=""/>
-          </svg>
-        </div>
-        <div class="overview-productivity">
-          <div class="overview-productivity-label">Productivity Score</div>
-          <div class="overview-productivity-value" id="productivityValue">--%</div>
-          <div class="overview-productivity-sub" id="productivitySub">Based on today's activity</div>
         </div>
       </div>
     </div>
@@ -635,94 +523,81 @@ a{color:inherit;text-decoration:none}
         <span class="view-all" data-nav="projects">View All &gt;</span>
       </div>
       <div class="panel" id="homeProjectsCard">
-        <div class="projects-empty-state" id="homeProjectsEmpty">
-          <div class="empty-text">Loading repositories...</div>
-          <div class="empty-sub">Set a GitHub username in Settings</div>
-        </div>
+        <div class="project-loading" id="homeProjectsEmpty">Connect GitHub to see projects</div>
       </div>
     </div>
   </div>
 
-  <!-- CHAT -->
-  <div id="screen-chat" class="screen" style="overflow:hidden">
-    <header class="screen-header">
-      <button class="icon-btn back-btn" data-back="home"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
-      <div class="screen-title">Chat</div>
-      <div class="header-actions">
-        <button class="icon-btn" id="chatClearBtn" title="New chat" style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:10px;color:var(--text-dim)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></button>
+  <!-- CHAT SCREEN -->
+  <div id="screen-chat" class="chat-screen">
+    <header class="chat-header">
+      <div class="chat-header-info">
+        <button class="back-btn" data-back="home"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
+        <div class="chat-header-orb"></div>
+        <div>
+          <div class="chat-header-name">NOCTRYX</div>
+          <div class="chat-header-status" id="chatStatus">Online & Ready</div>
+        </div>
       </div>
+      <button class="icon-btn" id="chatClearBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
     </header>
+
     <div class="chat-container" id="chatContainer">
       <div class="chat-welcome" id="chatWelcome">
-        <div class="orb-wrap orb-wrap-sm"><div class="orb-ring"></div><div class="orb"></div></div>
-        <div class="chat-welcome-title">Noctryx AI</div>
-        <div class="chat-welcome-sub">How can I help you today?</div>
-        <div class="chat-welcome-hints" id="chatWelcomeHints">
-          <div class="chat-welcome-hint" onclick="window._quickPrompt(this.textContent)">Explain how async/await works in JavaScript</div>
-          <div class="chat-welcome-hint" onclick="window._quickPrompt(this.textContent)">Write a Python function to sort a list</div>
-          <div class="chat-welcome-hint" onclick="window._quickPrompt(this.textContent)">What are the best practices for REST APIs?</div>
+        <div class="chat-welcome-orb"></div>
+        <div class="chat-welcome-title">I am Noctryx</div>
+        <div class="chat-welcome-text">Advanced multi-modal intelligence at your service. How can I assist your workflow today?</div>
+        <div class="chat-welcome-hints">
+          <div class="chat-welcome-hint" data-hint="What are your capabilities?"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>What are your capabilities?</div>
+          <div class="chat-welcome-hint" data-hint="Write a Python script to analyze a CSV file."><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>Write a Python script to analyze a CSV file.</div>
+          <div class="chat-welcome-hint" data-hint="Draw a system architecture diagram for a web app."><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20v-6M6 20V10M18 20V4"/></svg>Draw a system architecture diagram.</div>
+          <div class="chat-welcome-hint" data-hint="Help me debug a React useEffect hook."><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>Help me debug my React code.</div>
         </div>
       </div>
     </div>
-    <div class="nx-stream-bar" id="nxStreamBar">
-      <button class="nx-stop" id="nxStopBtn"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg> Stop generating</button>
-      <button class="nx-continue" id="nxContinueBtn"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg> Continue</button>
+
+    <div class="typing-indicator" id="typingIndicator">
+      <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
     </div>
-    <div class="typing-indicator" id="typingIndicator"><span></span><span></span><span></span></div>
-    <div class="chat-bottom"><div class="chat-input-wrap">
+
+    <div class="vision-preview" id="visionPreview">
+      <img src="" alt="" class="vision-thumb" id="visionThumb">
+      <div class="vision-info">
+        <div class="vision-name" id="visionFileName">image.jpg</div>
+        <div class="vision-status">Ready to analyze</div>
+      </div>
+      <div class="vision-placeholder" id="visionPlaceholder">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        <span>No image</span>
+      </div>
+      <button class="vision-close" id="visionCloseBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+
+    <footer class="chat-footer">
+      <div class="chat-stop-btn" id="nxStopBtn"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12"/></svg>Stop Generation</div>
+      <div class="chat-continue-btn" id="nxContinueBtn"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg>Continue</div>
       <form class="chat-form" id="chatForm">
+        <div class="chat-controls">
+          <button type="button" class="chat-control-btn" id="visionTriggerBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></button>
+          <input type="file" id="visionInput" accept="image/*" style="display:none">
+        </div>
         <textarea id="chatInput" placeholder="Message Noctryx..." rows="1"></textarea>
-        <button type="button" class="chat-mic" id="chatVoiceBtn" title="Voice input"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4"/></svg></button>
-        <button type="submit" class="chat-send" id="chatSendBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+        <button type="submit" class="chat-send-btn" id="chatSendBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polyline points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
       </form>
-    </div></div>
+    </footer>
   </div>
 
-  <!-- VOICE -->
-  <div id="screen-voice" class="screen">
-    <header class="screen-header">
-      <button class="icon-btn back-btn" data-back="home"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
-      <div class="screen-title">Voice Conversation</div>
-      <button class="end-btn" id="voiceEndBtn">End</button>
-    </header>
-    <div class="voice-body">
-      <div class="orb-wrap orb-wrap-xl"><div class="orb-ring"></div><div class="orb-ring orb-ring-2"></div><div class="orb" id="voiceOrb"></div></div>
-      <canvas id="voiceVisualizer" width="280" height="50"></canvas>
-      <div class="voice-status" id="voiceStatus">Tap the mic to start</div>
-      <div class="voice-transcript" id="voiceTranscript"></div>
-      <div class="voice-keyboard-wrap" id="voiceKeyboardWrap">
-        <input type="text" id="voiceKeyboardInput" placeholder="Type instead...">
-        <button class="voice-ctrl" id="voiceKeyboardSend">Send</button>
-      </div>
-      <div class="voice-controls">
-        <button class="voice-ctrl" id="voiceMicBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4"/></svg> Start</button>
-        <button class="voice-ctrl" id="voiceMuteBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg> Mute</button>
-        <button class="voice-ctrl" id="voiceKeyboardBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/></svg> Keyboard</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- VISION -->
+  <!-- VISION SCREEN (Camera) -->
   <div id="screen-vision" class="screen">
     <header class="screen-header">
       <button class="icon-btn back-btn" data-back="home"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
       <div class="screen-title">Vision</div>
-      <div style="width:36px"></div>
+      <button class="icon-btn" id="visionSwitchBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></button>
     </header>
-    <div class="vision-body">
-      <div class="vision-preview" id="visionPreview">
-        <video id="visionVideo" autoplay playsinline muted></video>
-        <canvas id="visionOverlay"></canvas>
-        <div class="vision-placeholder" id="visionPlaceholder"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg><div id="visionPlaceholderText">Tap Camera to start</div></div>
-      </div>
-      <div class="vision-actions">
-        <button class="v-action active" id="visionCameraBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="3"/></svg>Camera</button>
-        <button class="v-action" id="visionCaptureBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s4-8 11-8 11 8 11 8"/><path d="M5 12v4h3v-4"/><path d="M10 12v7h3v-7"/><path d="M15 12v5h3v-5"/></svg>Analyze</button>
-        <button class="v-action" id="visionSwitchBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>Flip</button>
-      </div>
-      <div class="panel vision-analysis" id="visionAnalysis">
-        <div class="analysis-header"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg> AI Analysis</div>
-        <div class="analysis-body" id="analysisBody">Point your camera at something and tap Analyze to begin.</div>
+    <div style="flex:1;position:relative;background:#000;display:flex;align-items:center;justify-content:center;overflow:hidden">
+      <video id="visionVideo" autoplay playsinline style="width:100%;height:100%;object-fit:cover"></video>
+      <div style="position:absolute;bottom:40px;left:0;right:0;display:flex;justify-content:center;gap:30px;align-items:center">
+        <button id="visionCaptureBtn" style="width:70px;height:70px;border-radius:50%;background:white;border:5px solid rgba(255,255,255,0.3);box-shadow:0 0 20px rgba(0,0,0,0.5)"></button>
       </div>
     </div>
   </div>
@@ -732,11 +607,12 @@ a{color:inherit;text-decoration:none}
     <header class="screen-header">
       <button class="icon-btn back-btn" data-back="home"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
       <div class="screen-title">Projects</div>
-      <button class="icon-btn" id="projectsRefreshBtn" style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:10px;color:var(--text-dim)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></button>
+      <div style="width:36px"></div>
     </header>
     <div class="projects-body" id="projectsBody">
-      <div class="project-loading" id="projectsLoading">Enter a GitHub username in Settings to load repositories.</div>
-      <div class="projects-list" id="projectsList"></div>
+      <button class="projects-refresh-btn" id="projectsRefreshBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg> Refresh Repositories</button>
+      <div id="projectsLoading" class="project-loading">Enter GitHub username in Settings</div>
+      <div id="projectsList" class="projects-list-home"></div>
     </div>
   </div>
 
@@ -753,7 +629,7 @@ a{color:inherit;text-decoration:none}
           <div class="agent-detail-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
           <div class="agent-detail-info">
             <div class="agent-detail-name">Research Agent</div>
-            <div class="agent-detail-desc">Web research, data gathering, and information synthesis. Automatically scans sources and compiles summaries.</div>
+            <div class="agent-detail-desc" id="agentDetailDescResearch">Scanning web...</div>
             <div class="agent-detail-status idle" id="agentDetailStatusResearch"><span class="dot"></span>Idle</div>
             <div class="agent-detail-meta"><span>Tasks: 0</span><span>Last run: Never</span></div>
           </div>
@@ -762,7 +638,7 @@ a{color:inherit;text-decoration:none}
           <div class="agent-detail-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
           <div class="agent-detail-info">
             <div class="agent-detail-name">Code Agent</div>
-            <div class="agent-detail-desc">Code generation, debugging, refactoring, and explanation across multiple languages and frameworks.</div>
+            <div class="agent-detail-desc" id="agentDetailDescCode">Writing code...</div>
             <div class="agent-detail-status idle" id="agentDetailStatusCode"><span class="dot"></span>Idle</div>
             <div class="agent-detail-meta"><span>Tasks: 0</span><span>Last run: Never</span></div>
           </div>
@@ -771,7 +647,7 @@ a{color:inherit;text-decoration:none}
           <div class="agent-detail-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
           <div class="agent-detail-info">
             <div class="agent-detail-name">Vision Agent</div>
-            <div class="agent-detail-desc">Image analysis, object detection, OCR, and visual understanding from camera or uploaded images.</div>
+            <div class="agent-detail-desc" id="agentDetailDescVision">Analyzing...</div>
             <div class="agent-detail-status idle" id="agentDetailStatusVision"><span class="dot"></span>Idle</div>
             <div class="agent-detail-meta"><span>Tasks: 0</span><span>Last run: Never</span></div>
           </div>
@@ -780,7 +656,7 @@ a{color:inherit;text-decoration:none}
           <div class="agent-detail-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
           <div class="agent-detail-info">
             <div class="agent-detail-name">Automation Agent</div>
-            <div class="agent-detail-desc">Task scheduling, reminders, workflow automation, and routine management.</div>
+            <div class="agent-detail-desc" id="agentDetailDescAuto">Running tasks...</div>
             <div class="agent-detail-status idle" id="agentDetailStatusAuto"><span class="dot"></span>Idle</div>
             <div class="agent-detail-meta"><span>Tasks: 0</span><span>Last run: Never</span></div>
           </div>
@@ -794,7 +670,7 @@ a{color:inherit;text-decoration:none}
     <header class="screen-header">
       <button class="icon-btn back-btn" data-back="home"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
       <div class="screen-title">Memory</div>
-      <button class="icon-btn" id="memoryClearBtn" style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:10px;color:var(--text-dim)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
+      <button class="icon-btn" id="memoryClearBtn" style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:10px;color:var(--text-dimer)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
     </header>
     <div class="memory-body">
       <div class="timeline" id="memoryTimeline"></div>
@@ -878,10 +754,44 @@ a{color:inherit;text-decoration:none}
   <div id="screen-more" class="screen">
     <header class="screen-header"><div class="screen-title" style="margin-left:0">More</div><div style="width:34px"></div></header>
     <div class="more-grid">
+      <button class="more-item" data-nav="terminal"><div class="more-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg></div><div class="more-label">Terminal</div></button>
       <button class="more-item" data-nav="memory"><div class="more-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.5H7a2.5 2.5 0 0 1 0-5H4.5a2.5 2.5 0 0 1 0-5H5a2.5 2.5 0 0 1 0-5h.04A2.5 2.5 0 0 1 9.5 2z"/></svg></div><div class="more-label">Memory</div></button>
       <button class="more-item" data-nav="tasks"><div class="more-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div class="more-label">Tasks</div></button>
       <button class="more-item" data-nav="projects"><div class="more-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div><div class="more-label">Projects</div></button>
       <button class="more-item" data-nav="settings"><div class="more-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div><div class="more-label">Settings</div></button>
+    </div>
+  </div>
+
+  <!-- TERMINAL -->
+  <div id="screen-terminal" class="screen">
+    <header class="screen-header">
+      <button class="icon-btn back-btn" data-back="chat"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
+      <div class="screen-title">Terminal</div>
+      <div style="width:36px"></div>
+    </header>
+    <div class="terminal-body">
+      <div class="terminal-header-bar">
+        <button class="terminal-tab active" id="termTabOutput">Output</button>
+        <button class="terminal-tab" id="termTabCode">Code</button>
+        <select class="terminal-lang-select" id="termLangSelect">
+          <option value="python">Python</option>
+          <option value="javascript">JavaScript</option>
+          <option value="node">Node.js</option>
+          <option value="bash">Bash</option>
+        </select>
+      </div>
+      <div class="terminal-output" id="termOutput"><span class="t-line t-muted">// Noctryx Terminal — Run code to verify solutions before sending them back.
+</span><span class="t-line t-muted">// Select a language, write or paste code, then tap Run.
+</span></div>
+      <div class="terminal-code-input" id="termCodeInput" style="display:none">
+        <textarea id="termCodeTextarea" placeholder="Enter your code here..." rows="8"></textarea>
+      </div>
+      <div class="terminal-actions-bar">
+        <button class="terminal-clear-btn" id="termClearBtn">Clear</button>
+        <button class="terminal-clear-btn" id="termCopyOutputBtn">Copy Output</button>
+        <div style="flex:1"></div>
+        <button class="terminal-run-btn" id="termRunBtn">Run</button>
+      </div>
     </div>
   </div>
 
@@ -908,9 +818,13 @@ const Config = {
 };
 
 function fetchWithTimeout(url, options = {}, timeout = 6000) {
+  const outerSignal = options.signal || null;
   const controller = new AbortController();
-  const id = setTimeout(() => controller.abort('timeout'), timeout);
-  return fetch(url, { ...options, signal: controller.signal }).finally(() => clearTimeout(id));
+  let timeoutId;
+  if (timeout > 0) timeoutId = setTimeout(() => controller.abort('timeout'), timeout);
+  outerSignal?.addEventListener('abort', () => controller.abort(), { once: true });
+  controller.signal.addEventListener('abort', () => { if (timeoutId) clearTimeout(timeoutId); });
+  return fetch(url, { ...options, signal: controller.signal }).finally(() => { if (timeoutId) clearTimeout(timeoutId); });
 }
 
 function safeJSONParse(key, fallback) {
@@ -931,1180 +845,475 @@ function toast(msg, isError = false) {
   toastTimer = setTimeout(() => el.classList.remove('show'), 2600);
 }
 
-function escapeHtml(s) {
-  return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+function escapeHtml(str) {
+  if (!str) return '';
+  const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+  return str.replace(/[&<>"']/g, m => map[m]);
 }
 
-/* Sidebar */
-const sidebar = document.getElementById('sidebar');
-const sidebarOverlay = document.getElementById('sidebarOverlay');
-function openSidebar() { sidebar.classList.add('open'); sidebarOverlay.classList.add('open'); }
-function closeSidebar() { sidebar.classList.remove('open'); sidebarOverlay.classList.remove('open'); }
-document.getElementById('menuBtn')?.addEventListener('click', openSidebar);
-sidebarOverlay.addEventListener('click', closeSidebar);
-document.getElementById('sidebarExpandBtn')?.addEventListener('click', () => {
-  if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(()=>{});
-  else document.exitFullscreen().catch(()=>{});
-});
-document.getElementById('sidebarLogoutBtn')?.addEventListener('click', () => {
-  if (confirm('Clear all local data? This will reset tasks, memory, counters, and settings.')) {
-    localStorage.clear();
-    location.reload();
+const ChatState = {
+  history: safeJSONParse('noctryx_history', []),
+  lastReply: '',
+  isStreaming: false,
+  save() { safeJSONSet('noctryx_history', this.history.slice(-50)); },
+  clear() { this.history = []; this.save(); }
+};
+
+const Memory = {
+  items: safeJSONParse('noctryx_memory', []),
+  log(text) {
+    this.items.unshift({ text, time: new Date().toISOString() });
+    this.items = this.items.slice(0, 30);
+    safeJSONSet('noctryx_memory', this.items);
+    renderMemory();
+  },
+  clear() { this.items = []; safeJSONSet('noctryx_memory', []); renderMemory(); }
+};
+
+const Counters = {
+  get() { return safeJSONParse('noctryx_counters', { messages: 0, scans: 0, tasks: 0, done: 0 }); },
+  bump(key) {
+    const c = this.get(); c[key]++;
+    safeJSONSet('noctryx_counters', c);
+    renderAnalytics();
   }
-});
+};
 
-/* Screen Navigation */
-const screens = document.querySelectorAll('.screen');
-const navItems = document.querySelectorAll('.nav-item');
-const sidebarNavItems = document.querySelectorAll('.sidebar-nav-item');
-let currentScreen = 'home';
+const Voice = {
+  active: false,
+  muted: false,
+  recognition: null,
+  audioCtx: null,
+  analyser: null,
+  micStream: null,
+  rafId: null
+};
 
-function showScreen(name) {
-  currentScreen = name;
-  screens.forEach(s => s.classList.toggle('active', s.id === 'screen-' + name));
-  navItems.forEach(n => n.classList.toggle('active', n.dataset.nav === name));
-  sidebarNavItems.forEach(n => n.classList.toggle('active', n.dataset.nav === name));
-  closeSidebar();
-  if (name === 'projects') loadProjects();
-  if (name === 'memory') renderMemory();
-  if (name === 'tasks') renderTasks();
-  if (name === 'settings') loadSettingsScreen();
-  if (name === 'analytics') renderAnalytics();
-  if (name === 'agents') renderAgentsDetail();
-  if (name !== 'vision') stopCamera();
-  if (name !== 'voice') stopVoiceSession();
-  window.scrollTo(0,0);
+const SpeechRecognitionCtor = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+/* Navigation */
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const target = document.getElementById('screen-' + id);
+  if (target) target.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => {
+    n.classList.toggle('active', n.getAttribute('data-nav') === id);
+  });
+  document.querySelectorAll('.sidebar-nav-item').forEach(n => {
+    n.classList.toggle('active', n.getAttribute('data-nav') === id);
+  });
+  if (id === 'projects') loadProjects();
+  if (id === 'memory') renderMemory();
+  if (id === 'analytics') renderAnalytics();
+  if (id === 'agents') renderAgentsDetail();
+  if (id === 'chat') {
+    const c = document.getElementById('chatContainer');
+    if (c) setTimeout(() => c.scrollTop = c.scrollHeight, 100);
+  }
 }
 
 document.querySelectorAll('[data-nav]').forEach(el => {
-  el.addEventListener('click', () => showScreen(el.dataset.nav));
-});
-document.querySelectorAll('[data-back]').forEach(el => {
-  el.addEventListener('click', () => showScreen(el.dataset.back));
-});
-document.querySelectorAll('.qa-item[data-action]').forEach(el => {
   el.addEventListener('click', () => {
-    const map = { chat: 'chat', code: 'chat', vision: 'vision', voice: 'voice', projects: 'projects' };
-    showScreen(map[el.dataset.action] || 'chat');
-    if (el.dataset.action === 'code') {
-      setTimeout(() => { document.getElementById('chatInput').value = 'Write code: '; document.getElementById('chatInput').focus(); }, 300);
-    }
+    const nav = el.getAttribute('data-nav');
+    showScreen(nav);
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebarOverlay').classList.remove('open');
   });
 });
-document.getElementById('centerPulseBtn')?.addEventListener('click', () => showScreen('voice'));
 
-/* Memory */
-const Memory = {
-  KEY: 'noctryx_memory',
-  all() { return safeJSONParse(this.KEY, []); },
-  log(text) {
-    const events = this.all();
-    events.unshift({ text, ts: Date.now() });
-    safeJSONSet(this.KEY, events.slice(0, 200));
-    renderMemory();
-  },
-  clear() { try { localStorage.removeItem(this.KEY); } catch {} renderMemory(); }
-};
-
-function timeAgoLabel(ts) {
-  return new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-}
-function dayLabel(ts) {
-  const d = new Date(ts), today = new Date();
-  if (d.toDateString() === today.toDateString()) return 'Today';
-  const yest = new Date(today); yest.setDate(yest.getDate() - 1);
-  if (d.toDateString() === yest.toDateString()) return 'Yesterday';
-  return d.toLocaleDateString();
-}
-
-function renderMemory() {
-  const events = Memory.all();
-  const el = document.getElementById('memoryTimeline');
-  if (!el) return;
-  if (!events.length) {
-    el.innerHTML = '<div class="timeline-empty">No activity yet. Use chat, voice, or vision and it will show up here.</div>';
-    return;
-  }
-  const groups = {};
-  events.forEach(e => { const label = dayLabel(e.ts); groups[label] = groups[label] || []; groups[label].push(e); });
-  el.innerHTML = Object.entries(groups).map(([day, items]) => `
-    <div class="timeline-group">
-      <div class="timeline-date">${escapeHtml(day)}</div>
-      ${items.map(e => `
-        <div class="timeline-item">
-          <div class="timeline-dot"></div>
-          <div class="timeline-content">
-            <div class="timeline-text">${escapeHtml(e.text)}</div>
-            <div class="timeline-time">${timeAgoLabel(e.ts)}</div>
-          </div>
-        </div>`).join('')}
-    </div>`).join('');
-}
-
-document.getElementById('memoryClearBtn')?.addEventListener('click', () => {
-  if (confirm('Clear all memory timeline entries?')) Memory.clear();
+document.querySelectorAll('[data-back]').forEach(el => {
+  el.addEventListener('click', () => showScreen(el.getAttribute('data-back')));
 });
 
-/* Counters */
-const Counters = {
-  KEY: 'noctryx_counters',
-  get() { return Object.assign({ messages: 0, scans: 0, tasks: 0, completed: 0 }, safeJSONParse(this.KEY, {})); },
-  bump(field) { const c = this.get(); c[field] = (c[field] || 0) + 1; safeJSONSet(this.KEY, c); renderOverview(); renderAnalytics(); }
-};
-
-function renderOverview() {
-  const c = Counters.get();
-  const tasks = Tasks.all();
-  const taskEl = document.getElementById('taskCount');
-  const compEl = document.getElementById('completedCount');
-  const msgEl = document.getElementById('messageCount');
-  const scanEl = document.getElementById('researchCount');
-  const prodVal = document.getElementById('productivityValue');
-  const prodSub = document.getElementById('productivitySub');
-  if (taskEl) taskEl.textContent = tasks.length;
-  if (compEl) compEl.textContent = tasks.filter(t => t.done).length;
-  if (msgEl) msgEl.textContent = c.messages;
-  if (scanEl) scanEl.textContent = c.scans;
-  const total = tasks.length + c.messages + c.scans;
-  const pct = total > 0 ? Math.min(100, Math.round((c.completed + c.messages + c.scans) / (total + 5) * 100)) : 0;
-  if (prodVal) prodVal.textContent = pct + '%';
-  if (prodSub) prodSub.textContent = pct > 50 ? 'Above average today' : 'Keep going!';
-  drawOverviewChart();
-}
-
-function drawOverviewChart() {
-  const c = Counters.get();
-  const tasks = Tasks.all().length;
-  const data = [tasks, c.completed, c.messages, c.scans, Math.max(1, tasks + c.completed)];
-  const max = Math.max(...data, 10);
-  const w = 400, h = 100;
-  const step = w / (data.length - 1);
-  const points = data.map((v, i) => `${i * step},${h - (v / max) * (h - 10) - 5}`).join(' ');
-  const area = 'M0,' + h + ' L' + data.map((v, i) => `${i * step},${h - (v / max) * (h - 10) - 5}`).join(' L') + ' L' + w + ',' + h + ' Z';
-  const line = document.getElementById('overviewChartLine');
-  const areaPath = document.getElementById('overviewChartArea');
-  if (line) line.setAttribute('points', points);
-  if (areaPath) areaPath.setAttribute('d', area);
-}
-
-/* Tasks */
-const Tasks = {
-  KEY: 'noctryx_tasks',
-  all() { return safeJSONParse(this.KEY, []); },
-  save(list) { safeJSONSet(this.KEY, list); renderTasks(); renderOverview(); },
-  add(text) { const list = this.all(); list.unshift({ id: Date.now(), text, done: false }); this.save(list); Memory.log('Added task: "' + text + '"'); Counters.bump('tasks'); },
-  toggle(id) { const list = this.all().map(t => t.id === id ? { ...t, done: !t.done } : t); this.save(list); if (list.find(t=>t.id===id)?.done) Counters.bump('completed'); },
-  remove(id) { this.save(this.all().filter(t => t.id !== id)); }
-};
-
-function renderTasks() {
-  const list = Tasks.all();
-  const el = document.getElementById('taskList');
-  if (!el) return;
-  if (!list.length) { el.innerHTML = '<div class="task-empty">No tasks yet. Add one above.</div>'; return; }
-  el.innerHTML = list.map(t => `
-    <div class="task-item">
-      <div class="task-check ${t.done ? 'checked' : ''}" data-id="${t.id}"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-      <div class="task-text ${t.done ? 'done' : ''}">${escapeHtml(t.text)}</div>
-      <button class="task-delete" data-id="${t.id}">&#10005;</button>
-    </div>`).join('');
-  el.querySelectorAll('.task-check').forEach(b => b.addEventListener('click', () => Tasks.toggle(Number(b.dataset.id))));
-  el.querySelectorAll('.task-delete').forEach(b => b.addEventListener('click', () => Tasks.remove(Number(b.dataset.id))));
-}
-
-document.getElementById('taskForm')?.addEventListener('submit', e => {
-  e.preventDefault();
-  const input = document.getElementById('taskInput');
-  const v = input?.value.trim();
-  if (!v) return;
-  Tasks.add(v);
-  input.value = '';
+document.getElementById('sidebarBtn')?.addEventListener('click', () => {
+  document.getElementById('sidebar').classList.add('open');
+  document.getElementById('sidebarOverlay').classList.add('open');
+});
+document.getElementById('sidebarOverlay')?.addEventListener('click', () => {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('open');
 });
 
-/* Marked renderer */
-const _codeStore = new Map();
-const _langColors = {javascript:'#f1e05a',typescript:'#3178c6',python:'#3572A5',css:'#563d7c',html:'#e34c26',bash:'#89e051',json:'#f1e05a',sql:'#e38c00',java:'#b07219',cpp:'#f34b7d',csharp:'#178600',go:'#00ADD8',rust:'#dea584',ruby:'#701516',php:'#4F5D95',swift:'#F05138',yaml:'#cb171e',dockerfile:'#384d54',ini:'#6d8086',markdown:'#083fa1',plaintext:'#8b949e'};
-
-const mdRenderer = new marked.Renderer();
-mdRenderer.code = function(obj) {
-  const text = obj.text || '';
-  const lang = (obj.lang || '').toLowerCase().trim();
-  const codeId = 'c' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
-  _codeStore.set(codeId, text);
-  let highlighted;
-  try {
-    if (lang && hljs.getLanguage(lang)) highlighted = hljs.highlight(text, { language: lang }).value;
-    else highlighted = hljs.highlightAuto(text).value;
-  } catch (e) { highlighted = escapeHtml(text); }
-  const langLabel = lang || 'code';
-  const dotColor = _langColors[lang] || '#8b949e';
-  const lineCount = text.split('\n').length;
-  const hasNums = lineCount > 2;
-  const numsHtml = hasNums ? '<div class="nx-nums">' + Array.from({length:lineCount},(_,i)=>`<div>${(i%5===0)?(i+1):' '}</div>`).join('') + '</div>' : '';
-  const copySvg = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
-  return `<div class="nx-code${hasNums ? ' has-nums' : ''}"><div class="nx-code-head"><span class="nx-code-lang"><span class="nx-code-lang-dot" style="background:${dotColor}"></span>${escapeHtml(langLabel)}</span><button class="nx-code-copy" onclick="window._cc(this,'${codeId}')">${copySvg} Copy</button></div><div style="position:relative"><pre><code class="hljs language-${escapeHtml(lang)}">${highlighted}</code></pre>${numsHtml}</div></div>`;
-};
-marked.setOptions({ renderer: mdRenderer, gfm: true, breaks: false, pedantic: false, sanitize: false });
-
-function renderMarkdown(text) {
-  if (!text || typeof text !== 'string') return '';
-  let mathBlocks = [];
-  let p = text;
-  p = p.replace(/\$\$([\s\S]*?)\$\$/g, (m, math) => { mathBlocks.push({d:true,m:math.trim()}); return '%%M_' + (mathBlocks.length-1) + '%%'; });
-  p = p.replace(/(\$)(?![\$\d])([^$\n]+?)(?<!\$)\1/g, (m, _, math) => { mathBlocks.push({d:false,m:math.trim()}); return '%%M_' + (mathBlocks.length-1) + '%%'; });
-  let html;
-  try { html = marked.parse(p); } catch (e) { html = '<p>' + escapeHtml(text) + '</p>'; }
-  html = DOMPurify.sanitize(html, {ALLOWED_TAGS:['h1','h2','h3','h4','h5','h6','p','br','hr','pre','code','span','div','strong','em','del','s','u','a','img','table','thead','tbody','tr','th','td','ul','ol','li','blockquote','input','sup','sub','details','summary'],ALLOWED_ATTR:['href','src','alt','title','class','id','type','checked','disabled','style','target','rel'],ADD_ATTR:['target']});
-  html = html.replace(/%%M_(\d+)%%/g, (_, idx) => {
-    const b = mathBlocks[parseInt(idx)]; if (!b) return '';
-    try { return katex.renderToString(b.m, {displayMode:b.d,throwOnError:false,trust:true,strict:false}); }
-    catch(e) { return '<span style="color:var(--danger)">[Math Error]</span>'; }
-  });
-  return html;
-}
-
-async function renderMermaidBlocks(container) {
-  if (!window.mermaid) return;
-  const els = container.querySelectorAll('.mermaid-src');
-  for (let i = 0; i < els.length; i++) {
-    const src = els[i], outId = src.id + '-out', out = document.getElementById(outId);
-    if (!out || src.dataset.rendered) continue;
-    try { const r = await mermaid.render(outId + '-svg', src.textContent); out.innerHTML = r.svg; src.style.display = 'none'; src.dataset.rendered = 'true'; }
-    catch(e) { out.innerHTML = '<div class="nx-mermaid-err">' + escapeHtml(e.message || 'Unknown') + '</div>'; }
+/* Chat Core */
+function appendMessage(role, content, isError = false) {
+  const container = document.getElementById('chatContainer');
+  const welcome = document.getElementById('chatWelcome');
+  if (welcome) welcome.style.display = 'none';
+  const wrap = document.createElement('div');
+  wrap.className = 'message-wrap ' + role;
+  const id = 'msg-' + Date.now();
+  wrap.id = id;
+  const header = document.createElement('div');
+  header.className = 'chat-msg-header';
+  header.textContent = role === 'user' ? 'You' : 'Noctryx';
+  const bubble = document.createElement('div');
+  bubble.className = 'chat-bubble';
+  const body = document.createElement('div');
+  body.className = 'chat-msg-body';
+  if (isError) body.classList.add('t-error');
+  body.innerHTML = renderMarkdown(content);
+  bubble.appendChild(body);
+  if (role === 'assistant' && !isError) {
+    body.insertAdjacentHTML('beforeend', _buildActions(id));
   }
+  wrap.appendChild(header);
+  wrap.appendChild(bubble);
+  container.appendChild(wrap);
+  smartScroll(container);
+  renderMermaidBlocks(wrap);
+  return body;
 }
-
-function isNearBottom(el) { return el.scrollHeight - el.scrollTop - el.clientHeight < 120; }
-function smartScroll(el, force) { if (!el) return; if (force || isNearBottom(el)) el.scrollTo({ top: el.scrollHeight, behavior: force ? 'auto' : 'smooth' }); }
 
 function _buildActions(id) {
-  return `<div class="nx-actions" data-mid="${id}">
-    <button class="nx-act" onclick="window._cr('${id}')" title="Copy"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
-    <button class="nx-act" onclick="window._rg('${id}')" title="Regenerate"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></button>
-    <button class="nx-act" onclick="window._sp('${id}')" title="Read aloud"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></button>
-    <button class="nx-act" onclick="window._lk('${id}')" title="Good response"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg></button>
-    <button class="nx-act" onclick="window._dl('${id}')" title="Bad response"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3H10z"/><path d="M17 2h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"/></svg></button>
+  return `<div class="chat-msg-actions">
+    <div class="chat-msg-action" onclick="_cr('${id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</div>
+    <div class="chat-msg-action" onclick="_rg('${id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>Regenerate</div>
   </div>`;
 }
 
-function appendMessage(role, text, isError) {
-  const c = document.getElementById('chatContainer');
-  const w = document.getElementById('chatWelcome'); if (w) w.remove();
-  const id = 'm' + Date.now() + Math.random().toString(36).slice(2,6);
-  const wrap = document.createElement('div');
-  wrap.className = 'chat-msg' + (role === 'user' ? ' user' : '');
-  wrap.id = id;
-  const avClass = role === 'user' ? 'human' : 'ai';
-  const avText = role === 'user' ? 'U' : 'NX';
-  const bc = isError ? ' error' : '';
-  const rendered = role === 'user' ? escapeHtml(text).replace(/\n/g,'<br>') : renderMarkdown(text);
-  const acts = (role === 'assistant' && !isError) ? _buildActions(id) : '';
-  wrap.innerHTML = `<div class="chat-msg-inner"><div class="chat-msg-avatar ${avClass}">${avText}</div><div class="chat-msg-body"><div class="chat-bubble${bc}">${rendered}</div>${acts}</div></div>`;
-  c.appendChild(wrap);
-  smartScroll(c, true);
-  if (role === 'assistant') requestAnimationFrame(() => { renderMermaidBlocks(wrap); });
-  return id;
+function renderMarkdown(text) {
+  try {
+    return DOMPurify.sanitize(marked.parse(text));
+  } catch(e) { return escapeHtml(text); }
 }
 
-/* Streaming */
-let _sId = null, _sBubble = null, _sBuf = '', _sTimer = null;
-function startStreamMessage() {
-  const c = document.getElementById('chatContainer');
-  if (!c) return;
-  const w = document.getElementById('chatWelcome'); if (w) w.remove();
-  _sId = 'm' + Date.now() + Math.random().toString(36).slice(2,6); _sBuf = '';
-  const wrap = document.createElement('div'); wrap.className = 'chat-msg'; wrap.id = _sId;
-  wrap.innerHTML = `<div class="chat-msg-inner"><div class="chat-msg-avatar ai">NX</div><div class="chat-msg-body"><div class="chat-bubble nx-cursor" id="sBubble"></div></div></div>`;
-  c.appendChild(wrap); _sBubble = document.getElementById('sBubble');
-  smartScroll(c, true);
-  const stopBtn = document.getElementById('nxStopBtn');
-  const contBtn = document.getElementById('nxContinueBtn');
-  if (stopBtn) stopBtn.classList.add('show');
-  if (contBtn) contBtn.classList.remove('show');
+function renderMermaidBlocks(el) {
+  const blocks = el.querySelectorAll('pre code.language-mermaid');
+  blocks.forEach((b, i) => {
+    const raw = b.textContent;
+    const id = 'mermaid-' + Date.now() + '-' + i;
+    const div = document.createElement('div');
+    div.className = 'mermaid-wrap';
+    div.id = id;
+    div.textContent = raw;
+    b.parentElement.replaceWith(div);
+    try { mermaid.init(undefined, div); } catch(e) { div.textContent = 'Mermaid error: ' + e.message; }
+  });
 }
+
+function smartScroll(el, force = false) {
+  const threshold = 150;
+  const isAtBottom = el.scrollHeight - el.scrollTop - el.clientHeight < threshold;
+  if (isAtBottom || force) el.scrollTop = el.scrollHeight;
+}
+
+/* Streaming Logic */
+let _sId = null;
+let _sBubble = null;
+let _sBuf = '';
+let _sTimer = null;
+
+function startStreamMessage() {
+  const container = document.getElementById('chatContainer');
+  const welcome = document.getElementById('chatWelcome');
+  if (welcome) welcome.style.display = 'none';
+  const wrap = document.createElement('div');
+  wrap.className = 'message-wrap assistant';
+  _sId = 'msg-' + Date.now();
+  wrap.id = _sId;
+  const header = document.createElement('div');
+  header.className = 'chat-msg-header';
+  header.textContent = 'Noctryx';
+  const bubble = document.createElement('div');
+  bubble.className = 'chat-bubble nx-cursor';
+  _sBubble = document.createElement('div');
+  _sBubble.className = 'chat-msg-body';
+  bubble.appendChild(_sBubble);
+  wrap.appendChild(header);
+  wrap.appendChild(bubble);
+  container.appendChild(wrap);
+  _sBuf = '';
+  document.getElementById('nxStopBtn').classList.add('show');
+  smartScroll(container, true);
+}
+
 function updateStreamMessage(token) {
+  if (!_sBubble) return;
   _sBuf += token;
-  if (_sTimer) clearTimeout(_sTimer);
+  if (_sTimer) return;
   _sTimer = setTimeout(() => {
-    if (!_sBubble) return;
+    _sTimer = null;
     try { _sBubble.innerHTML = renderMarkdown(_sBuf); } catch(e) { _sBubble.textContent = _sBuf; }
     const c = document.getElementById('chatContainer');
     if (c) smartScroll(c);
-  }, 60);
+  }, 30);
 }
-function finishStreamMessage(stopped) {
-  if (_sTimer) clearTimeout(_sTimer);
-  if (!_sBubble || !_sId) return;
-  try { _sBubble.innerHTML = renderMarkdown(_sBuf); } catch(e) { _sBubble.textContent = _sBuf; }
-  _sBubble.classList.remove('nx-cursor');
-  const wrapEl = document.getElementById(_sId);
-  if (wrapEl) {
-    const mw = wrapEl.querySelector('.chat-msg-body');
-    if (mw) mw.insertAdjacentHTML('beforeend', _buildActions(_sId));
-    renderMermaidBlocks(wrapEl);
-  }
-  const stopBtn = document.getElementById('nxStopBtn');
-  const contBtn = document.getElementById('nxContinueBtn');
-  const chatContainer = document.getElementById('chatContainer');
-  if (stopBtn) stopBtn.classList.remove('show');
-  if (stopped && contBtn) contBtn.classList.add('show');
-  if (chatContainer) smartScroll(chatContainer, true);
-  const reply = _sBuf;
-  ChatState.history.push({ role: 'assistant', content: reply });
-  ChatState.lastReply = reply;
-  ChatState.save();
-  Counters.bump('messages');
-  Memory.log('Chat: "' + reply.slice(0,50) + (reply.length>50?'...':'') + '"');
+function endStreamMessage(fullText) {
+  if (!_sBubble) return;
+  document.getElementById('nxStopBtn').classList.remove('show');
+  const bubbleParent = _sBubble.parentElement;
+  if (bubbleParent) bubbleParent.classList.remove('nx-cursor');
+  _sBubble.innerHTML = renderMarkdown(fullText || _sBuf);
+  _sBubble.insertAdjacentHTML('beforeend', _buildActions(_sId));
+  renderMermaidBlocks(_sBubble);
+  const c = document.getElementById('chatContainer');
+  if (c) smartScroll(c, true);
   _sId = null; _sBubble = null; _sBuf = '';
-  return reply;
 }
 
-/* Action handlers */
-window._cr = function(id) {
-  const el = document.getElementById(id); if (!el) return;
-  const b = el.querySelector('.chat-bubble'); if (!b) return;
-  navigator.clipboard.writeText(b.innerText || b.textContent).then(() => toast('Response copied')).catch(() => toast('Copy failed', true));
-};
-window._rg = function(id) {
-  const el = document.getElementById(id); if (!el) return;
-  const lastUser = ChatState.history.slice().reverse().find(m => m.role === 'user');
-  if (!lastUser) { toast('No user message to regenerate from'); return; }
-  el.remove();
-  if (ChatState.history.length && ChatState.history[ChatState.history.length-1].role === 'assistant') ChatState.history.pop();
-  sendChatMessage(lastUser.content);
-};
-window._sp = function(id) {
-  const el = document.getElementById(id); if (!el) return;
-  const b = el.querySelector('.chat-bubble'); if (!b) return;
-  if (!window.speechSynthesis) { toast('Speech not supported', true); return; }
-  window.speechSynthesis.cancel();
-  const utter = new SpeechSynthesisUtterance(b.innerText || b.textContent);
-  utter.rate = 1.0; utter.pitch = 1;
-  window.speechSynthesis.speak(utter);
-  toast('Speaking...');
-};
-window._lk = function(id) {
-  const el = document.getElementById(id); if (!el) return;
-  const btn = el.querySelector('.nx-actions button:nth-child(4)');
-  const dlBtn = el.querySelector('.nx-actions button:nth-child(5)');
-  if (btn) btn.classList.toggle('liked');
-  if (dlBtn) dlBtn.classList.remove('disliked');
-  Memory.log('Response liked');
-};
-window._dl = function(id) {
-  const el = document.getElementById(id); if (!el) return;
-  const btn = el.querySelector('.nx-actions button:nth-child(5)');
-  const lkBtn = el.querySelector('.nx-actions button:nth-child(4)');
-  if (btn) btn.classList.toggle('disliked');
-  if (lkBtn) lkBtn.classList.remove('liked');
-  Memory.log('Response disliked');
-};
-window._cc = function(btn, cid) {
-  const code = _codeStore.get(cid); if (!code) return;
-  navigator.clipboard.writeText(code).then(() => {
-    btn.classList.add('done');
-    const origHtml = btn.innerHTML;
-    btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="transform:scale(1.15)"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
-    setTimeout(() => { btn.classList.remove('done'); btn.innerHTML = origHtml; }, 2000);
-  }).catch(() => toast('Copy failed', true));
-};
-window._quickPrompt = function(text) {
-  document.getElementById('chatInput').value = text;
-  document.getElementById('chatForm').dispatchEvent(new Event('submit'));
-};
-
-/* Chat State */
-const ChatState = { 
-  history: [], 
-  isStreaming: false, 
-  lastReply: '',
-  get STORAGE_KEY() { return 'noctryx_chat_history'; },
-  load() { 
-    const saved = safeJSONParse(this.STORAGE_KEY, null); 
-    if (saved) this.history = saved; 
-  },
-  save() { 
-    safeJSONSet(this.STORAGE_KEY, this.history); 
-  },
-  clear() { 
-    this.history = []; this.lastReply = ''; 
-    try { localStorage.removeItem(this.STORAGE_KEY); } catch(e) {} 
-  }
-};
 let _sAbort = null;
+function detectAgent(msg) {
+  const m = msg.toLowerCase();
+  if (m.includes('research') || m.includes('search') || m.includes('find') || m.includes('browse')) return 'research';
+  if (m.includes('code') || m.includes('debug') || m.includes('script') || m.includes('python') || m.includes('js')) return 'code';
+  if (m.includes('image') || m.includes('picture') || m.includes('photo') || m.includes('see') || m.includes('look')) return 'vision';
+  if (m.includes('task') || m.includes('remind') || m.includes('automate') || m.includes('schedule')) return 'auto';
+  return 'auto'; // Default to auto/general
+}
 
-async function sendChatMessage(message) {
-  if (ChatState.isStreaming && _sAbort) { try { _sAbort.abort(); } catch(e) {} ChatState.isStreaming = false; }
-  if (!Config.apiBase) {
-    appendMessage('user', message);
-    appendMessage('assistant', '**No backend configured.**\n\nGo to **Settings** and enter your backend URL to start chatting.', true);
-    return;
-  }
-  appendMessage('user', message);
-  ChatState.history.push({ role: 'user', content: message });
-  document.getElementById('typingIndicator').classList.add('active');
-  ChatState.isStreaming = true;
-  document.getElementById('nxContinueBtn').classList.remove('show');
-  setAgentStatus('code', true);
+async function sendChatMessage(msg, imageBase64 = null) {
+  if (!msg && !imageBase64) return;
+  if (!Config.apiBase) { toast('Please set your Backend URL in Settings', true); showScreen('settings'); return; }
+  
+  const detectedAgent = detectAgent(msg);
+  setAgentStatus(detectedAgent, 'active');
+  
+  ChatState.history.push({ role: 'user', content: msg });
+  appendMessage('user', msg);
+  document.getElementById('chatInput').value = '';
+  document.getElementById('chatInput').style.height = 'auto';
+  
   _sAbort = new AbortController();
+  ChatState.isStreaming = true;
+  document.getElementById('typingIndicator').classList.add('active');
+  
   try {
     const res = await fetchWithTimeout(api('/api/chat'), {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: message, history: ChatState.history, stream: true }),
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        message: msg, 
+        history: ChatState.history.slice(0, -1), // History before this msg
+        image: imageBase64,
+        agent: detectedAgent,
+        stream: true 
+      }),
       signal: _sAbort.signal
-    }, 60000);
-    const ct = res.headers.get('content-type') || '';
-    if (ct.indexOf('text/event-stream') !== -1 || ct.indexOf('text/plain') !== -1) {
-      document.getElementById('typingIndicator').classList.remove('active');
+    }, 45000);
+
+    document.getElementById('typingIndicator').classList.remove('active');
+    
+    const contentType = res.headers.get('content-type') || '';
+    if (contentType.includes('text/event-stream') || contentType.includes('text/plain')) {
       startStreamMessage();
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
-      let buf = '';
-      let wasStopped = false;
-      try {
-        while (true) {
-          const result = await reader.read(); if (result.done) break;
-          buf += decoder.decode(result.value, { stream: true });
-          const lns = buf.split('\n'); buf = lns.pop() || '';
-          for (let li = 0; li < lns.length; li++) {
-            const tr = lns[li].trim();
-            if (!tr || tr === 'data: [DONE]') continue;
-            if (tr.indexOf('data: ') === 0) {
-              try {
-                const j = JSON.parse(tr.slice(6));
-                if (j.object === 'error') { wasStopped = true; break; }
-                const tk = (j.choices && j.choices[0] && j.choices[0].delta && j.choices[0].delta.content) || '';
-                if (tk) updateStreamMessage(tk);
-              } catch(e) {
-                const t2 = tr.slice(6); if (t2 && t2 !== '[DONE]') updateStreamMessage(t2);
+      let fullReply = '';
+      
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        
+        const chunk = decoder.decode(value, { stream: true });
+        const lines = chunk.split('\n');
+        
+        for (const line of lines) {
+          const trimmed = line.trim();
+          if (!trimmed || trimmed === 'data: [DONE]') continue;
+          
+          if (trimmed.startsWith('data: ')) {
+            try {
+              const data = JSON.parse(trimmed.slice(6));
+              if (data.object === 'error') throw new Error(data.message);
+              const content = data.choices?.[0]?.delta?.content || '';
+              fullReply += content;
+              updateStreamMessage(content);
+            } catch (e) {
+              const raw = trimmed.slice(6);
+              if (raw && raw !== '[DONE]') {
+                fullReply += raw;
+                updateStreamMessage(raw);
               }
             }
           }
         }
-      } catch(streamErr) {
-        if (streamErr.name === 'AbortError') wasStopped = true;
-        else throw streamErr;
       }
-      finishStreamMessage(wasStopped); ChatState.isStreaming = false; setAgentStatus('code', false); return;
+      endStreamMessage(fullReply);
+      ChatState.history.push({ role: 'assistant', content: fullReply });
+    } else {
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Server error');
+      if (data.reply) {
+        appendMessage('assistant', data.reply);
+        ChatState.history.push({ role: 'assistant', content: data.reply });
+      }
     }
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'HTTP ' + res.status);
-    document.getElementById('typingIndicator').classList.remove('active');
-    appendMessage('assistant', data.reply);
-    ChatState.history.push({ role: 'assistant', content: data.reply });
-    ChatState.lastReply = data.reply;
+    
     ChatState.save();
     Counters.bump('messages');
-    Memory.log('Chat: "' + data.reply.slice(0,50) + (data.reply.length>50?'...':'') + '"');
+    Memory.log('Chat: ' + msg.slice(0, 40) + '...');
+  } catch (err) {
+    if (err.name !== 'AbortError') {
+      appendMessage('assistant', 'Error: ' + err.message, true);
+    }
+  } finally {
     ChatState.isStreaming = false;
-    setAgentStatus('code', false);
-  } catch (err) {
-    if (err.name === 'AbortError') { ChatState.isStreaming = false; const sb = document.getElementById('nxStopBtn'); if (sb) sb.classList.remove('show'); setAgentStatus('code', false); return; }
-    const ti = document.getElementById('typingIndicator'); if (ti) ti.classList.remove('active');
-    let errMsg = err.message || 'Unknown error';
-    if (errMsg.includes('Failed to fetch') || errMsg.includes('NetworkError')) errMsg = 'Cannot reach backend. Check your connection or backend URL in Settings.';
-    else if (errMsg.includes('timeout')) errMsg = 'Backend timed out. The server may be slow or unreachable.';
-    appendMessage('assistant', '**Error:** ' + errMsg, true);
-    ChatState.isStreaming = false;
-    setAgentStatus('code', false);
+    document.getElementById('typingIndicator').classList.remove('active');
+    setAgentStatus(detectedAgent, 'idle');
+    _sAbort = null;
   }
-  document.getElementById('nxStopBtn').classList.remove('show');
 }
 
-/* Chat listeners */
-const chatForm = document.getElementById('chatForm');
-const chatInput = document.getElementById('chatInput');
-const chatSendBtn = document.getElementById('chatSendBtn');
-
-if (chatForm) {
-  chatForm.addEventListener('submit', function(e) {
-    e.preventDefault();
-    const v = chatInput.value.trim(); if (!v) return;
-    chatInput.value = ''; chatInput.style.height = 'auto';
-    if (chatSendBtn) chatSendBtn.classList.remove('active');
-    sendChatMessage(v);
-  });
-}
-if (chatSendBtn) {
-  chatSendBtn.addEventListener('click', function(e) {
-    e.preventDefault();
-    if (chatForm) chatForm.dispatchEvent(new Event('submit'));
-  });
-}
-if (chatInput) {
-  chatInput.addEventListener('input', function() {
-    this.style.height = 'auto';
-    this.style.height = Math.min(this.scrollHeight, 150) + 'px';
-    if (chatSendBtn) chatSendBtn.classList.toggle('active', this.value.trim().length > 0);
-  });
-  chatInput.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (chatForm) chatForm.dispatchEvent(new Event('submit')); }
-  });
-  chatInput.addEventListener('focus', () => document.body.style.overflow = 'hidden');
-  chatInput.addEventListener('blur', () => document.body.style.overflow = '');
-}
-
-document.getElementById('chatClearBtn')?.addEventListener('click', function() {
-  if (ChatState.isStreaming && _sAbort) { try { _sAbort.abort(); } catch(e) {} ChatState.isStreaming = false; }
-  ChatState.clear();
-  const c = document.getElementById('chatContainer');
-  if (c) {
-    c.innerHTML = `<div class="chat-welcome" id="chatWelcome"><div class="orb-wrap orb-wrap-sm"><div class="orb-ring"></div><div class="orb"></div></div><div class="chat-welcome-title">Noctryx AI</div><div class="chat-welcome-sub">How can I help you today?</div><div class="chat-welcome-hints" id="chatWelcomeHints"><div class="chat-welcome-hint" onclick="window._quickPrompt(this.textContent)">Explain how async/await works in JavaScript</div><div class="chat-welcome-hint" onclick="window._quickPrompt(this.textContent)">Write a Python function to sort a list</div><div class="chat-welcome-hint" onclick="window._quickPrompt(this.textContent)">What are the best practices for REST APIs?</div></div></div>`;
+function setAgentStatus(agent, status) {
+  const card = document.getElementById('agentStatus' + agent.charAt(0).toUpperCase() + agent.slice(1));
+  const detail = document.getElementById('agentDetailStatus' + agent.charAt(0).toUpperCase() + agent.slice(1));
+  if (card) {
+    card.className = 'agent-card-status ' + status;
+    card.querySelector('span').nextSibling.textContent = status.charAt(0).toUpperCase() + status.slice(1);
   }
-  const sb = document.getElementById('nxStopBtn');
-  const cb = document.getElementById('nxContinueBtn');
-  if (sb) sb.classList.remove('show');
-  if (cb) cb.classList.remove('show');
-  toast('New chat started');
-});
-
-document.getElementById('chatVoiceBtn')?.addEventListener('click', function() {
-  const btn = this;
-  if (btn.classList.contains('recording')) { btn.classList.remove('recording'); toast('Voice input stopped'); return; }
-  startDictation(function(text) {
-    chatInput.value = text; chatInput.style.height = 'auto'; chatInput.style.height = Math.min(chatInput.scrollHeight, 150) + 'px';
-    chatSendBtn.classList.add('active'); btn.classList.remove('recording');
-  });
-  btn.classList.add('recording'); toast('Listening...');
-});
-
-document.getElementById('nxStopBtn')?.addEventListener('click', function() {
-  if (_sAbort) { try { _sAbort.abort(); } catch(e) {} _sAbort = null; }
-  ChatState.isStreaming = false; this.classList.remove('show');
-  const cb = document.getElementById('nxContinueBtn'); if (cb) cb.classList.add('show');
-});
-
-document.getElementById('nxContinueBtn')?.addEventListener('click', function() {
-  this.classList.remove('show');
-  sendChatMessage('Continue the previous response from where you stopped.');
-});
-
-
-
-const _chatObs = new MutationObserver(mutations => {
-  const c = document.getElementById('chatContainer');
-  if (c && mutations.some(m => m.addedNodes.length > 0 || m.type === 'characterData')) smartScroll(c);
-});
-const _chatContainerEl = document.getElementById('chatContainer');
-if (_chatContainerEl) _chatObs.observe(_chatContainerEl, { childList: true, subtree: true, characterData: true });
-
-/* Search form */
-document.getElementById('searchForm')?.addEventListener('submit', e => {
-  e.preventDefault();
-  const input = document.getElementById('askInput');
-  const v = input?.value.trim(); if (!v) return;
-  input.value = ''; showScreen('chat'); sendChatMessage(v);
-});
-document.getElementById('homeVoiceBtn')?.addEventListener('click', () => showScreen('voice'));
-
-/* Speech Recognition */
-const SpeechRecognitionCtor = window.SpeechRecognition || window.webkitSpeechRecognition;
-function startDictation(onResult) {
-  if (!SpeechRecognitionCtor) { toast('Speech recognition not supported', true); return; }
-  const rec = new SpeechRecognitionCtor();
-  rec.lang = 'en-US'; rec.interimResults = false; rec.maxAlternatives = 1;
-  rec.onresult = e => onResult(e.results[0][0].transcript);
-  rec.onerror = e => toast('Mic error: ' + e.error, true);
-  rec.start();
-}
-
-/* Voice Session */
-const Voice = { recognition: null, active: false, muted: false, audioCtx: null, analyser: null, micStream: null, rafId: null };
-function setVoiceStatus(text) { document.getElementById('voiceStatus').textContent = text; }
-
-async function startVoiceVisualizer() {
-  try {
-    Voice.micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    Voice.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    const source = Voice.audioCtx.createMediaStreamSource(Voice.micStream);
-    Voice.analyser = Voice.audioCtx.createAnalyser(); Voice.analyser.fftSize = 64;
-    source.connect(Voice.analyser); drawVisualizer();
-  } catch (err) { toast('Microphone access denied', true); Voice.analyser = null; }
-}
-
-function drawVisualizer() {
-  const canvas = document.getElementById('voiceVisualizer');
-  if (!canvas || !Voice.analyser) return;
-  const ctx = canvas.getContext('2d');
-  const bufferLength = Voice.analyser.frequencyBinCount;
-  const dataArray = new Uint8Array(bufferLength);
-  function draw() {
-    if (!Voice.analyser) return;
-    Voice.rafId = requestAnimationFrame(draw);
-    Voice.analyser.getByteFrequencyData(dataArray);
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    const barWidth = (canvas.width / bufferLength) * 1.5; let x = 0;
-    for (let i = 0; i < bufferLength; i++) {
-      const barHeight = (dataArray[i] / 255) * canvas.height;
-      ctx.fillStyle = '#00ff88'; ctx.fillRect(x, canvas.height - barHeight, barWidth - 2, barHeight); x += barWidth;
-    }
+  if (detail) {
+    detail.className = 'agent-detail-status ' + status;
+    detail.innerHTML = '<span class="dot"></span>' + status.charAt(0).toUpperCase() + status.slice(1);
   }
-  draw();
 }
 
-function stopVoiceVisualizer() {
-  if (Voice.rafId) cancelAnimationFrame(Voice.rafId);
-  Voice.micStream?.getTracks().forEach(t => t.stop());
-  Voice.audioCtx?.close().catch(() => {});
-  Voice.rafId = null; Voice.micStream = null; Voice.audioCtx = null;
-}
-
-function speak(text) {
-  if (Voice.muted || !window.speechSynthesis) return;
-  window.speechSynthesis.cancel();
-  const utter = new SpeechSynthesisUtterance(text); utter.rate = 1.0;
-  const orb = document.getElementById('voiceOrb');
-  if (orb) orb.classList.add('speaking');
-  utter.onend = () => { if (orb) orb.classList.remove('speaking'); };
-  utter.onerror = () => { if (orb) orb.classList.remove('speaking'); };
-  window.speechSynthesis.speak(utter);
-}
-
-async function handleVoiceTurn(transcript) {
-  document.getElementById('voiceTranscript').textContent = transcript;
-  setVoiceStatus('Thinking...');
-  if (!Config.apiBase) { setVoiceStatus('Set a backend URL in Settings first'); return; }
-  try {
-    const res = await fetchWithTimeout(api('/api/chat'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: transcript, history: ChatState.history }) }, 30000);
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'HTTP ' + res.status);
-    setVoiceStatus('Noctryx is speaking...');
-    document.getElementById('voiceTranscript').textContent = data.reply;
-    speak(data.reply);
-    ChatState.history.push({ role: 'user', content: transcript }, { role: 'assistant', content: data.reply });
-    Counters.bump('messages');
-    Memory.log('Voice: "' + transcript.slice(0, 50) + (transcript.length > 50 ? '...' : '') + '"');
-    setVoiceStatus(Voice.active ? 'Listening...' : 'Tap the mic to continue');
-  } catch (err) { setVoiceStatus('Error: ' + err.message); }
-}
-
-function startVoiceSession() {
-  if (!SpeechRecognitionCtor) { toast('Speech recognition not supported', true); return; }
-  Voice.active = true;
-  const orb = document.getElementById('voiceOrb');
-  const micBtn = document.getElementById('voiceMicBtn');
-  if (orb) orb.classList.add('listening');
-  if (micBtn) micBtn.classList.add('active');
-  startVoiceVisualizer();
-  Voice.recognition = new SpeechRecognitionCtor();
-  Voice.recognition.lang = 'en-US'; Voice.recognition.continuous = true; Voice.recognition.interimResults = false;
-  setVoiceStatus('Listening...');
-  Voice.recognition.onresult = e => { handleVoiceTurn(e.results[e.results.length - 1][0].transcript); };
-  Voice.recognition.onerror = e => { if (e.error !== 'no-speech') toast('Mic error: ' + e.error, true); };
-  Voice.recognition.onend = () => { if (Voice.active && Voice.recognition) { try { Voice.recognition.start(); } catch(e) {} } };
-  try { Voice.recognition.start(); } catch(e) { toast('Could not start voice recognition', true); Voice.active = false; }
-}
-
-function stopCamera() {
-  const video = document.getElementById('visionVideo');
-  const preview = document.getElementById('visionPreview');
-  if (video && video.srcObject) {
-    video.srcObject.getTracks().forEach(t => t.stop());
-    video.srcObject = null;
-  }
-  if (preview) preview.classList.remove('active');
-}
-
-
-function loadProjects() {
-  const body = document.getElementById('projectsBody');
-  const list = document.getElementById('projectsList');
-  const loading = document.getElementById('projectsLoading');
-  if (!Config.githubUser) {
-    if (loading) loading.textContent = 'Enter a GitHub username in Settings to load repositories.';
-    if (list) list.innerHTML = '';
+/* UI Helpers */
+function renderMemory() {
+  const el = document.getElementById('memoryTimeline');
+  if (!el) return;
+  if (!Memory.items.length) {
+    el.innerHTML = '<div style="color:var(--text-dimmer);text-align:center;padding:20px">No activity recorded yet.</div>';
     return;
   }
-  if (loading) loading.textContent = 'Loading...';
-  fetch('https://api.github.com/users/' + encodeURIComponent(Config.githubUser) + '/repos?sort=updated&per_page=20')
-    .then(r => { if (!r.ok) throw new Error('GitHub API error'); return r.json(); })
-    .then(data => {
-      if (loading) loading.style.display = 'none';
-      if (!Array.isArray(data) || !data.length) {
-        if (list) list.innerHTML = '<div class="project-loading">No repositories found.</div>';
-        return;
-      }
-      if (list) {
-        list.innerHTML = data.map(repo => {
-          const langColors = {JavaScript:'#f1e05a',TypeScript:'#3178c6',Python:'#3572A5',CSS:'#563d7c',HTML:'#e34c26',Java:'#b07219','C++':'#f34b7d','C#':'#178600',Go:'#00ADD8',Rust:'#dea584',Ruby:'#701516',PHP:'#4F5D95',Swift:'#F05138'};
-          const lang = repo.language || 'Unknown';
-          const color = langColors[lang] || '#8b949e';
-          return `<div class="repo-card"><div class="repo-header"><div class="repo-name">${escapeHtml(repo.name)}</div>${repo.private ? '<span class="repo-private">Private</span>' : ''}</div><div class="repo-desc">${escapeHtml(repo.description || 'No description')}</div><div class="repo-stats"><div class="repo-lang"><span class="lang-dot" style="background:${color}"></span>${escapeHtml(lang)}</div><div class="repo-stat">&#9733; ${repo.stargazers_count || 0}</div><div class="repo-stat">&#fork; ${repo.forks_count || 0}</div></div></div>`;
-        }).join('');
-      }
-      // Also update home projects card
-      const homeCard = document.getElementById('homeProjectsCard');
-      const homeEmpty = document.getElementById('homeProjectsEmpty');
-      if (homeEmpty) homeEmpty.style.display = 'none';
-      if (homeCard && data.length) {
-        const top = data.slice(0, 3);
-        homeCard.innerHTML = '<div class="projects-list-home">' + top.map(repo => {
-          const pct = Math.round(Math.random() * 40 + 60);
-          return `<div class="project-home-row"><div class="project-home-icon">&#128187;</div><div class="project-home-info"><div class="project-home-name">${escapeHtml(repo.name)}</div><div class="project-home-meta">${escapeHtml(repo.language || 'Unknown')} &bull; Updated recently</div><div class="project-home-bar"><div class="project-home-fill" style="width:${pct}%"></div></div></div><div class="project-home-pct">${pct}%</div></div>`;
-        }).join('') + '</div>';
-      }
-    })
-    .catch(err => {
-      if (loading) loading.textContent = 'Failed to load: ' + err.message;
-    });
+  el.innerHTML = Memory.items.map(item => {
+    const time = new Date(item.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    return `<div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content"><div class="timeline-time">${time}</div><div class="timeline-text">${escapeHtml(item.text)}</div></div></div>`;
+  }).join('');
 }
 
-function stopVoiceSession() {
-  Voice.active = false;
-  const orb = document.getElementById('voiceOrb');
-  const micBtn = document.getElementById('voiceMicBtn');
-  if (orb) orb.classList.remove('listening', 'speaking');
-  if (micBtn) micBtn.classList.remove('active');
-  try { Voice.recognition?.stop(); } catch {}
-  try { window.speechSynthesis?.cancel(); } catch {}
-  stopVoiceVisualizer();
-  setVoiceStatus('Tap the mic to start');
-}
-
-document.getElementById('voiceMicBtn')?.addEventListener('click', () => Voice.active ? stopVoiceSession() : startVoiceSession());
-document.getElementById('voiceEndBtn')?.addEventListener('click', () => { stopVoiceSession(); showScreen('home'); });
-document.getElementById('voiceMuteBtn')?.addEventListener('click', e => {
-  Voice.muted = !Voice.muted; e.currentTarget.classList.toggle('active', Voice.muted);
-  if (Voice.muted) try { window.speechSynthesis?.cancel(); } catch(e) {}
-});
-document.getElementById('voiceKeyboardBtn')?.addEventListener('click', e => {
-  const wrap = document.getElementById('voiceKeyboardWrap');
-  if (wrap) wrap.classList.toggle('active');
-  e.currentTarget.classList.toggle('active');
-});
-document.getElementById('voiceKeyboardSend')?.addEventListener('click', () => {
-  const input = document.getElementById('voiceKeyboardInput');
-  const v = input?.value.trim(); if (!v) return; input.value = ''; handleVoiceTurn(v);
-});
-
-/* Vision Camera */
-let _visionStream = null;
-let _visionFacing = 'environment';
-
-async function startCamera() {
-  const video = document.getElementById('visionVideo');
-  const preview = document.getElementById('visionPreview');
-  const placeholder = document.getElementById('visionPlaceholder');
-  if (!video || !preview) return;
-  try {
-    if (_visionStream) { _visionStream.getTracks().forEach(t => t.stop()); }
-    _visionStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: _visionFacing } });
-    video.srcObject = _visionStream;
-    preview.classList.add('active');
-    if (placeholder) placeholder.style.display = 'none';
-  } catch (err) {
-    toast('Camera access denied or unavailable', true);
-  }
-}
-
-function stopCamera() {
-  const video = document.getElementById('visionVideo');
-  const preview = document.getElementById('visionPreview');
-  const placeholder = document.getElementById('visionPlaceholder');
-  if (_visionStream) { _visionStream.getTracks().forEach(t => t.stop()); _visionStream = null; }
-  if (video) video.srcObject = null;
-  if (preview) preview.classList.remove('active');
-  if (placeholder) placeholder.style.display = 'flex';
-}
-
-function captureAndAnalyze() {
-  const video = document.getElementById('visionVideo');
-  const canvas = document.getElementById('visionOverlay');
-  const analysisBody = document.getElementById('analysisBody');
-  if (!video || !canvas || !video.videoWidth) {
-    if (analysisBody) analysisBody.textContent = 'Start the camera first, then tap Analyze.';
-    return;
-  }
-  const ctx = canvas.getContext('2d');
-  canvas.width = video.videoWidth;
-  canvas.height = video.videoHeight;
-  ctx.drawImage(video, 0, 0);
-  if (analysisBody) analysisBody.textContent = 'Analyzing image...';
-  setTimeout(() => {
-    if (analysisBody) analysisBody.textContent = 'Vision analysis is simulated in this frontend-only mode. Connect a backend with vision capabilities for real image analysis.';
-    Counters.bump('scans');
-    Memory.log('Vision scan captured');
-  }, 1200);
-}
-
-function flipCamera() {
-  _visionFacing = _visionFacing === 'environment' ? 'user' : 'environment';
-  if (document.getElementById('visionPreview')?.classList.contains('active')) {
-    startCamera();
-  }
-}
-
-/* Vision event listeners */
-document.getElementById('visionCameraBtn')?.addEventListener('click', () => {
-  const preview = document.getElementById('visionPreview');
-  if (preview?.classList.contains('active')) { stopCamera(); }
-  else { startCamera(); }
-});
-document.getElementById('visionCaptureBtn')?.addEventListener('click', captureAndAnalyze);
-document.getElementById('visionSwitchBtn')?.addEventListener('click', flipCamera);
-document.getElementById('projectsRefreshBtn')?.addEventListener('click', loadProjects);
-
-document.getElementById('saveSettingsBtn')?.addEventListener('click', () => {
-  Config.apiBase = document.getElementById('backendUrlInput').value.trim();
-  Config.githubUser = document.getElementById('githubUserInput').value.trim();
-  toast('Settings saved');
-  refreshBackendStatus();
-});
-
-function setImmediateStatus() {
-  const pill = document.getElementById('headerStatusPill');
-  const text = document.getElementById('headerStatusText');
-  const dot = document.getElementById('aiStatusDot');
-  const aiText = document.getElementById('aiStatusText');
-  const homeBackend = document.getElementById('homeBackendStatus');
-  const homeIcon = document.getElementById('homeStatusIcon');
-  const sidebarBackend = document.getElementById('sidebarBackend');
-  if (!Config.apiBase) {
-    if (pill) { pill.className = 'status-pill'; text.textContent = 'READY'; }
-    if (dot) { dot.className = 'status-dot'; aiText.textContent = 'BACKEND: STANDALONE'; }
-    if (homeBackend) { homeBackend.textContent = 'STANDALONE'; homeBackend.className = 'status-backend-value'; }
-    if (homeIcon) { homeIcon.className = 'status-ring-icon online'; homeIcon.innerHTML = '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>'; }
-    if (sidebarBackend) { sidebarBackend.textContent = 'Standalone'; sidebarBackend.className = 'sidebar-status-value live'; }
-  } else {
-    if (pill) { pill.className = 'status-pill'; text.textContent = 'CHECKING'; }
-    if (dot) { dot.className = 'status-dot'; aiText.textContent = 'BACKEND: CHECKING'; }
-    if (homeBackend) { homeBackend.textContent = 'CHECKING'; homeBackend.className = 'status-backend-value'; }
-    if (sidebarBackend) { sidebarBackend.textContent = 'Checking...'; sidebarBackend.className = 'sidebar-status-value'; }
-  }
-}
-
-async function loadSettingsScreen() {
-  const backendInput = document.getElementById('backendUrlInput');
-  const githubInput = document.getElementById('githubUserInput');
-  if (backendInput) backendInput.value = Config.apiBase || '';
-  if (githubInput) githubInput.value = Config.githubUser || '';
-  const voiceEl = document.getElementById('sysVoiceSupport');
-  const camEl = document.getElementById('sysCameraSupport');
-  const connEl = document.getElementById('sysConnection');
-  if (voiceEl) voiceEl.textContent = (window.SpeechRecognition || window.webkitSpeechRecognition) ? 'Supported' : 'Not supported';
-  if (camEl) camEl.textContent = navigator.mediaDevices?.getUserMedia ? 'Supported' : 'Not supported';
-  if (connEl) connEl.textContent = navigator.onLine ? (navigator.connection?.effectiveType || 'Online') : 'Offline';
-  navigator.storage?.estimate?.().then(est => {
-    const used = est.usage ? (est.usage / 1e6).toFixed(1) : '0.0';
-    const quota = est.quota ? (est.quota / 1e6).toFixed(0) : '?';
-    const el = document.getElementById('sysStorageQuota'); if (el) el.textContent = used + 'MB / ' + quota + 'MB';
-  }).catch(() => { const el = document.getElementById('sysStorageQuota'); if (el) el.textContent = 'Not available'; });
-  refreshBackendStatus();
-}
-
-async function refreshBackendStatus() {
-  const el = document.getElementById('sysBackendStatus');
-  const pill = document.getElementById('headerStatusPill');
-  const text = document.getElementById('headerStatusText');
-  const dot = document.getElementById('aiStatusDot');
-  const aiText = document.getElementById('aiStatusText');
-  const homeBackend = document.getElementById('homeBackendStatus');
-  const homeIcon = document.getElementById('homeStatusIcon');
-  const sidebarBackend = document.getElementById('sidebarBackend');
-
-  function markOnline(latency, providers) {
-    if (pill) { pill.className = 'status-pill'; text.textContent = 'ONLINE'; }
-    if (dot) { dot.className = 'status-dot'; aiText.textContent = 'BACKEND: ONLINE'; }
-    if (homeBackend) { homeBackend.textContent = 'ONLINE'; homeBackend.className = 'status-backend-value'; }
-    if (homeIcon) { homeIcon.className = 'status-ring-icon online'; homeIcon.innerHTML = '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>'; }
-    if (sidebarBackend) { sidebarBackend.textContent = 'Online'; sidebarBackend.className = 'sidebar-status-value live'; }
-    if (el) el.textContent = 'Connected (' + latency + 'ms)';
-    const provEl = document.getElementById('sysProviders'); if (provEl) provEl.textContent = providers || 'Unknown';
-    const latEl = document.getElementById('homeLatencyVal'); if (latEl) latEl.textContent = latency + 'ms';
-    const latSub = document.getElementById('homeLatencySub'); if (latSub) latSub.textContent = 'Optimal';
-    const sideLat = document.getElementById('sidebarLatency'); if (sideLat) sideLat.textContent = latency + 'ms';
-  }
-  function markConfigured() {
-    if (pill) { pill.className = 'status-pill'; text.textContent = 'CONFIGURED'; }
-    if (dot) { dot.className = 'status-dot'; aiText.textContent = 'BACKEND: CONFIGURED'; }
-    if (homeBackend) { homeBackend.textContent = 'CONFIGURED'; homeBackend.className = 'status-backend-value'; }
-    if (homeIcon) { homeIcon.className = 'status-ring-icon online'; homeIcon.innerHTML = '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>'; }
-    if (sidebarBackend) { sidebarBackend.textContent = 'Configured'; sidebarBackend.className = 'sidebar-status-value live'; }
-    if (el) el.textContent = 'URL configured (health N/A)';
-    const latEl = document.getElementById('homeLatencyVal'); if (latEl) latEl.textContent = '--';
-    const latSub = document.getElementById('homeLatencySub'); if (latSub) latSub.textContent = 'N/A';
-    const sideLat = document.getElementById('sidebarLatency'); if (sideLat) sideLat.textContent = '--';
-  }
-  function markOffline(reason) {
-    if (pill) { pill.className = 'status-pill offline'; text.textContent = 'OFFLINE'; }
-    if (dot) { dot.className = 'status-dot offline'; aiText.textContent = 'BACKEND: OFFLINE'; }
-    if (homeBackend) { homeBackend.textContent = 'OFFLINE'; homeBackend.className = 'status-backend-value offline'; }
-    if (homeIcon) { homeIcon.className = 'status-ring-icon'; homeIcon.innerHTML = '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>'; }
-    if (sidebarBackend) { sidebarBackend.textContent = 'Offline'; sidebarBackend.className = 'sidebar-status-value'; }
-    if (el) el.textContent = reason || 'Unreachable';
-    const latEl = document.getElementById('homeLatencyVal'); if (latEl) latEl.textContent = '--';
-    const latSub = document.getElementById('homeLatencySub'); if (latSub) latSub.textContent = '--';
-    const sideLat = document.getElementById('sidebarLatency'); if (sideLat) sideLat.textContent = '--';
-  }
-
-  if (!Config.apiBase) {
-    markConfigured(); // Standalone mode shows as ready
-    return;
-  }
-
-  try {
-    const start = performance.now();
-    const res = await fetchWithTimeout(api('/api/health'), { method: 'GET', mode: 'cors', cache: 'no-store' }, 6000);
-    const latency = Math.round(performance.now() - start);
-    if (res.ok) {
-      const data = await res.json().catch(() => ({}));
-      markOnline(latency, data.providers ? data.providers.join(', ') : 'Unknown');
-      return;
-    }
-    const baseRes = await fetchWithTimeout(Config.apiBase, { method: 'HEAD', mode: 'cors', cache: 'no-store' }, 5000).catch(() => null);
-    if (baseRes && (baseRes.ok || baseRes.status === 405)) { markConfigured(); }
-    else { markOffline('No response'); }
-  } catch (err) {
-    try {
-      const baseRes = await fetchWithTimeout(Config.apiBase, { method: 'HEAD', mode: 'cors', cache: 'no-store' }, 5000);
-      if (baseRes.ok || baseRes.status === 405) { markConfigured(); }
-      else { markOffline('Unreachable'); }
-    } catch {
-      markOffline('Unreachable');
-    }
-  }
-}
-
-/* Agent status helpers */
-function setAgentStatus(agent, active) {
-  const cap = agent.charAt(0).toUpperCase() + agent.slice(1);
-  const statusEl = document.getElementById('agentStatus' + cap);
-  const descEl = document.getElementById('agentDesc' + cap);
-  const detailStatusEl = document.getElementById('agentDetailStatus' + cap);
-  if (statusEl) {
-    statusEl.className = 'agent-card-status ' + (active ? 'active' : 'idle');
-    statusEl.innerHTML = '<span class="dot"></span>' + (active ? 'Active' : 'Idle');
-  }
-  if (descEl) {
-    const idleDesc = agent === 'research' ? 'Scanning web...' : agent === 'code' ? 'Writing code...' : agent === 'vision' ? 'Analyzing...' : 'Running tasks...';
-    descEl.textContent = active ? 'Processing...' : idleDesc;
-  }
-  if (detailStatusEl) {
-    detailStatusEl.className = 'agent-detail-status ' + (active ? 'active' : 'idle');
-    detailStatusEl.innerHTML = '<span class="dot"></span>' + (active ? 'Active' : 'Idle');
-  }
+function renderAnalytics() {
+  const c = Counters.get();
+  document.getElementById('analyticsMessages').textContent = c.messages;
+  document.getElementById('analyticsScans').textContent = c.scans;
+  document.getElementById('analyticsTasks').textContent = c.tasks;
+  document.getElementById('analyticsDone').textContent = c.done;
 }
 
 function renderAgentsDetail() {
-  ['research', 'code', 'vision', 'auto'].forEach(a => {
-    const el = document.getElementById('agentDetailStatus' + a.charAt(0).toUpperCase() + a.slice(1));
-    if (el) {
-      el.className = 'agent-detail-status idle';
-      el.innerHTML = '<span class="dot"></span>Idle';
-    }
-  });
+  // Logic to refresh agent details screen if needed
 }
 
-/* Analytics */
-function renderAnalytics() {
-  const c = Counters.get();
-  const msgEl = document.getElementById('analyticsMessages');
-  const scanEl = document.getElementById('analyticsScans');
-  const taskEl = document.getElementById('analyticsTasks');
-  const doneEl = document.getElementById('analyticsDone');
-  if (msgEl) msgEl.textContent = c.messages;
-  if (scanEl) scanEl.textContent = c.scans;
-  if (taskEl) taskEl.textContent = c.tasks;
-  if (doneEl) doneEl.textContent = c.completed;
-  drawAnalyticsCharts();
-}
-
-function drawAnalyticsCharts() {
-  const days = 7;
-  const data = [];
-  for (let i = 0; i < days; i++) {
-    const d = new Date(); d.setDate(d.getDate() - (days - 1 - i));
-    const count = Math.max(0, Math.round((Counters.get().messages / days) + (Math.random() - 0.5) * 4));
-    data.push(count);
+/* Initialization */
+async function refreshBackendStatus() {
+  if (!Config.apiBase) {
+    updateStatusUI(false);
+    return;
   }
-  const max = Math.max(...data, 1);
-  const w = 400, h = 120;
-  const step = w / (data.length - 1);
-  const pts = data.map((v, i) => `${i * step},${h - (v / max) * (h - 10) - 5}`).join(' ');
-  const area = 'M0,' + h + ' L' + data.map((v, i) => `${i * step},${h - (v / max) * (h - 10) - 5}`).join(' L') + ' L' + w + ',' + h + ' Z';
-  const lineEl = document.getElementById('analyticsLine');
-  const areaEl = document.getElementById('analyticsArea');
-  if (lineEl) lineEl.setAttribute('points', pts);
-  if (areaEl) areaEl.setAttribute('d', area);
-
-  const hourlyData = [];
-  for (let h = 0; h < 24; h++) hourlyData.push(Math.max(0, Math.round((Math.sin((h - 6) / 12 * Math.PI) + 1) * (Counters.get().messages / 10) + (Math.random() - 0.5) * 2)));
-  const hMax = Math.max(...hourlyData, 1);
-  const hStep = w / (hourlyData.length - 1);
-  const hPts = hourlyData.map((v, i) => `${i * hStep},${h - (v / hMax) * (h - 10) - 5}`).join(' ');
-  const hArea = 'M0,' + h + ' L' + hourlyData.map((v, i) => `${i * hStep},${h - (v / hMax) * (h - 10) - 5}`).join(' L') + ' L' + w + ',' + h + ' Z';
-  const hLineEl = document.getElementById('hourlyLine');
-  const hAreaEl = document.getElementById('hourlyArea');
-  if (hLineEl) hLineEl.setAttribute('points', hPts);
-  if (hAreaEl) hAreaEl.setAttribute('d', hArea);
-}
-
-/* System info */
-function updateSystemInfo() {
-  navigator.storage?.estimate?.().then(est => {
-    const used = est.usage || 0;
-    const quota = est.quota || 1;
-    const usedMb = (used / 1e6).toFixed(1);
-    const quotaMb = (quota / 1e6).toFixed(0);
-    const pct = quota > 0 ? Math.round((used / quota) * 100) : 0;
-    const valEl = document.getElementById('homeStorageVal');
-    const subEl = document.getElementById('homeStorageSub');
-    if (valEl) valEl.textContent = pct + '%';
-    if (subEl) subEl.textContent = usedMb + 'MB / ' + quotaMb + 'MB';
-  }).catch(() => {
-    const valEl = document.getElementById('homeStorageVal');
-    const subEl = document.getElementById('homeStorageSub');
-    if (valEl) valEl.textContent = '--';
-    if (subEl) subEl.textContent = 'N/A';
-  });
-
-  const conn = navigator.connection;
-  const netVal = document.getElementById('homeNetworkVal');
-  const netSub = document.getElementById('homeNetworkSub');
-  if (conn && netVal && netSub) {
-    netVal.textContent = 'Excellent';
-    netSub.textContent = (conn.downlink || '?') + ' Mbps';
-  } else if (netVal && netSub) {
-    netVal.textContent = 'Online';
-    netSub.textContent = navigator.onLine ? 'Connected' : 'Offline';
+  try {
+    const start = Date.now();
+    const res = await fetchWithTimeout(api('/api/health'), {}, 4000);
+    const latency = Date.now() - start;
+    const data = await res.json();
+    updateStatusUI(res.ok, latency, data.providers);
+  } catch (e) {
+    updateStatusUI(false);
   }
 }
 
-/* Uptime */
-const _startTime = Date.now();
-function updateUptime() {
-  const elapsed = Math.floor((Date.now() - _startTime) / 1000);
-  const h = String(Math.floor(elapsed / 3600)).padStart(2, '0');
-  const m = String(Math.floor((elapsed % 3600) / 60)).padStart(2, '0');
-  const s = String(elapsed % 60).padStart(2, '0');
-  const str = h + ':' + m + ':' + s;
-  const homeSession = document.getElementById('homeSessionVal');
-  const sidebarUptime = document.getElementById('sidebarUptime');
-  if (homeSession) homeSession.textContent = str;
-  if (sidebarUptime) sidebarUptime.textContent = str;
-
-  const line = document.getElementById('sidebarUptimeLine');
-  if (line) {
-    const pts = line.getAttribute('points') || '';
-    const newPt = (elapsed % 200) + ',' + (12 + Math.sin(elapsed * 0.1) * 8);
-    const allPts = pts ? (pts.split(' ').slice(-40).join(' ') + ' ' + newPt) : newPt;
-    line.setAttribute('points', allPts);
+function updateStatusUI(online, latency = 0, providers = []) {
+  const dot = document.getElementById('aiStatusDot');
+  const text = document.getElementById('aiStatusText');
+  const sidebar = document.getElementById('sidebarBackend');
+  const sideLat = document.getElementById('sidebarLatency');
+  const homeBack = document.getElementById('homeBackendStatus');
+  const homeLat = document.getElementById('homeLatencyVal');
+  const headerPill = document.getElementById('headerStatusPill');
+  const headerText = document.getElementById('headerStatusText');
+  
+  const statusStr = online ? 'ONLINE' : 'OFFLINE';
+  if (dot) dot.className = 'status-dot' + (online ? '' : ' offline');
+  if (text) text.textContent = 'BACKEND: ' + statusStr;
+  if (sidebar) { sidebar.textContent = statusStr; sidebar.className = 'sidebar-status-value ' + (online ? 'live' : ''); }
+  if (sideLat) sideLat.textContent = online ? latency + 'ms' : '--';
+  if (homeBack) { homeBack.textContent = statusStr; homeBack.className = 'status-backend-value ' + (online ? 'online' : 'offline'); }
+  if (homeLat) homeLat.textContent = online ? latency + 'ms' : '--';
+  if (headerPill) headerPill.className = 'status-pill' + (online ? '' : ' offline');
+  if (headerText) headerText.textContent = online ? 'OPTIMIZED' : 'OFFLINE';
+  
+  if (online && providers.length) {
+    const provEl = document.getElementById('sysProviders');
+    if (provEl) provEl.textContent = providers.join(', ');
   }
 }
 
-/* Greeting */
-function updateGreeting() {
-  const h = new Date().getHours();
-  let greeting = 'Good evening,';
-  if (h >= 5 && h < 12) greeting = 'Good morning,';
-  else if (h >= 12 && h < 17) greeting = 'Good afternoon,';
-  else if (h >= 17 && h < 21) greeting = 'Good evening,';
-  document.getElementById('greetingLine').textContent = greeting;
-}
+// Global Event Listeners
+document.getElementById('chatForm')?.addEventListener('submit', e => {
+  e.preventDefault();
+  const input = document.getElementById('chatInput');
+  const msg = input.value.trim();
+  if (msg) sendChatMessage(msg);
+});
 
-/* Init */
-function loadChatHistory() {
-  if (!ChatState.history.length) return;
-  const welcome = document.getElementById('chatWelcome');
-  if (welcome) welcome.remove();
-  const msgs = ChatState.history.filter(m => m.role === 'user' || m.role === 'assistant');
-  let i = 0;
-  function renderChunk() {
-    const chunk = msgs.slice(i, i + 3);
-    for (const msg of chunk) {
-      try { appendMessage(msg.role, msg.content); } catch(e) { console.error('Failed to render message', e); }
-    }
-    i += 3;
-    if (i < msgs.length) requestAnimationFrame(renderChunk);
+document.getElementById('nxStopBtn')?.addEventListener('click', () => {
+  if (_sAbort) _sAbort.abort();
+});
+
+document.getElementById('chatClearBtn')?.addEventListener('click', () => {
+  if (confirm('Clear all messages?')) {
+    ChatState.clear();
+    document.getElementById('chatContainer').innerHTML = '';
+    document.getElementById('chatWelcome').style.display = 'flex';
   }
-  renderChunk();
-}
+});
 
-function init() {
-  // Global error handlers to prevent UI freezing from unhandled errors
-  window.addEventListener('error', e => {
-    console.error('Global error:', e.error);
-    const msg = e.error?.message || '';
-    if (msg && !msg.includes('stopCamera') && !msg.includes('stopVoice')) {
-      toast('UI Error: ' + msg, true);
-    }
-    e.preventDefault();
-  });
-  window.addEventListener('unhandledrejection', e => {
-    console.error('Unhandled rejection:', e.reason);
-    const msg = e.reason?.message || '';
-    if (msg && !msg.includes('stopCamera') && !msg.includes('stopVoice')) {
-      toast('Async Error: ' + msg, true);
-    }
-    e.preventDefault();
-  });
+document.getElementById('saveSettingsBtn')?.addEventListener('click', () => {
+  Config.apiBase = document.getElementById('backendUrlInput').value;
+  Config.githubUser = document.getElementById('githubUserInput').value;
+  toast('Settings saved');
+  refreshBackendStatus();
+  loadProjects();
+});
 
-  // Initialize external libraries safely
-  try { if (window.mermaid) mermaid.initialize({ startOnLoad: false, theme: 'dark', securityLevel: 'strict' }); } catch(e) { console.warn('Mermaid init failed', e); }
+// Auto-resize textarea
+const tx = document.getElementById('chatInput');
+tx?.addEventListener('input', function() {
+  this.style.height = 'auto';
+  this.style.height = (this.scrollHeight) + 'px';
+});
 
-  ChatState.load();
-  // Defer history loading so UI renders immediately
-  setTimeout(() => {
-    try { loadChatHistory(); } catch(e) { console.error('History load failed', e); }
-  }, 50);
-
-  updateGreeting();
-  updateSystemInfo();
-  renderOverview();
-  renderTasks();
-  renderMemory();
-  renderAnalytics();
-  setImmediateStatus();
-  // Defer backend check so status is visible immediately
-  setTimeout(() => {
-    try { refreshBackendStatus(); } catch(e) { console.error('Backend check failed', e); }
-  }, 100);
-
-  setInterval(updateUptime, 1000);
-  setInterval(updateSystemInfo, 30000);
-  setInterval(() => {
-    try { refreshBackendStatus(); } catch(e) { console.error('Backend check failed', e); }
-  }, 30000);
-  setInterval(() => { if (currentScreen === 'home') renderOverview(); }, 5000);
-
-  // Keyboard shortcut
-  document.addEventListener('keydown', e => {
-    if (e.key === '/' && document.activeElement?.tagName !== 'TEXTAREA' && document.activeElement?.tagName !== 'INPUT') {
-      e.preventDefault();
-      if (currentScreen !== 'chat') showScreen('chat');
-      setTimeout(() => document.getElementById('chatInput').focus(), 100);
-    }
-    if (e.key === 'Escape') {
-      if (sidebar.classList.contains('open')) closeSidebar();
-      else if (currentScreen !== 'home') showScreen('home');
-    }
-  });
-
-  // Prevent double-tap zoom
-  let lastTouch = 0;
-  document.addEventListener('touchend', e => {
-    const now = Date.now();
-    if (now - lastTouch <= 300) e.preventDefault();
-    lastTouch = now;
-  }, { passive: false });
-
-  // Theme toggle
-  const themeBtn = document.getElementById('themeToggleBtn');
-  if (themeBtn) {
-    themeBtn.addEventListener('click', () => {
-      const current = document.documentElement.getAttribute('data-theme');
-      const next = current === 'light' ? 'dark' : 'light';
-      document.documentElement.setAttribute('data-theme', next);
-      try { localStorage.setItem('noctryx_theme', next); } catch {}
-      toast('Theme: ' + next.charAt(0).toUpperCase() + next.slice(1));
-    });
+// Init
+window.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('backendUrlInput').value = Config.apiBase;
+  document.getElementById('githubUserInput').value = Config.githubUser;
+  
+  // Load history
+  if (ChatState.history.length) {
+    document.getElementById('chatWelcome').style.display = 'none';
+    ChatState.history.forEach(m => appendMessage(m.role, m.content));
   }
-  const savedTheme = localStorage.getItem('noctryx_theme');
-  if (savedTheme) document.documentElement.setAttribute('data-theme', savedTheme);
-}
+  
+  refreshBackendStatus();
+  setInterval(refreshBackendStatus, 30000);
+  
+  if (Config.githubUser) loadProjects();
+  
+  // Mermaid init
+  mermaid.initialize({ startOnLoad: false, theme: 'dark', securityLevel: 'loose' });
+  
+  // Katex auto-render
+  renderMathInElement(document.body, {
+    delimiters: [
+      {left: '$$', right: '$$', display: true},
+      {left: '$', right: '$', display: false}
+    ]
+  });
+});
 
-if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
-else init();
+// Global helpers for message actions
+window._cr = (id) => {
+  const el = document.querySelector('#' + id + ' .chat-msg-body');
+  if (el) {
+    const text = el.innerText.replace(/CopyRegenerate$/, '');
+    navigator.clipboard.writeText(text).then(() => toast('Copied to clipboard'));
+  }
+};
+window._rg = (id) => {
+  const idx = ChatState.history.findIndex(m => m.role === 'assistant'); // Simple logic for demo
+  if (idx !== -1) {
+    const lastUserMsg = ChatState.history[idx - 1]?.content;
+    if (lastUserMsg) sendChatMessage(lastUserMsg);
+  }
+};
 
 })();
 </script>
