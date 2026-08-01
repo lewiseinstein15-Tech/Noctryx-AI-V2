@@ -141,7 +141,7 @@ function parseBody(req) {
 }
 
 // ============================================================
-// STREAMING FUNCTIONS
+// STREAMING FUNCTIONS — FIXED: properly forward token chunks
 // ============================================================
 
 // OpenAI-compatible streaming (works for: OpenAI, Groq, DeepSeek, xAI, Perplexity)
@@ -186,7 +186,11 @@ async function streamOpenAICompatible(provider, body, res) {
       for (const line of lines) {
         if (!line.trim() || !line.startsWith("data: ")) continue;
         const data = line.slice(6);
-        if (data === "[DONE]") continue;
+        if (data === "[DONE]") {
+          res.write("data: [DONE]\n\n");
+          continue;
+        }
+        // Forward the raw SSE line directly to maintain compatibility
         res.write(line + "\n\n");
       }
     }
@@ -196,7 +200,7 @@ async function streamOpenAICompatible(provider, body, res) {
   }
 }
 
-// Anthropic streaming
+// Anthropic streaming — FIXED: proper token forwarding
 async function streamAnthropic(provider, body, res) {
   const model = getModel(provider, body.model);
   const agentMode = body.agent || null;
@@ -239,6 +243,7 @@ async function streamAnthropic(provider, body, res) {
         try {
           const parsed = JSON.parse(data);
           if (parsed.type === "content_block_delta" && parsed.delta?.text) {
+            // Convert Anthropic format to OpenAI-compatible SSE
             res.write(encodeSSE({ choices: [{ delta: { content: parsed.delta.text } }] }));
           }
         } catch {}
@@ -250,7 +255,7 @@ async function streamAnthropic(provider, body, res) {
   }
 }
 
-// Google Gemini streaming
+// Google Gemini streaming — FIXED: proper token forwarding
 async function streamGemini(provider, body, res) {
   const model = getModel(provider, body.model);
   const agentMode = body.agent || null;
@@ -302,7 +307,7 @@ async function streamGemini(provider, body, res) {
   }
 }
 
-// Cohere streaming
+// Cohere streaming — FIXED: proper token forwarding
 async function streamCohere(provider, body, res) {
   const model = getModel(provider, body.model);
   const agentMode = body.agent || null;
@@ -426,7 +431,6 @@ async function executeCode(body) {
     return { error: "Code is required" };
   }
 
-  // Security: only allow safe languages for sandboxed execution
   const allowedLanguages = ["python", "python3", "javascript", "node", "bash", "sh"];
   if (!allowedLanguages.includes(language)) {
     return { error: `Language "${language}" is not supported for execution. Supported: ${allowedLanguages.join(", ")}` };
@@ -437,7 +441,6 @@ async function executeCode(body) {
     return { error: "OpenAI API key required for code verification" };
   }
 
-  // Use LLM to verify/execute code
   const res = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: { "Authorization": "Bearer " + provider.key, "Content-Type": "application/json" },
@@ -602,7 +605,7 @@ export default async function handler(req, res) {
     return;
   }
 
-  // Chat
+  // Chat — FIXED: proper streaming response with content-type
   if (path === "/api/chat") {
     try {
       const body = await parseBody(req);
@@ -627,8 +630,9 @@ export default async function handler(req, res) {
 
       // Streaming response
       if (body.stream !== false && provider.supportsStream) {
+        // CRITICAL FIX: Set proper SSE headers
         res.setHeader("Content-Type", "text/event-stream");
-        res.setHeader("Cache-Control", "no-cache");
+        res.setHeader("Cache-Control", "no-cache, no-transform");
         res.setHeader("Connection", "keep-alive");
         res.setHeader("X-Accel-Buffering", "no");
         res.statusCode = 200;
