@@ -1815,7 +1815,9 @@ class VercelKVStorage extends StorageAdapter {
 * Storage factory selecting the best available backend.
 * Priority: Vercel KV → Redis → In-Memory
 */
-const Storage = Object.freeze({
+// NOTE: Do NOT Object.freeze this — _instance must be assignable at runtime.
+// Freezing caused getInstance() to always return null → "Cannot read properties of null (reading 'get')"
+const Storage = {
  /** @type {StorageAdapter|null} */
  _instance: null,
 
@@ -1825,16 +1827,25 @@ const Storage = Object.freeze({
   */
  getInstance() {
    if (!this._instance) {
-     if (ENV.KV_REST_API_URL && ENV.KV_REST_API_TOKEN) {
-       this._instance = new VercelKVStorage();
-       Logger.info('Storage backend: Vercel KV');
-     } else if (ENV.REDIS_URL) {
-       this._instance = new RedisStorage();
-       Logger.info('Storage backend: Redis');
-     } else {
+     try {
+       if (ENV.KV_REST_API_URL && ENV.KV_REST_API_TOKEN) {
+         this._instance = new VercelKVStorage();
+         Logger.info('Storage backend: Vercel KV');
+       } else if (ENV.REDIS_URL) {
+         this._instance = new RedisStorage();
+         Logger.info('Storage backend: Redis');
+       } else {
+         this._instance = new InMemoryStorage();
+         Logger.info('Storage backend: In-Memory (fallback)');
+       }
+     } catch (err) {
+       Logger.warn('Primary storage init failed, using in-memory', { error: err.message });
        this._instance = new InMemoryStorage();
-       Logger.info('Storage backend: In-Memory (fallback)');
      }
+   }
+   // Hard guarantee — never return null
+   if (!this._instance) {
+     this._instance = new InMemoryStorage();
    }
    return this._instance;
  },
@@ -1845,7 +1856,7 @@ const Storage = Object.freeze({
  reset() {
    this._instance = null;
  },
-});
+};
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // PART 4 (continued): CONVERSATION STORE
@@ -1860,9 +1871,14 @@ class ConversationStore {
   * @param {StorageAdapter} storage - Underlying storage adapter
   */
  constructor(storage) {
-   this.storage = storage;
+   this.storage = storage || Storage.getInstance();
    this.keyPrefix = 'noctryx:conversation:';
    this.ttlMs = 7 * 24 * 60 * 60 * 1000; // 7 days
+ }
+
+ _store() {
+   if (!this.storage) this.storage = Storage.getInstance();
+   return this.storage;
  }
 
  /**
@@ -1882,7 +1898,7 @@ class ConversationStore {
   */
  async get(conversationId) {
    const key = this._key(conversationId);
-   const data = await this.storage.get(key);
+   const data = await this._store().get(key);
    if (!data) return null;
    return this._hydrate(data);
  }
@@ -1895,7 +1911,7 @@ class ConversationStore {
  async save(conversation) {
    const key = this._key(conversation.id);
    conversation.updatedAt = Date.now();
-   await this.storage.set(key, conversation, this.ttlMs);
+   await this._store().set(key, conversation, this.ttlMs);
  }
 
  /**
