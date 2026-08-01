@@ -16,7 +16,6 @@ const RATE_LIMIT_WINDOW_MS = 60000;
 const RATE_LIMIT_MAX = 100;
 
 function applySecurity(req, res) {
-  // Allow your Vercel frontend domain
   // CHANGE THIS to your actual frontend URL after deploying
   const ALLOWED_ORIGINS = [
     'https://15-techs-projects.vercel.app',
@@ -81,7 +80,6 @@ module.exports = async function handler(req, res) {
     return;
   }
 
-  // Vercel may already parse req.body as JSON, or it may be a string
   let body;
   try {
     body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
@@ -90,7 +88,7 @@ module.exports = async function handler(req, res) {
     return;
   }
 
-  // Support both { message } and { messages } from frontend
+  // Support both { message } (from your frontend) and { messages } (OpenAI format)
   const messages = body?.messages || (body?.message ? [{ role: 'user', content: body.message }] : null);
   if (!messages || !Array.isArray(messages) || messages.length === 0) {
     res.status(400).json({ error: 'Valid messages array is required' });
@@ -115,8 +113,12 @@ module.exports = async function handler(req, res) {
       'Cache-Control': 'no-cache, no-transform',
       'Connection': 'keep-alive'
     });
-    res.write(`data: ${JSON.stringify({ choices: [{ delta: { content: cachedKnowledge.content } }] })}\n\n`);
-    res.write('data: [DONE]\n\n');
+    res.write(`data: ${JSON.stringify({ choices: [{ delta: { content: cachedKnowledge.content } }] })}
+
+`);
+    res.write('data: [DONE]
+
+');
     res.end();
     return;
   }
