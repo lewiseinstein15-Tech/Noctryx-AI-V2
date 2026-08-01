@@ -1,6 +1,6 @@
 /**
  * ═══════════════════════════════════════════════
- * Noctryx AI V2 - Bulletproof Chat Backend
+ * Noctryx AI V2 - Production Streaming Chat Backend
  * ═══════════════════════════════════════════════
  */
 
@@ -22,15 +22,14 @@ class GroqProvider {
     this.apiKey = ENV.GROQ_API_KEY;
     this.model = 'llama-3.3-70b-versatile';
   }
-  async complete(messages) {
+  async stream(messages) {
     const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${this.apiKey}` },
-      body: JSON.stringify({ model: this.model, messages })
+      body: JSON.stringify({ model: this.model, messages, stream: true })
     });
     if (!res.ok) throw new Error(`Groq error: ${res.statusText}`);
-    const data = await res.json();
-    return data.choices?.[0]?.message?.content || '';
+    return res.body;
   }
 }
 
@@ -40,16 +39,15 @@ class GeminiProvider {
     this.apiKey = ENV.GEMINI_API_KEY;
     this.model = 'gemini-1.5-pro';
   }
-  async complete(messages) {
+  async stream(messages) {
     const contents = messages.map(m => ({ role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] }));
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${this.model}:generateContent?key=${this.apiKey}`, {
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${this.model}:streamGenerateContent?alt=sse&key=${this.apiKey}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ contents })
     });
     if (!res.ok) throw new Error(`Gemini error: ${res.statusText}`);
-    const data = await res.json();
-    return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    return res.body;
   }
 }
 
@@ -59,15 +57,41 @@ class OpenAIProvider {
     this.apiKey = ENV.OPENAI_API_KEY;
     this.model = 'gpt-4o';
   }
-  async complete(messages) {
+  async stream(messages) {
     const res = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${this.apiKey}` },
-      body: JSON.stringify({ model: this.model, messages })
+      body: JSON.stringify({ model: this.model, messages, stream: true })
     });
     if (!res.ok) throw new Error(`OpenAI error: ${res.statusText}`);
-    const data = await res.json();
-    return data.choices?.[0]?.message?.content || '';
+    return res.body;
+  }
+}
+
+function parseAndWriteChunk(line, providerName, res) {
+  const trimmed = line.trim();
+  if (!trimmed || trimmed.startsWith(':')) return;
+
+  if (trimmed.startsWith('data: ')) {
+    const dataStr = trimmed.slice(6);
+    if (dataStr === '[DONE]') return;
+
+    try {
+      const json = JSON.parse(dataStr);
+      let text = '';
+
+      if (providerName === 'gemini') {
+        text = json.candidates?.[0]?.content?.parts?.[0]?.text || '';
+      } else {
+        text = json.choices?.[0]?.delta?.content || '';
+      }
+
+      if (text) {
+        res.write(`data: ${JSON.stringify({ choices: [{ delta: { content: text } }] })}\n\n`);
+      }
+    } catch (err) {
+      console.warn(`[Parser Warning] Failed to parse stream chunk from ${providerName}:`, err.message);
+    }
   }
 }
 
@@ -76,6 +100,7 @@ module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', origin);
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Vary', 'Origin');
 
   if (req.method === 'OPTIONS') { res.status(204).end(); return; }
   if (req.method === 'GET') { res.status(200).json({ status: 'healthy' }); return; }
@@ -95,7 +120,6 @@ module.exports = async function handler(req, res) {
     return;
   }
 
-  // Priority order: Groq first (fast, reliable), then Gemini, then OpenAI (fallback)
   const providers = [
     new GroqProvider(),
     new GeminiProvider(),
@@ -111,21 +135,49 @@ module.exports = async function handler(req, res) {
 
   for (const provider of providers) {
     try {
-      const text = await provider.complete(messages);
+      const rawStream = await provider.stream(messages);
       
-      // Return a standard JSON response that your frontend JavaScript can parse instantly
-      res.status(200).json({ 
-        success: true, 
-        message: text, 
-        providerUsed: provider.name 
+      // Robust SSE streaming headers with anti-buffering settings
+      res.writeHead(200, { 
+        'Content-Type': 'text/event-stream', 
+        'Cache-Control': 'no-cache, no-transform', 
+        'Connection': 'keep-alive',
+        'X-Accel-Buffering': 'no'
       });
+
+      const reader = rawStream.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+
+        for (const line of lines) {
+          parseAndWriteChunk(line, provider.name, res);
+        }
+      }
+
+      // Flush remaining data left in buffer
+      if (buffer.trim()) {
+        parseAndWriteChunk(buffer, provider.name, res);
+      }
+
+      res.write('data: [DONE]\n\n');
+      res.end();
       return;
 
     } catch (err) {
       lastError = err;
-      console.warn(`[Failover] Provider ${provider.name} failed: ${err.message}. Trying next...`);
+      console.warn(`Provider ${provider.name} failed: ${err.message}. Trying next...`);
     }
   }
 
-  res.status(500).json({ error: lastError?.message || 'All AI providers failed.' });
+  if (!res.headersSent) {
+    res.status(500).json({ error: lastError?.message || 'All AI providers failed.' });
+  }
 };
