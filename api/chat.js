@@ -2049,10 +2049,14 @@ const conversationStore = new ConversationStore(Storage.getInstance());
 */
 class KnowledgeStore {
  constructor(storage) {
-   this.storage = storage;
+   this.storage = storage || Storage.getInstance();
    this.keyPrefix = 'noctryx:knowledge:';
    this.indexPrefix = 'noctryx:knowledge_index:';
    this.ttlMs = 90 * 24 * 60 * 60 * 1000; // 90 days
+ }
+ _store() {
+   if (!this.storage) this.storage = Storage.getInstance();
+   return this.storage;
  }
 
  /**
@@ -3525,7 +3529,7 @@ class ProviderRegistryClass {
    }
 
    if (this.providers.length === 0) {
-     Logger.fatal('No AI providers configured. At least one API key is required.');
+     Logger.warn('No AI providers configured. Set at least one API key (GROQ_API_KEY, GEMINI_API_KEY, OPENAI_API_KEY, etc.). Chat will return NO_PROVIDERS until keys are set.');
    }
  }
 
@@ -3534,7 +3538,12 @@ class ProviderRegistryClass {
   * @returns {BaseProvider[]} Available providers
   */
  getAvailableProviders() {
-   return this.providers.filter(p => circuitBreaker.isClosed(p.name));
+   const closed = this.providers.filter(p => {
+     try { return circuitBreaker.isClosed(p.name); } catch { return true; }
+   });
+   // If every circuit is open, still return all providers so failover can retry
+   // instead of hard-locking the entire system.
+   return closed.length > 0 ? closed : this.providers.slice();
  }
 
  /**
@@ -3548,7 +3557,9 @@ class ProviderRegistryClass {
    let candidates = this.getAvailableProviders();
 
    if (preferences.requireStreaming) {
-     candidates = candidates.filter(p => p.streaming);
+     const streaming = candidates.filter(p => p.streaming);
+     // Prefer streaming providers, but do not hard-fail if only non-streaming exist
+     if (streaming.length > 0) candidates = streaming;
    }
 
    if (preferences.preferred) {
@@ -3559,11 +3570,11 @@ class ProviderRegistryClass {
    if (candidates.length === 0) return null;
 
    // Weighted random selection biased by priority and weight
-   const totalWeight = candidates.reduce((sum, p) => sum + (p.weight / p.priority), 0);
+   const totalWeight = candidates.reduce((sum, p) => sum + (p.weight / Math.max(p.priority, 1)), 0) || 1;
    let random = Math.random() * totalWeight;
 
    for (const provider of candidates) {
-     random -= provider.weight / provider.priority;
+     random -= provider.weight / Math.max(provider.priority, 1);
      if (random <= 0) return provider;
    }
 
@@ -5815,8 +5826,16 @@ module.exports = async function handler(req, res) {
 
  if (!provider) {
    spanProvider.end({ error: 'no_providers' });
-   ctx.logger.fatal('No available AI providers');
-   sendError(res, 503, 'NO_PROVIDERS', 'All AI providers are currently unavailable. Please try again later.', corsHeaders);
+   ctx.logger.warn('No available AI providers', {
+     configured: ProviderRegistry.getAll().map(p => p.name),
+   });
+   sendError(
+     res,
+     503,
+     'NO_PROVIDERS',
+     'No AI providers available. Set at least one provider API key in Vercel Environment Variables (e.g. GROQ_API_KEY, GEMINI_API_KEY, OPENAI_API_KEY) and redeploy.',
+     corsHeaders
+   );
    ctx.finish();
    return;
  }
