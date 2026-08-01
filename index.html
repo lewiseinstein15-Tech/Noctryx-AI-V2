@@ -1416,11 +1416,31 @@ function detectAgent(message) {
   return null;
 }
 
+function getStandaloneReply(message) {
+  const lower = (message || '').toLowerCase().trim();
+  if (!lower) return 'Send a message and I will reply once a backend is connected.';
+  if (/^(hi|hello|hey|yo|hola|sup)\b/.test(lower)) {
+    return 'Hello! I am **Noctryx AI**.\n\nI am currently running in **standalone mode** (no backend connected).\n\nTo enable full AI chat, streaming, vision, and code execution:\n1. Open **Settings**\n2. Enter a valid backend URL (e.g. `https://your-api.example.com`)\n3. Save and try again.\n\nWhile offline I can still show the UI, manage local tasks, and load public GitHub repos.';
+  }
+  if (/what can you do|capabilities|help|features/.test(lower)) {
+    return '**Noctryx AI capabilities** (require a backend):\n\n- Streaming chat (ChatGPT-style)\n- Code generation & terminal execution\n- Vision / camera analysis\n- Voice conversation\n- Research agent\n- Local tasks, memory & analytics\n\n**Right now:** no backend URL is reachable, so live AI replies are disabled.\n\nGo to **Settings → Backend URL**, enter a working endpoint that exposes `/api/chat`, then save.';
+  }
+  if (/backend|settings|url|connect|offline|error/.test(lower)) {
+    return '**Backend connection**\n\n1. Open the **Settings** screen (sidebar or More tab)\n2. Paste your backend base URL (no trailing slash)\n3. The backend must implement at least:\n   - `GET /api/health`\n   - `POST /api/chat` (supports streaming or JSON `{ reply }` )\n4. Tap **Save** and try chatting again.\n\nIf the URL is wrong or the server is down you will see a network error.';
+  }
+  return '**Standalone mode**\n\nI received: "' + message.replace(/"/g, '\\"').slice(0, 200) + '"\n\nLive AI responses need a working backend. Open **Settings**, set a valid **Backend URL**, save, and send your message again.\n\nUntil then the rest of the app (tasks, local memory, GitHub projects, UI) still works.';
+}
+
 async function sendChatMessage(message) {
   if (ChatState.isStreaming && _sAbort) { try { _sAbort.abort(); } catch(e) {} ChatState.isStreaming = false; }
   if (!Config.apiBase) {
     appendMessage('user', message);
-    appendMessage('assistant', '**No backend configured.**\n\nGo to **Settings** and enter your backend URL to start chatting.\n\nOnce connected, I will provide streaming responses just like ChatGPT, with real-time token-by-token output.', true);
+    ChatState.history.push({ role: 'user', content: message });
+    const reply = getStandaloneReply(message);
+    appendMessage('assistant', reply, false);
+    ChatState.history.push({ role: 'assistant', content: reply });
+    ChatState.save();
+    Counters.bump('messages');
     return;
   }
   appendMessage('user', message);
@@ -1489,8 +1509,12 @@ async function sendChatMessage(message) {
     if (err.name === 'AbortError') { ChatState.isStreaming = false; const sb = document.getElementById('nxStopBtn'); if (sb) sb.classList.remove('show'); setAgentStatus('code', false); if (detectedAgent) setAgentStatus(detectedAgent, false); return; }
     const ti = document.getElementById('typingIndicator'); if (ti) ti.classList.remove('active');
     let errMsg = err.message || 'Unknown error';
-    if (errMsg.includes('Failed to fetch') || errMsg.includes('NetworkError')) errMsg = 'Cannot reach backend. Check your connection or backend URL in Settings.';
-    else if (errMsg.includes('timeout')) errMsg = 'Backend timed out. The server may be slow or unreachable.';
+    const isNetwork = errMsg.includes('Failed to fetch') || errMsg.includes('NetworkError') || errMsg === 'timeout' || errMsg.includes('timeout');
+    if (isNetwork) {
+      errMsg = 'Cannot reach backend at `' + (Config.apiBase || '(empty)') + '`.\n\n**What to do:**\n1. Open **Settings**\n2. Verify the Backend URL is correct and the server is running\n3. The server must allow CORS from this origin\n4. Clear the URL and save if you want standalone mode\n\nError detail: ' + (err.message || 'network failure');
+    } else if (errMsg.includes('timeout')) {
+      errMsg = 'Backend timed out. The server may be slow or unreachable.';
+    }
     appendMessage('assistant', '**Error:** ' + errMsg, true);
     ChatState.isStreaming = false;
     setAgentStatus('code', false);
@@ -1651,7 +1675,7 @@ function speak(text) {
 async function handleVoiceTurn(transcript) {
   document.getElementById('voiceTranscript').textContent = transcript;
   setVoiceStatus('Thinking...');
-  if (!Config.apiBase) { setVoiceStatus('Set a backend URL in Settings first'); return; }
+  if (!Config.apiBase) { setVoiceStatus('No backend configured — open Settings and set Backend URL'); document.getElementById('voiceTranscript').textContent = 'Voice chat requires a backend. Go to Settings → Backend URL.'; return; }
   try {
     const detectedAgent = detectAgent(transcript);
     const res = await fetchWithTimeout(api('/api/chat'), {
@@ -1860,7 +1884,7 @@ async function loadProjects() {
         const color = langColors[lang] || '#8b949e';
         const stars = repo.stars || repo.stargazers_count || 0;
         const forks = repo.forks || repo.forks_count || 0;
-        return `<div class="repo-card"><div class="repo-header"><div class="repo-name">${escapeHtml(repo.name)}</div>${repo.private ? '<span class="repo-private">Private</span>' : ''}</div><div class="repo-desc">${escapeHtml(repo.description || 'No description')}</div><div class="repo-stats"><div class="repo-lang"><span class="lang-dot" style="background:${color}"></span>${escapeHtml(lang)}</div><div class="repo-stat">&#9733; ${stars}</div><div class="repo-stat">&#fork; ${forks}</div></div></div>`;
+        return `<div class="repo-card"><div class="repo-header"><div class="repo-name">${escapeHtml(repo.name)}</div>${repo.private ? '<span class="repo-private">Private</span>' : ''}</div><div class="repo-desc">${escapeHtml(repo.description || 'No description')}</div><div class="repo-stats"><div class="repo-lang"><span class="lang-dot" style="background:${color}"></span>${escapeHtml(lang)}</div><div class="repo-stat">&#9733; ${stars}</div><div class="repo-stat">⑂ ${forks}</div></div></div>`;
       }).join('');
     }
     const homeCard = document.getElementById('homeProjectsCard');
@@ -2000,9 +2024,12 @@ document.getElementById('visionSwitchBtn')?.addEventListener('click', flipCamera
 document.getElementById('projectsRefreshBtn')?.addEventListener('click', loadProjects);
 
 document.getElementById('saveSettingsBtn')?.addEventListener('click', () => {
-  Config.apiBase = document.getElementById('backendUrlInput').value.trim();
-  Config.githubUser = document.getElementById('githubUserInput').value.trim();
-  toast('Settings saved');
+  const url = (document.getElementById('backendUrlInput')?.value || '').trim().replace(/\/$/, '');
+  const gh = (document.getElementById('githubUserInput')?.value || '').trim();
+  Config.apiBase = url;
+  Config.githubUser = gh;
+  if (!url) toast('Settings saved — standalone mode (no backend)');
+  else toast('Settings saved — checking backend...');
   refreshBackendStatus();
 });
 
