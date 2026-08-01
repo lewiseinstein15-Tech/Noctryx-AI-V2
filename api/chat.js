@@ -1,8 +1,5 @@
 /**
- * ═══════════════════════════════════════════════
- * Noctryx AI V2 - Production API Handler (FIXED)
- * Creator: Lewis Einstein
- * ═══════════════════════════════════════════════
+ * Noctryx AI V2 - Production API Handler
  */
 
 const crypto = require('crypto');
@@ -16,7 +13,6 @@ const RATE_LIMIT_WINDOW_MS = 60000;
 const RATE_LIMIT_MAX = 100;
 
 function applySecurity(req, res) {
-  // CHANGE THIS to your actual frontend URL after deploying
   const ALLOWED_ORIGINS = [
     'https://15-techs-projects.vercel.app',
     'http://localhost:3000',
@@ -88,7 +84,6 @@ module.exports = async function handler(req, res) {
     return;
   }
 
-  // Support both { message } (from your frontend) and { messages } (OpenAI format)
   const messages = body?.messages || (body?.message ? [{ role: 'user', content: body.message }] : null);
   if (!messages || !Array.isArray(messages) || messages.length === 0) {
     res.status(400).json({ error: 'Valid messages array is required' });
@@ -104,7 +99,6 @@ module.exports = async function handler(req, res) {
 
   const lastUserMessage = messages.slice(-1)[0]?.content || '';
 
-  // Check cache
   const cachedKnowledge = KnowledgeRepository.findByQuery(lastUserMessage);
   if (cachedKnowledge) {
     Logger.info('Serving response directly from persistent knowledge database', { requestId, topic: cachedKnowledge.topic });
@@ -113,17 +107,12 @@ module.exports = async function handler(req, res) {
       'Cache-Control': 'no-cache, no-transform',
       'Connection': 'keep-alive'
     });
-    res.write(`data: ${JSON.stringify({ choices: [{ delta: { content: cachedKnowledge.content } }] })}
-
-`);
-    res.write('data: [DONE]
-
-');
+    res.write('data: ' + JSON.stringify({ choices: [{ delta: { content: cachedKnowledge.content } }] }) + '\n\n');
+    res.write('data: [DONE]\n\n');
     res.end();
     return;
   }
 
-  // Execute AI stream
   try {
     await providerManager.executeStream(messages, res, requestId);
   } catch (err) {
@@ -134,7 +123,6 @@ module.exports = async function handler(req, res) {
     return;
   }
 
-  // Store knowledge for future queries
   if (lastUserMessage.length > 15) {
     KnowledgeRepository.upsert(lastUserMessage.slice(0, 40), 'Enterprise automated knowledge index entry.');
   }
