@@ -3,7 +3,7 @@
   "version": "2.0.0",
   "description": "Noctryx AI V2",
   "scripts": {
-    "build": "mkdir -p public && cp -r index.html css js manifest.json sw.js icon*.svg public/"
+    "build": "mkdir -p public && cp -r index.html css js manifest.json icon*.svg public/ 2>/dev/null || true"
   },
   "dependencies": {
     "dotenv": "^16.4.5"
