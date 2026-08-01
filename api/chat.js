@@ -4204,7 +4204,14 @@ const promptBuilder = new DynamicPromptBuilder();
 // PART 7: CODE EXECUTION ENGINE & VERIFICATION
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-const { VM } = require('vm2');
+// vm2 is optional — missing package must NOT crash the whole serverless function
+let VM = null;
+try {
+  VM = require('vm2').VM;
+} catch (e) {
+  try { console.warn('[Noctryx] vm2 not installed; JS sandbox disabled'); } catch (_) {}
+  VM = null;
+}
 const { exec } = require('child_process');
 const { promisify } = require('util');
 const execAsync = promisify(exec);
@@ -4400,22 +4407,29 @@ class JavaScriptExecutor extends CodeExecutor {
    };
 
    try {
-     const vm = new VM({
-       timeout: CONFIG.CODE_EXEC_TIMEOUT_MS,
-       sandbox,
-       eval: false,
-       wasm: false,
-       fixAsync: false,
-     });
+     if (!VM) {
+       result.error = 'JS sandbox unavailable (vm2 not installed)';
+       result.stderr = result.error;
+       result.exitCode = 1;
+       result.success = false;
+     } else {
+       const vm = new VM({
+         timeout: CONFIG.CODE_EXEC_TIMEOUT_MS,
+         sandbox,
+         eval: false,
+         wasm: false,
+         fixAsync: false,
+       });
 
-     const returnValue = vm.run(processedCode);
-     result.stdout = logs.join('\n');
-     if (returnValue !== undefined && logs.length === 0) {
-       result.stdout = typeof returnValue === 'object' ? safeJsonStringify(returnValue, '[Object]') : String(returnValue);
+       const returnValue = vm.run(processedCode);
+       result.stdout = logs.join('\n');
+       if (returnValue !== undefined && logs.length === 0) {
+         result.stdout = typeof returnValue === 'object' ? safeJsonStringify(returnValue, '[Object]') : String(returnValue);
+       }
+       result.stderr = errors.join('\n');
+       result.exitCode = 0;
+       result.success = true;
      }
-     result.stderr = errors.join('\n');
-     result.exitCode = 0;
-     result.success = true;
    } catch (error) {
      result.error = error.message;
      result.stderr = error.stack || error.message;
