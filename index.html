@@ -271,20 +271,19 @@ a{color:inherit;text-decoration:none}
 .chat-bubble .nx-code{position:relative;margin:16px 0;border-radius:12px;overflow:hidden;border:1px solid var(--border);background:#0d1117;box-shadow:0 4px 12px rgba(0,0,0,0.4);contain:layout}
 .chat-bubble .nx-code-head{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:rgba(255,255,255,0.04);border-bottom:1px solid var(--border)}
 .chat-bubble .nx-code{animation:nxFadeIn .2s ease}
-.chat-bubble .nx-code-lang{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px}
+.chat-bubble .nx-code-lang{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.8px}
 .chat-bubble .nx-code-lang-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.chat-bubble .nx-code-copy{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;font-size:12px;color:var(--text-dim);background:var(--bg-panel-2);border:1px solid var(--border);cursor:pointer;transition:all .15s;font-family:inherit}
-.chat-bubble .nx-code-copy:hover{color:var(--green);background:rgba(0,255,136,0.08);border-color:var(--green-dim)}
-.chat-bubble .nx-code-copy:active{transform:scale(.95)}
-.chat-bubble .nx-code-copy:hover{color:var(--green);background:rgba(0,255,136,0.06)}
-.chat-bubble .nx-code-copy.done{color:var(--green)}
+.chat-bubble .nx-code-copy{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:8px;font-size:12px;font-weight:600;color:var(--text);background:var(--bg-panel-2);border:1.5px solid var(--green-dim);cursor:pointer;transition:all .2s;font-family:inherit;min-height:36px;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.chat-bubble .nx-code-copy:hover{color:var(--green);background:rgba(0,255,136,0.12);border-color:var(--green);box-shadow:0 0 10px rgba(0,255,136,0.1)}
+.chat-bubble .nx-code-copy:active{transform:scale(.92)}
+.chat-bubble .nx-code-copy.done{color:var(--green);border-color:var(--green);background:rgba(0,255,136,0.15)}
 .chat-bubble .nx-code-copy svg{width:13px;height:13px}
 .chat-bubble pre{margin:0!important;background:transparent!important;border:none!important;padding:16px 18px!important;overflow-x:auto;font-size:13px;line-height:1.75;border-radius:0!important;-webkit-overflow-scrolling:touch}
 .chat-bubble pre code{background:none!important;padding:0!important;font-size:12.5px;border:none!important;font-family:'JetBrains Mono',monospace}
 .chat-bubble .hljs{background:transparent!important;padding:0!important}
 .chat-bubble .nx-code.has-nums{padding-left:44px}
-.chat-bubble .nx-nums{position:absolute;left:0;top:37px;width:38px;padding:14px 6px 14px 0;text-align:right;font-size:11px;line-height:1.7;color:var(--text-dimmer);background:rgba(0,0,0,0.3);border-right:1px solid var(--border);user-select:none;overflow:hidden}
-.chat-bubble .nx-nums div{height:calc(12.5px * 1.7)}
+.chat-bubble .nx-nums{position:absolute;left:0;top:45px;width:40px;padding:16px 6px 16px 0;text-align:right;font-size:11px;line-height:1.7;color:var(--text-dimmer);background:rgba(0,0,0,0.25);border-right:1px solid var(--border);user-select:none;overflow:hidden}
+.chat-bubble .nx-nums div{height:calc(13px * 1.7)}
 .chat-bubble .contains-task-list{list-style:none;padding-left:4px}
 .chat-bubble .task-list-item{display:flex;align-items:flex-start;gap:8px}
 .chat-bubble .task-list-item input[type="checkbox"]{accent-color:var(--green);margin-top:5px;flex-shrink:0;width:14px;height:14px}
@@ -498,8 +497,8 @@ a{color:inherit;text-decoration:none}
 @media (max-width:380px){.more-grid{grid-template-columns:repeat(3,1fr)}.agents-grid{grid-template-columns:1fr}.quick-actions{grid-template-columns:repeat(5,1fr);gap:4px}}
 @media (display-mode:standalone){.app{padding-bottom:100px}.bottom-nav{padding-bottom:calc(14px + env(safe-area-inset-bottom))}}
 .nx-thinking{color:var(--text-dimmer);font-style:italic;animation:nxPulse 1.5s ease infinite}
-.chat-bubble .nx-code{position:relative;margin:20px 0;border-radius:12px;overflow:hidden;border:1.5px solid var(--green);background:#0d1117;box-shadow:0 4px 20px rgba(0,0,0,0.5),0 0 15px rgba(0,255,136,0.1);contain:layout;animation:nxFadeIn .25s ease;min-height:60px}
-.chat-bubble .nx-code-head{background:rgba(0,255,136,0.08);border-bottom:1.5px solid var(--green-dim);padding:12px 16px}
+.chat-bubble .nx-code{position:relative;margin:24px 0;border-radius:14px;overflow:hidden;border:2px solid var(--green);background:#0a0f0d;box-shadow:0 4px 24px rgba(0,0,0,0.6),0 0 20px rgba(0,255,136,0.12);contain:layout;animation:nxFadeIn .3s ease;min-height:80px}
+.chat-bubble .nx-code-head{background:rgba(0,255,136,0.08);border-bottom:1.5px solid var(--green-dim);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px}
 .chat-bubble .nx-code-lang{color:var(--green);font-weight:700}
 .chat-bubble .nx-code-copy{color:var(--green);border-color:var(--green-dim)}
 .chat-bubble pre{padding:16px 18px!important;background:#0a0e0c!important;min-height:40px}
@@ -1456,14 +1455,41 @@ window._dl = function(id) {
   Memory.log('Response disliked');
 };
 window._cc = function(btn, cid) {
-  const code = _codeStore.get(cid); if (!code) return;
+  const code = _codeStore.get(cid);
+  if (!code) {
+    // Fallback: try to get text from the code element directly
+    const pre = btn.closest('.nx-code')?.querySelector('pre code');
+    if (pre) {
+      const fallbackText = pre.textContent || pre.innerText;
+      navigator.clipboard.writeText(fallbackText).then(() => {
+        _showCopySuccess(btn);
+      }).catch(() => toast('Copy failed', true));
+      return;
+    }
+    toast('Copy failed', true);
+    return;
+  }
   navigator.clipboard.writeText(code).then(() => {
-    btn.classList.add('done');
-    const origHtml = btn.innerHTML;
-    btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="transform:scale(1.15)"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
-    setTimeout(() => { btn.classList.remove('done'); btn.innerHTML = origHtml; }, 2000);
+    _showCopySuccess(btn);
   }).catch(() => toast('Copy failed', true));
 };
+
+function _showCopySuccess(btn) {
+  btn.classList.add('done');
+  const origHtml = btn.innerHTML;
+  btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> <span>Copied!</span>';
+  btn.style.color = 'var(--green)';
+  btn.style.borderColor = 'var(--green)';
+  btn.style.background = 'rgba(0,255,136,0.15)';
+  toast('Code copied to clipboard');
+  setTimeout(() => {
+    btn.classList.remove('done');
+    btn.innerHTML = origHtml;
+    btn.style.color = '';
+    btn.style.borderColor = '';
+    btn.style.background = '';
+  }, 2000);
+}
 window._quickPrompt = function(text) {
   document.getElementById('chatInput').value = text;
   document.getElementById('chatForm').dispatchEvent(new Event('submit'));
