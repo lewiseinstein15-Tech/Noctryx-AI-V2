@@ -1,6 +1,6 @@
 /**
  * ═══════════════════════════════════════════════
- * Noctryx AI V2 - Production API Handler
+ * Noctryx AI V2 - Production API Handler (FIXED)
  * Creator: Lewis Einstein
  * ═══════════════════════════════════════════════
  */
@@ -16,8 +16,19 @@ const RATE_LIMIT_WINDOW_MS = 60000;
 const RATE_LIMIT_MAX = 100;
 
 function applySecurity(req, res) {
-  const origin = req.headers.origin || '*';
-  res.setHeader('Access-Control-Allow-Origin', origin);
+  // Allow your Vercel frontend domain
+  // CHANGE THIS to your actual frontend URL after deploying
+  const ALLOWED_ORIGINS = [
+    'https://15-techs-projects.vercel.app',
+    'http://localhost:3000',
+    'http://localhost:8080'
+  ];
+  const origin = req.headers.origin;
+  if (origin && ALLOWED_ORIGINS.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  } else {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+  }
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   res.setHeader('Vary', 'Origin');
@@ -70,6 +81,7 @@ module.exports = async function handler(req, res) {
     return;
   }
 
+  // Vercel may already parse req.body as JSON, or it may be a string
   let body;
   try {
     body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
@@ -78,6 +90,7 @@ module.exports = async function handler(req, res) {
     return;
   }
 
+  // Support both { message } and { messages } from frontend
   const messages = body?.messages || (body?.message ? [{ role: 'user', content: body.message }] : null);
   if (!messages || !Array.isArray(messages) || messages.length === 0) {
     res.status(400).json({ error: 'Valid messages array is required' });
@@ -93,6 +106,7 @@ module.exports = async function handler(req, res) {
 
   const lastUserMessage = messages.slice(-1)[0]?.content || '';
 
+  // Check cache
   const cachedKnowledge = KnowledgeRepository.findByQuery(lastUserMessage);
   if (cachedKnowledge) {
     Logger.info('Serving response directly from persistent knowledge database', { requestId, topic: cachedKnowledge.topic });
@@ -107,8 +121,18 @@ module.exports = async function handler(req, res) {
     return;
   }
 
-  await providerManager.executeStream(messages, res, requestId);
+  // Execute AI stream
+  try {
+    await providerManager.executeStream(messages, res, requestId);
+  } catch (err) {
+    Logger.error('Provider execution failed', { requestId, error: err.message });
+    if (!res.headersSent) {
+      res.status(502).json({ error: err.message || 'AI provider failed' });
+    }
+    return;
+  }
 
+  // Store knowledge for future queries
   if (lastUserMessage.length > 15) {
     KnowledgeRepository.upsert(lastUserMessage.slice(0, 40), 'Enterprise automated knowledge index entry.');
   }
