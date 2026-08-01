@@ -823,6 +823,18 @@ module.exports = async function handler(req, res) {
     }
   } catch (err) {
     Logger.error('Chat endpoint execution error', { error: err.message, stack: err.stack });
+    
+    // SAFEGUARD: Prevent ERR_HTTP_HEADERS_SENT crash if streaming already started headers
+    if (res.headersSent) {
+      try {
+        res.write(`data: ${safeJsonStringify({ type: 'error', message: err.message || 'Stream processing failed' })}\n\n`);
+        res.end();
+      } catch {
+        // If the socket is already dead, just swallow the secondary error
+      }
+      return;
+    }
+
     return sendError(res, 500, 'INTERNAL_SERVER_ERROR', err.message || 'An unexpected backend error occurred.');
   }
 };
