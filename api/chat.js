@@ -574,10 +574,32 @@ const Security = Object.freeze({
      return { valid: false, error: 'Request body must be a JSON object' };
    }
 
-   const { messages, conversationId, stream, agent, context, options } = body;
+   let {
+     messages,
+     conversationId,
+     stream,
+     agent,
+     context,
+     options,
+     message,   // frontend (Noctryx HTML) sends singular "message"
+     history,   // frontend sends history array
+   } = body;
+
+   // Normalize frontend payload → messages array
+   // Frontend: { message: "Hello", history: [{role,content},...], stream, agent }
+   // Spec:     { messages: [{role,content},...], stream, agent }
+   if ((!Array.isArray(messages) || messages.length === 0) && typeof message === 'string' && message.trim()) {
+     const hist = Array.isArray(history) ? history : [];
+     messages = [
+       ...hist
+         .filter(m => m && (m.role === 'user' || m.role === 'assistant' || m.role === 'system'))
+         .map(m => ({ role: m.role, content: typeof m.content === 'string' ? m.content : String(m.content ?? '') })),
+       { role: 'user', content: message },
+     ];
+   }
 
    if (!Array.isArray(messages) || messages.length === 0) {
-     return { valid: false, error: 'messages must be a non-empty array' };
+     return { valid: false, error: 'messages must be a non-empty array (or provide message + optional history)' };
    }
    if (messages.length > CONFIG.MAX_CONTEXT_MESSAGES) {
      return { valid: false, error: `messages array exceeds limit of ${CONFIG.MAX_CONTEXT_MESSAGES}` };
@@ -736,16 +758,19 @@ const rateLimiter = new RateLimiter();
 * @returns {Object|null} CORS headers object, or null if origin blocked
 */
 function getCorsHeaders(req) {
- const origin = req.headers.origin || req.headers.referer;
- if (!Security.validateOrigin(origin)) {
+ const origin = req.headers.origin || req.headers.referer || '';
+ if (origin && !Security.validateOrigin(origin)) {
    return null;
  }
- const allowedOrigin = ENV.ALLOWED_ORIGINS.includes('*') ? '*' : origin;
+ const allowedOrigin = ENV.ALLOWED_ORIGINS.includes('*')
+   ? (origin || '*')
+   : (origin || ENV.ALLOWED_ORIGINS.split(',')[0].trim() || '*');
  return {
-   'Access-Control-Allow-Origin': allowedOrigin,
-   'Access-Control-Allow-Methods': 'POST, OPTIONS',
+   'Access-Control-Allow-Origin': allowedOrigin === '*' ? '*' : allowedOrigin,
+   'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
    'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Request-ID, X-Noctryx-Signature',
    'Access-Control-Max-Age': '86400',
+   'Vary': 'Origin',
  };
 }
 
@@ -755,31 +780,74 @@ function getCorsHeaders(req) {
 * @returns {Promise<Object>} Parsed body
 */
 async function parseBody(req) {
+ // Vercel often pre-parses JSON into req.body — never hang waiting for data events
+ if (req.body !== undefined && req.body !== null) {
+   if (typeof req.body === 'string') {
+     const parsed = safeJsonParse(req.body, null);
+     if (parsed === null && req.body.trim()) {
+       throw new Error('Invalid JSON in request body');
+     }
+     return parsed || {};
+   }
+   if (typeof req.body === 'object') {
+     return req.body;
+   }
+ }
+
+ // If body was already consumed / no stream, return empty
+ if (req.readableEnded || req.complete === true) {
+   return {};
+ }
+
  return new Promise((resolve, reject) => {
    const chunks = [];
    let size = 0;
+   let settled = false;
+
+   const finish = (fn, val) => {
+     if (settled) return;
+     settled = true;
+     fn(val);
+   };
+
+   const timer = setTimeout(() => {
+     finish(reject, new Error('Request body parse timeout'));
+   }, 8000);
 
    req.on('data', chunk => {
      size += chunk.length;
      if (size > CONFIG.MAX_REQUEST_BODY_SIZE) {
        req.destroy();
-       reject(new Error('Request body exceeds maximum size'));
+       clearTimeout(timer);
+       finish(reject, new Error('Request body exceeds maximum size'));
        return;
      }
      chunks.push(chunk);
    });
 
    req.on('end', () => {
+     clearTimeout(timer);
      try {
        const raw = Buffer.concat(chunks).toString('utf-8');
-       const body = safeJsonParse(raw, {});
-       resolve(body);
+       if (!raw || !raw.trim()) {
+         finish(resolve, {});
+         return;
+       }
+       const body = safeJsonParse(raw, null);
+       if (body === null) {
+         finish(reject, new Error('Invalid JSON in request body'));
+         return;
+       }
+       finish(resolve, body);
      } catch (error) {
-       reject(new Error('Invalid JSON in request body'));
+       finish(reject, new Error('Invalid JSON in request body'));
      }
    });
 
-   req.on('error', reject);
+   req.on('error', (err) => {
+     clearTimeout(timer);
+     finish(reject, err);
+   });
  });
 }
 
@@ -6132,21 +6200,53 @@ const originalHandler = module.exports;
 * HTTP method and request path.
 */
 module.exports = async function router(req, res) {
- const url = req.url || '/';
- const method = req.method;
+ try {
+   const url = req.url || '/';
+   const method = req.method;
 
- // Health endpoint
- if (method === 'GET' && (url.endsWith('/health') || url === '/health')) {
-   return handleHealth(req, res);
+   // CORS preflight (must respond before any other logic)
+   if (method === 'OPTIONS') {
+     const cors = getCorsHeaders(req);
+     if (!cors) {
+       res.writeHead(403, { 'Content-Type': 'text/plain' });
+       res.end('Origin not allowed');
+       return;
+     }
+     res.writeHead(204, cors);
+     res.end();
+     return;
+   }
+
+   // Health endpoint
+   if (method === 'GET' && (url.endsWith('/health') || url === '/health' || url.includes('/api/health'))) {
+     return handleHealth(req, res);
+   }
+
+   // Metrics endpoint
+   if (method === 'GET' && (url.endsWith('/metrics') || url === '/metrics')) {
+     return handleMetrics(req, res);
+   }
+
+   // Default: chat handler
+   return await originalHandler(req, res);
+ } catch (error) {
+   try {
+     const cors = getCorsHeaders(req) || { 'Access-Control-Allow-Origin': '*' };
+     if (!res.headersSent) {
+       res.writeHead(500, {
+         'Content-Type': 'application/json',
+         ...cors,
+       });
+       res.end(JSON.stringify({
+         error: true,
+         code: 'INTERNAL_ERROR',
+         message: error?.message || 'Internal server error',
+       }));
+     }
+   } catch (_) {
+     try { res.end(); } catch (_) {}
+   }
  }
-
- // Metrics endpoint
- if (method === 'GET' && (url.endsWith('/metrics') || url === '/metrics')) {
-   return handleMetrics(req, res);
- }
-
- // Default: chat handler
- return originalHandler(req, res);
 };
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -6271,13 +6371,14 @@ process.on('unhandledRejection', (reason, promise) => {
 * the function from hanging indefinitely on fatal errors.
 */
 process.on('uncaughtException', (error) => {
- Logger.fatal('Uncaught Exception', {
-   error: error.message,
-   stack: error.stack,
- });
- metrics.increment('uncaught_exception', 1);
- // Allow the process to exit cleanly; Vercel will spin up a new instance
- process.exit(1);
+ try {
+   Logger.fatal('Uncaught Exception', {
+     error: error.message,
+     stack: error.stack,
+   });
+   metrics.increment('uncaught_exception', 1);
+ } catch (_) {}
+ // Do NOT process.exit in Vercel serverless — it causes FUNCTION_INVOCATION_FAILED
 });
 
 /**
@@ -6301,42 +6402,47 @@ process.on('SIGTERM', () => {
 * - Log system configuration
 */
 (async function initialize() {
- Logger.info('Noctryx AI V2 backend initializing', {
-   environment: ENV.NODE_ENV,
-   nodeVersion: process.version,
-   providersConfigured: ProviderRegistry.getAll().length,
- });
-
- // Initial provider health check
  try {
-   await healthMonitor.probeProviders();
-   Logger.info('Initial provider health check complete');
- } catch (error) {
-   Logger.warn('Initial provider health check failed', { error: error.message });
- }
+   Logger.info('Noctryx AI V2 backend initializing', {
+     environment: ENV.NODE_ENV,
+     nodeVersion: process.version,
+     providersConfigured: ProviderRegistry.getAll().length,
+   });
 
- // Storage connectivity check
- try {
-   const storage = Storage.getInstance();
-   await storage.set('noctryx:startup', { timestamp: Date.now() }, 30000);
-   const check = await storage.get('noctryx:startup');
-   if (check) {
-     Logger.info('Storage connectivity verified');
-     healthMonitor.set('storage', 'healthy', 'Connected');
+   // Initial provider health check (non-blocking for cold start)
+   try {
+     await healthMonitor.probeProviders();
+     Logger.info('Initial provider health check complete');
+   } catch (error) {
+     Logger.warn('Initial provider health check failed', { error: error.message });
    }
- } catch (error) {
-   Logger.warn('Storage connectivity check failed', { error: error.message });
-   healthMonitor.set('storage', 'degraded', 'Using in-memory fallback');
- }
 
- // Log active configuration summary
- Logger.info('System ready', {
-   rateLimitWindow: CONFIG.RATE_LIMIT_WINDOW_MS,
-   maxContextMessages: CONFIG.MAX_CONTEXT_MESSAGES,
-   streamingTimeout: CONFIG.STREAM_MAX_DURATION_MS,
-   codeExecution: ENV.ENABLE_CODE_EXECUTION,
-   knowledgeStorage: ENV.ENABLE_KNOWLEDGE_STORAGE,
- });
+   // Storage connectivity check
+   try {
+     const storage = Storage.getInstance();
+     await storage.set('noctryx:startup', { timestamp: Date.now() }, 30000);
+     const check = await storage.get('noctryx:startup');
+     if (check) {
+       Logger.info('Storage connectivity verified');
+       healthMonitor.set('storage', 'healthy', 'Connected');
+     }
+   } catch (error) {
+     Logger.warn('Storage connectivity check failed', { error: error.message });
+     try { healthMonitor.set('storage', 'degraded', 'Using in-memory fallback'); } catch (_) {}
+   }
+
+   Logger.info('System ready', {
+     rateLimitWindow: CONFIG.RATE_LIMIT_WINDOW_MS,
+     maxContextMessages: CONFIG.MAX_CONTEXT_MESSAGES,
+     streamingTimeout: CONFIG.STREAM_MAX_DURATION_MS,
+     codeExecution: ENV.ENABLE_CODE_EXECUTION,
+     knowledgeStorage: ENV.ENABLE_KNOWLEDGE_STORAGE,
+   });
+ } catch (error) {
+   try {
+     Logger.error('Startup initialization failed (non-fatal)', { error: error?.message || String(error) });
+   } catch (_) {}
+ }
 })();
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
