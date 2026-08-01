@@ -226,7 +226,7 @@ a{color:inherit;text-decoration:none}
 .chat-welcome-hint{padding:12px 16px;background:var(--bg-panel);border:1px solid var(--border);border-radius:12px;font-size:12px;color:var(--text-dim);cursor:pointer;transition:all .2s;text-align:left;line-height:1.5;margin-bottom:8px}
 .chat-welcome-hint:hover{border-color:var(--green-dim);color:var(--text)}
 .chat-welcome-hint:active{transform:scale(.98)}
-.chat-msg{display:flex;gap:0;max-width:100%;animation:nxMsgSlideIn .3s ease both;padding:0 16px;margin-bottom:4px}
+.chat-msg{display:flex;gap:0;max-width:100%;animation:nxMsgSlideIn .3s ease both;padding:0 16px;margin-bottom:4px;min-width:0}
 .chat-msg.user{justify-content:flex-end}
 .chat-msg-inner{display:flex;gap:12px;max-width:100%;width:100%}
 .chat-msg.user .chat-msg-inner{flex-direction:row-reverse;max-width:90%;justify-content:flex-end}
@@ -236,6 +236,7 @@ a{color:inherit;text-decoration:none}
 .chat-msg-body{display:flex;flex-direction:column;min-width:0;flex:1;gap:2px;max-width:100%}
 .chat-msg.user .chat-msg-body{align-items:flex-end}
 .chat-bubble{padding:12px 18px;font-size:15px;line-height:1.75;overflow-wrap:anywhere;position:relative;color:var(--text);letter-spacing:0.01em}
+.chat-bubble.nx-streaming{white-space:pre-wrap;font-family:'JetBrains Mono',monospace;font-size:14px}
 .chat-msg.user .chat-bubble{background:var(--bg-panel-2);border-radius:20px 20px 4px 20px;padding:12px 18px;max-width:100%;border:1px solid var(--border);font-size:15px;box-sizing:border-box}
 .chat-msg:not(.user) .chat-bubble{background:transparent;padding:4px 0}
 .chat-bubble.error{color:var(--danger)}
@@ -267,8 +268,9 @@ a{color:inherit;text-decoration:none}
 .chat-bubble tr:nth-child(even){background:rgba(255,255,255,0.02)}
 .chat-bubble tr:hover td{background:var(--bg-panel-2)}
 .chat-bubble code:not(pre code){font-family:'JetBrains Mono',monospace;background:rgba(0,255,136,0.08);color:var(--green);padding:2px 7px;border-radius:5px;font-size:13px;border:1px solid rgba(0,255,136,0.12);font-weight:500}
-.chat-bubble .nx-code{position:relative;margin:16px 0;border-radius:12px;overflow:hidden;border:1px solid var(--border);background:#0d1117;box-shadow:0 4px 12px rgba(0,0,0,0.4)}
+.chat-bubble .nx-code{position:relative;margin:16px 0;border-radius:12px;overflow:hidden;border:1px solid var(--border);background:#0d1117;box-shadow:0 4px 12px rgba(0,0,0,0.4);contain:layout}
 .chat-bubble .nx-code-head{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:rgba(255,255,255,0.04);border-bottom:1px solid var(--border)}
+.chat-bubble .nx-code{animation:nxFadeIn .2s ease}
 .chat-bubble .nx-code-lang{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px}
 .chat-bubble .nx-code-lang-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 .chat-bubble .nx-code-copy{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;font-size:12px;color:var(--text-dim);background:var(--bg-panel-2);border:1px solid var(--border);cursor:pointer;transition:all .15s;font-family:inherit}
@@ -1308,7 +1310,7 @@ function startStreamMessage() {
   const w = document.getElementById('chatWelcome'); if (w) w.remove();
   _sId = 'm' + Date.now() + Math.random().toString(36).slice(2,6); _sBuf = '';
   const wrap = document.createElement('div'); wrap.className = 'chat-msg'; wrap.id = _sId;
-  wrap.innerHTML = `<div class="chat-msg-inner"><div class="chat-msg-avatar ai">NX</div><div class="chat-msg-body"><div class="chat-bubble nx-cursor" id="sBubble"></div></div></div>`;
+  wrap.innerHTML = `<div class="chat-msg-inner"><div class="chat-msg-avatar ai">NX</div><div class="chat-msg-body"><div class="chat-bubble nx-cursor nx-streaming" id="sBubble"></div></div></div>`;
   c.appendChild(wrap); _sBubble = document.getElementById('sBubble');
   smartScroll(c, true);
   const stopBtn = document.getElementById('nxStopBtn');
@@ -1318,19 +1320,22 @@ function startStreamMessage() {
 }
 function updateStreamMessage(token) {
   _sBuf += token;
-  if (_sTimer) clearTimeout(_sTimer);
-  _sTimer = setTimeout(() => {
-    if (!_sBubble) return;
-    try { _sBubble.innerHTML = renderMarkdown(_sBuf); } catch(e) { _sBubble.textContent = _sBuf; }
-    const c = document.getElementById('chatContainer');
-    if (c) smartScroll(c, true);
-  }, 40);
+  if (!_sBubble) return;
+  // During streaming: show plain escaped text only. This prevents layout thrashing,
+  // broken partial markdown, and code fences from rendering as plain text.
+  // Full markdown (code blocks, tables, math, etc.) is applied at finishStreamMessage.
+  _sBubble.innerHTML = escapeHtml(_sBuf).replace(/\n/g, '<br>');
+  const c = document.getElementById('chatContainer');
+  if (c) smartScroll(c, true);
 }
 function finishStreamMessage(stopped) {
   if (_sTimer) clearTimeout(_sTimer);
   if (!_sBubble || !_sId) return;
+  // Final render: convert the full accumulated text to rich markdown.
+  // This is where code blocks, syntax highlighting, tables, math, and
+  // mermaid diagrams are properly rendered.
   try { _sBubble.innerHTML = renderMarkdown(_sBuf); } catch(e) { _sBubble.textContent = _sBuf; }
-  _sBubble.classList.remove('nx-cursor');
+  _sBubble.classList.remove('nx-cursor', 'nx-streaming');
   const wrapEl = document.getElementById(_sId);
   if (wrapEl) {
     const mw = wrapEl.querySelector('.chat-msg-body');
@@ -1500,7 +1505,10 @@ async function sendChatMessage(message) {
             if (tr.indexOf('data: ') === 0) {
               try {
                 const j = JSON.parse(tr.slice(6));
-                if (j.object === 'error') { wasStopped = true; break; }
+                if (j.object === 'error') {
+                  updateStreamMessage('\n\n**Error:** ' + (j.message || 'Stream error'));
+                  wasStopped = true; break;
+                }
                 const tk = (j.choices && j.choices[0] && j.choices[0].delta && j.choices[0].delta.content) || '';
                 if (tk) updateStreamMessage(tk);
               } catch(e) {
@@ -1511,7 +1519,10 @@ async function sendChatMessage(message) {
         }
       } catch(streamErr) {
         if (streamErr.name === 'AbortError') wasStopped = true;
-        else throw streamErr;
+        else {
+          updateStreamMessage('\n\n**Error:** ' + (streamErr.message || 'Stream interrupted'));
+          wasStopped = true;
+        }
       }
       finishStreamMessage(wasStopped); ChatState.isStreaming = false;
     if (Config.apiBase) { setAgentStatus('code', false); if (detectedAgent) setAgentStatus(detectedAgent, false); }
@@ -1582,6 +1593,9 @@ if (chatInput) {
     this.style.height = Math.min(this.scrollHeight, 150) + 'px';
     if (chatSendBtn) chatSendBtn.classList.toggle('active', this.value.trim().length > 0);
   });
+  chatInput.addEventListener('blur', function() {
+    if (chatSendBtn) chatSendBtn.classList.toggle('active', this.value.trim().length > 0);
+  });
   chatInput.addEventListener('keydown', function(e) {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (chatForm) chatForm.dispatchEvent(new Event('submit')); }
   });
@@ -1626,6 +1640,7 @@ document.getElementById('nxContinueBtn')?.addEventListener('click', function() {
 
 
 const _chatObs = new MutationObserver(mutations => {
+  if (ChatState.isStreaming) return; // Let streaming handler manage scroll
   const c = document.getElementById('chatContainer');
   if (c && mutations.some(m => m.addedNodes.length > 0 || m.type === 'characterData')) smartScroll(c);
 });
@@ -1723,25 +1738,31 @@ async function handleVoiceTurn(transcript) {
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
       let buf = '';
-      while (true) {
-        const result = await reader.read();
-        if (result.done) break;
-        buf += decoder.decode(result.value, { stream: true });
-        const lns = buf.split('\n'); buf = lns.pop() || '';
-        for (let li = 0; li < lns.length; li++) {
-          const tr = lns[li].trim();
-          if (!tr || tr === 'data: [DONE]') continue;
-          if (tr.indexOf('data: ') === 0) {
-            try {
-              const j = JSON.parse(tr.slice(6));
-              if (j.object === 'error') { throw new Error(j.message); }
-              const tk = (j.choices && j.choices[0] && j.choices[0].delta && j.choices[0].delta.content) || '';
-              reply += tk;
-            } catch(e) {
-              const t2 = tr.slice(6);
-              if (t2 && t2 !== '[DONE]') reply += t2;
+      try {
+        while (true) {
+          const result = await reader.read();
+          if (result.done) break;
+          buf += decoder.decode(result.value, { stream: true });
+          const lns = buf.split('\n'); buf = lns.pop() || '';
+          for (let li = 0; li < lns.length; li++) {
+            const tr = lns[li].trim();
+            if (!tr || tr === 'data: [DONE]') continue;
+            if (tr.indexOf('data: ') === 0) {
+              try {
+                const j = JSON.parse(tr.slice(6));
+                if (j.object === 'error') { reply += '\nError: ' + (j.message || 'Stream error'); break; }
+                const tk = (j.choices && j.choices[0] && j.choices[0].delta && j.choices[0].delta.content) || '';
+                reply += tk;
+              } catch(e) {
+                const t2 = tr.slice(6);
+                if (t2 && t2 !== '[DONE]') reply += t2;
+              }
             }
           }
+        }
+      } catch (streamErr) {
+        if (streamErr.name !== 'AbortError') {
+          reply += '\nError: ' + (streamErr.message || 'Stream interrupted');
         }
       }
     } else {
