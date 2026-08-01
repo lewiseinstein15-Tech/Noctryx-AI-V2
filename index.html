@@ -1493,8 +1493,20 @@ async function sendChatMessage(message) {
       finishStreamMessage(wasStopped); ChatState.isStreaming = false; setAgentStatus('code', false); if (detectedAgent) setAgentStatus(detectedAgent, false); return;
     }
     const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'HTTP ' + res.status);
-    if (!data.reply || typeof data.reply !== 'string') throw new Error('Invalid response from server');
+    if (!res.ok) {
+      const msg = (typeof data.message === 'string' && data.message)
+        || (typeof data.error === 'string' && data.error)
+        || (data.code ? (data.code + (data.message ? ': ' + data.message : '')) : null)
+        || ('HTTP ' + res.status);
+      throw new Error(msg);
+    }
+    // Accept multiple response shapes from backend
+    const replyText = (typeof data.reply === 'string' && data.reply)
+      || (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content)
+      || (typeof data.content === 'string' && data.content)
+      || null;
+    if (!replyText) throw new Error('Invalid response from server');
+    data.reply = replyText;
     document.getElementById('typingIndicator').classList.remove('active');
     appendMessage('assistant', data.reply);
     ChatState.history.push({ role: 'assistant', content: data.reply });
@@ -1714,8 +1726,16 @@ async function handleVoiceTurn(transcript) {
       }
     } else {
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'HTTP ' + res.status);
-      reply = data.reply;
+      if (!res.ok) {
+        const msg = (typeof data.message === 'string' && data.message)
+          || (typeof data.error === 'string' && data.error)
+          || ('HTTP ' + res.status);
+        throw new Error(msg);
+      }
+      reply = data.reply
+        || (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content)
+        || data.content
+        || '';
     }
 
     setVoiceStatus('Noctryx is speaking...');
