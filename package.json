@@ -1,20 +1,14 @@
 {
-  "name": "noctryx-ai",
+  "name": "noctryx-ai-v2",
   "version": "2.0.0",
-  "description": "Noctryx AI V2 - Native App",
+  "description": "Noctryx AI V2",
   "scripts": {
-    "build": "mkdir -p dist && cp index.html dist/ && cp manifest.json dist/",
-    "sync": "npx cap sync",
-    "android": "npx cap open android",
-    "build:android": "npm run build && npx cap sync android && cd android && ./gradlew assembleDebug"
+    "build": "mkdir -p public && cp -r index.html css js manifest.json sw.js icon*.svg public/"
   },
   "dependencies": {
-    "@capacitor/android": "^6.0.0",
-    "@capacitor/core": "^6.0.0",
-    "@capacitor/splash-screen": "^6.0.0",
-    "@capacitor/status-bar": "^6.0.0"
+    "dotenv": "^16.4.5"
   },
-  "devDependencies": {
-    "@capacitor/cli": "^6.0.0"
+  "engines": {
+    "node": ">=18"
   }
 }
