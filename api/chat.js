@@ -1,11 +1,10 @@
 /**
  * ═══════════════════════════════════════════════
- * Noctryx AI V2 - Production Chat Backend (Fixed Streaming)
+ * Noctryx AI V2 - Production Chat Backend
  * ═══════════════════════════════════════════════
  */
 
 const crypto = require('crypto');
-const { ReadableStream } = require('stream/web');
 
 function env(key, defaultValue = undefined) {
   return process.env[key] ?? defaultValue;
@@ -131,29 +130,27 @@ module.exports = async function handler(req, res) {
         for (const line of lines) {
           const trimmed = line.trim();
           if (!trimmed || trimmed.startsWith(':')) continue;
-          
-          if (provider.name === 'gemini') {
-            if (trimmed.startsWith('data: ')) {
-              try {
-                const json = JSON.parse(trimmed.slice(6));
-                const text = json.candidates?.[0]?.content?.parts?.[0]?.text;
-                if (text) {
-                  res.write(`data: ${JSON.stringify({ content: text })}\n\n`);
-                }
-              } catch {}
-            }
-          } else {
-            // Groq & OpenAI OpenAI-compatible format
-            if (trimmed === 'data: [DONE]') continue;
-            if (trimmed.startsWith('data: ')) {
-              try {
-                const json = JSON.parse(trimmed.slice(6));
-                const text = json.choices?.[0]?.delta?.content;
-                if (text) {
-                  res.write(`data: ${JSON.stringify({ content: text })}\n\n`);
-                }
-              } catch {}
-            }
+
+          if (trimmed.startsWith('data: ')) {
+            const dataStr = trimmed.slice(6);
+            if (dataStr === '[DONE]') continue;
+
+            try {
+              const json = JSON.parse(dataStr);
+              let text = '';
+
+              if (provider.name === 'gemini') {
+                text = json.candidates?.[0]?.content?.parts?.[0]?.text || '';
+              } else {
+                // Groq & OpenAI format
+                text = json.choices?.[0]?.delta?.content || '';
+              }
+
+              if (text) {
+                // Write standard SSE chunk format expected by UI clients
+                res.write(`data: ${JSON.stringify({ text })}\n\n`);
+              }
+            } catch {}
           }
         }
       }
