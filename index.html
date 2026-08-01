@@ -49,7 +49,7 @@ a{color:inherit;text-decoration:none}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--green-dim);border-radius:3px}
 ::selection{background:var(--green-glow)}
-.app{max-width:480px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;background:var(--bg);position:relative;overflow:hidden}
+.app{max-width:480px;margin:0 auto;min-height:100dvh;display:flex;flex-direction:column;background:var(--bg);position:relative;overflow:hidden}
 .sidebar{position:fixed;left:0;top:0;bottom:0;width:var(--sidebar-width);background:linear-gradient(180deg,#0a100e 0%,#060a09 100%);border-right:1px solid var(--border);z-index:300;transform:translateX(-100%);transition:transform .35s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;padding:16px 0;overflow-y:auto}
 .sidebar.open{transform:translateX(0)}
 .sidebar-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(2px);z-index:250;opacity:0;pointer-events:none;transition:opacity .3s ease}
@@ -218,7 +218,7 @@ a{color:inherit;text-decoration:none}
 .nav-center:active{transform:scale(.95)}
 .nav-center svg{width:22px;height:22px}
 
-.chat-container{flex:1;overflow-y:auto;overflow-x:hidden;padding:12px 0;display:flex;flex-direction:column;scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
+.chat-container{flex:1;overflow-y:auto;overflow-x:hidden;padding:12px 0;display:flex;flex-direction:column;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;min-height:0}
 .chat-welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:60px 24px 40px;opacity:.8}
 .chat-welcome-title{font-size:20px;font-weight:800;color:var(--green);letter-spacing:2px}
 .chat-welcome-sub{font-size:13px;color:var(--text-dim);line-height:1.6;text-align:center;max-width:280px}
@@ -233,10 +233,10 @@ a{color:inherit;text-decoration:none}
 .chat-msg-avatar{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:9px;font-weight:800;letter-spacing:.5px;margin-top:2px}
 .chat-msg-avatar.ai{background:var(--bg-panel-2);border:1px solid var(--border);color:var(--green);border-radius:50%}
 .chat-msg-avatar.human{background:var(--green);color:var(--bg);border-radius:50%}
-.chat-msg-body{display:flex;flex-direction:column;min-width:0;flex:1;gap:2px}
+.chat-msg-body{display:flex;flex-direction:column;min-width:0;flex:1;gap:2px;max-width:100%}
 .chat-msg.user .chat-msg-body{align-items:flex-end}
-.chat-bubble{padding:12px 18px;font-size:15px;line-height:1.75;word-break:break-word;overflow-wrap:break-word;position:relative;color:var(--text);letter-spacing:0.01em}
-.chat-msg.user .chat-bubble{background:var(--bg-panel-2);border-radius:20px 20px 4px 20px;padding:12px 18px;max-width:100%;border:1px solid var(--border);font-size:15px}
+.chat-bubble{padding:12px 18px;font-size:15px;line-height:1.75;overflow-wrap:anywhere;position:relative;color:var(--text);letter-spacing:0.01em}
+.chat-msg.user .chat-bubble{background:var(--bg-panel-2);border-radius:20px 20px 4px 20px;padding:12px 18px;max-width:100%;border:1px solid var(--border);font-size:15px;box-sizing:border-box}
 .chat-msg:not(.user) .chat-bubble{background:transparent;padding:4px 0}
 .chat-bubble.error{color:var(--danger)}
 .chat-bubble h1,.chat-bubble h2,.chat-bubble h3,.chat-bubble h4,.chat-bubble h5,.chat-bubble h6{color:var(--green);margin:20px 0 12px;font-weight:700;line-height:1.35}
@@ -310,8 +310,8 @@ a{color:inherit;text-decoration:none}
 .nx-continue{display:none;align-items:center;justify-content:center;gap:6px;padding:8px 20px;border-radius:20px;font-size:12px;font-weight:600;color:var(--green);background:var(--bg-panel);border:1px solid var(--border);cursor:pointer;font-family:inherit;transition:all .15s}
 .nx-continue:active{transform:scale(.96)}
 .nx-continue.show{display:inline-flex;animation:nxFadeIn .15s ease}
-.chat-bottom{flex-shrink:0;padding:8px 16px calc(12px + env(safe-area-inset-bottom));background:linear-gradient(180deg, transparent 0%, var(--bg) 20%);position:sticky;bottom:0;z-index:90;border-top:1px solid var(--border)}
-#screen-chat.screen.active{display:flex;flex-direction:column;overflow:hidden}
+.chat-bottom{flex-shrink:0;padding:8px 16px calc(12px + env(safe-area-inset-bottom));background:linear-gradient(180deg, transparent 0%, var(--bg) 20%);border-top:1px solid var(--border)}
+#screen-chat.screen.active{display:flex;flex-direction:column;overflow:hidden;min-height:0}
 #screen-chat .chat-container{flex:1;min-height:0}
 .chat-input-wrap{padding-top:8px}
 .chat-form{display:flex;align-items:flex-end;gap:10px;background:var(--bg-panel);border:1px solid var(--border-light);border-radius:24px;padding:10px 10px 10px 18px;transition:border-color .2s,box-shadow .2s;min-height:52px;box-shadow:0 -4px 20px rgba(0,0,0,0.3)}
@@ -674,7 +674,7 @@ a{color:inherit;text-decoration:none}
   </div>
 
   <!-- CHAT -->
-  <div id="screen-chat" class="screen" style="overflow:hidden">
+  <div id="screen-chat" class="screen">
     <header class="screen-header">
       <button class="icon-btn back-btn" data-back="home"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
       <div class="screen-title">Chat</div>
@@ -1042,14 +1042,14 @@ function showScreen(name) {
   if (name === 'settings') loadSettingsScreen();
   if (name === 'analytics') renderAnalytics();
   if (name === 'agents') renderAgentsDetail();
-  if (name !== 'vision') stopCamera();
-  if (name !== 'voice') stopVoiceSession();
+  if (name !== 'vision') { try { stopCamera(); } catch(e) {} }
+  if (name !== 'voice') { try { stopVoiceSession(); } catch(e) {} }
   if (name === 'terminal') {
     const textarea = document.getElementById('termCodeTextarea');
     if (textarea) textarea.value = textarea.value || '';
   }
   if (typeof window._syncChatViewportHeight === 'function') window._syncChatViewportHeight();
-  window.scrollTo(0,0);
+  if (name !== 'chat') window.scrollTo(0,0);
 }
 
 document.querySelectorAll('[data-nav]').forEach(el => {
@@ -1205,6 +1205,11 @@ const mdRenderer = new marked.Renderer();
 mdRenderer.code = function(obj) {
   const text = obj.text || '';
   const lang = (obj.lang || '').toLowerCase().trim();
+  // Handle mermaid diagrams
+  if (lang === 'mermaid') {
+    const mid = 'mermaid-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+    return `<div class="nx-mermaid"><div class="mermaid-src" id="${mid}">${escapeHtml(text)}</div><div id="${mid}-out"></div></div>`;
+  }
   const codeId = 'c' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
   _codeStore.set(codeId, text);
   let highlighted;
@@ -1229,8 +1234,10 @@ function renderMarkdown(text) {
   p = p.replace(/\$\$([\s\S]*?)\$\$/g, (m, math) => { mathBlocks.push({d:true,m:math.trim()}); return '%%M_' + (mathBlocks.length-1) + '%%'; });
   p = p.replace(/(\$)(?![\$\d])([^$\n]+?)(?<!\$)\1/g, (m, _, math) => { mathBlocks.push({d:false,m:math.trim()}); return '%%M_' + (mathBlocks.length-1) + '%%'; });
   let html;
-  try { html = marked.parse(p); } catch (e) { html = '<p>' + escapeHtml(text) + '</p>'; }
-  html = DOMPurify.sanitize(html, {ALLOWED_TAGS:['h1','h2','h3','h4','h5','h6','p','br','hr','pre','code','span','div','strong','em','del','s','u','a','img','table','thead','tbody','tr','th','td','ul','ol','li','blockquote','input','sup','sub','details','summary'],ALLOWED_ATTR:['href','src','alt','title','class','id','type','checked','disabled','style','target','rel'],ADD_ATTR:['target']});
+  try { html = marked.parse(p); } catch (e) { html = '<p>' + escapeHtml(text).replace(/\n/g, '<br>') + '</p>'; }
+  try {
+    html = DOMPurify.sanitize(html, {ALLOWED_TAGS:['h1','h2','h3','h4','h5','h6','p','br','hr','pre','code','span','div','strong','em','del','s','u','a','img','table','thead','tbody','tr','th','td','ul','ol','li','blockquote','input','sup','sub','details','summary'],ALLOWED_ATTR:['href','src','alt','title','class','id','type','checked','disabled','style','target','rel'],ADD_ATTR:['target']});
+  } catch (e) { html = escapeHtml(html).replace(/\n/g, '<br>'); }
   html = html.replace(/%%M_(\d+)%%/g, (_, idx) => {
     const b = mathBlocks[parseInt(idx)]; if (!b) return '';
     try { return katex.renderToString(b.m, {displayMode:b.d,throwOnError:false,trust:true,strict:false}); }
@@ -1245,6 +1252,17 @@ async function renderMermaidBlocks(container) {
   for (let i = 0; i < els.length; i++) {
     const src = els[i], outId = src.id + '-out', out = document.getElementById(outId);
     if (!out || src.dataset.rendered) continue;
+    try { const r = await mermaid.render(outId + '-svg', src.textContent); out.innerHTML = r.svg; src.style.display = 'none'; src.dataset.rendered = 'true'; }
+    catch(e) { out.innerHTML = '<div class="nx-mermaid-err">' + escapeHtml(e.message || 'Unknown') + '</div>'; }
+  }
+  // Also process any pre-rendered mermaid blocks in the container
+  const preRendered = container.querySelectorAll('.nx-mermaid');
+  for (let i = 0; i < preRendered.length; i++) {
+    const block = preRendered[i];
+    const src = block.querySelector('.mermaid-src');
+    if (!src || src.dataset.rendered) continue;
+    const outId = src.id + '-out', out = document.getElementById(outId);
+    if (!out) continue;
     try { const r = await mermaid.render(outId + '-svg', src.textContent); out.innerHTML = r.svg; src.style.display = 'none'; src.dataset.rendered = 'true'; }
     catch(e) { out.innerHTML = '<div class="nx-mermaid-err">' + escapeHtml(e.message || 'Unknown') + '</div>'; }
   }
@@ -1263,7 +1281,7 @@ function _buildActions(id) {
   </div>`;
 }
 
-function appendMessage(role, text, isError) {
+function appendMessage(role, text, isError, skipScroll) {
   const c = document.getElementById('chatContainer');
   const w = document.getElementById('chatWelcome'); if (w) w.remove();
   const id = 'm' + Date.now() + Math.random().toString(36).slice(2,6);
@@ -1277,7 +1295,7 @@ function appendMessage(role, text, isError) {
   const acts = (role === 'assistant' && !isError) ? _buildActions(id) : '';
   wrap.innerHTML = `<div class="chat-msg-inner"><div class="chat-msg-avatar ${avClass}">${avText}</div><div class="chat-msg-body"><div class="chat-bubble${bc}">${rendered}</div>${acts}</div></div>`;
   c.appendChild(wrap);
-  smartScroll(c, true);
+  if (!skipScroll) smartScroll(c, true);
   if (role === 'assistant') requestAnimationFrame(() => { renderMermaidBlocks(wrap); });
   return id;
 }
@@ -1305,8 +1323,8 @@ function updateStreamMessage(token) {
     if (!_sBubble) return;
     try { _sBubble.innerHTML = renderMarkdown(_sBuf); } catch(e) { _sBubble.textContent = _sBuf; }
     const c = document.getElementById('chatContainer');
-    if (c) smartScroll(c);
-  }, 30);
+    if (c) smartScroll(c, true);
+  }, 40);
 }
 function finishStreamMessage(stopped) {
   if (_sTimer) clearTimeout(_sTimer);
@@ -1316,7 +1334,7 @@ function finishStreamMessage(stopped) {
   const wrapEl = document.getElementById(_sId);
   if (wrapEl) {
     const mw = wrapEl.querySelector('.chat-msg-body');
-    if (mw) mw.insertAdjacentHTML('beforeend', _buildActions(_sId));
+    if (mw) { try { mw.insertAdjacentHTML('beforeend', _buildActions(_sId)); } catch(e) {} }
     renderMermaidBlocks(wrapEl);
   }
   const stopBtn = document.getElementById('nxStopBtn');
@@ -1421,7 +1439,7 @@ function detectAgent(message) {
 
 function getStandaloneReply(message) {
   const lower = (message || '').toLowerCase().trim();
-  if (!lower) return 'Send a message and I will reply once a backend is connected.';
+  if (!lower) return 'Hello! I am **Noctryx AI** running in standalone mode. Type a message or connect a backend in Settings for full AI capabilities.';
   if (/^(hi|hello|hey|yo|hola|sup)\b/.test(lower)) {
     return 'Hello! I am **Noctryx AI**.\n\nI am currently running in **standalone mode** (no backend connected).\n\nTo enable full AI chat, streaming, vision, and code execution:\n1. Open **Settings**\n2. Enter a valid backend URL (e.g. `https://your-api.example.com`)\n3. Save and try again.\n\nWhile offline I can still show the UI, manage local tasks, and load public GitHub repos.';
   }
@@ -1452,8 +1470,10 @@ async function sendChatMessage(message) {
   document.getElementById('typingIndicator').classList.add('active');
   ChatState.isStreaming = true;
   document.getElementById('nxContinueBtn').classList.remove('show');
-  if (detectedAgent) setAgentStatus(detectedAgent, true);
-  else setAgentStatus('code', true);
+  if (Config.apiBase) {
+    if (detectedAgent) setAgentStatus(detectedAgent, true);
+    else setAgentStatus('code', true);
+  }
   _sAbort = new AbortController();
   try {
     const res = await fetchWithTimeout(api('/api/chat'), {
@@ -1493,7 +1513,9 @@ async function sendChatMessage(message) {
         if (streamErr.name === 'AbortError') wasStopped = true;
         else throw streamErr;
       }
-      finishStreamMessage(wasStopped); ChatState.isStreaming = false; setAgentStatus('code', false); if (detectedAgent) setAgentStatus(detectedAgent, false); return;
+      finishStreamMessage(wasStopped); ChatState.isStreaming = false;
+    if (Config.apiBase) { setAgentStatus('code', false); if (detectedAgent) setAgentStatus(detectedAgent, false); }
+    return;
     }
     const data = await res.json();
     if (!res.ok) {
@@ -1518,7 +1540,7 @@ async function sendChatMessage(message) {
     Counters.bump('messages');
     Memory.log('Chat: "' + data.reply.slice(0,50) + (data.reply.length>50?'...':'') + '"');
     ChatState.isStreaming = false;
-    setAgentStatus('code', false);
+    if (Config.apiBase) setAgentStatus('code', false);
     if (detectedAgent) setAgentStatus(detectedAgent, false);
   } catch (err) {
     if (err.name === 'AbortError') { ChatState.isStreaming = false; const sb = document.getElementById('nxStopBtn'); if (sb) sb.classList.remove('show'); setAgentStatus('code', false); if (detectedAgent) setAgentStatus(detectedAgent, false); return; }
@@ -1532,10 +1554,11 @@ async function sendChatMessage(message) {
     }
     appendMessage('assistant', '**Error:** ' + errMsg, true);
     ChatState.isStreaming = false;
-    setAgentStatus('code', false);
+    if (Config.apiBase) setAgentStatus('code', false);
   }
-  document.getElementById('nxStopBtn').classList.remove('show');
-  if (detectedAgent) setAgentStatus(detectedAgent, false);
+  const nxStop = document.getElementById('nxStopBtn');
+  if (nxStop) nxStop.classList.remove('show');
+  if (Config.apiBase && detectedAgent) setAgentStatus(detectedAgent, false);
 }
 
 /* Chat listeners */
@@ -1552,12 +1575,7 @@ if (chatForm) {
     sendChatMessage(v);
   });
 }
-if (chatSendBtn) {
-  chatSendBtn.addEventListener('click', function(e) {
-    e.preventDefault();
-    if (chatForm) chatForm.dispatchEvent(new Event('submit'));
-  });
-}
+// chatSendBtn is type="submit" inside the form — form submit handler is sufficient
 if (chatInput) {
   chatInput.addEventListener('input', function() {
     this.style.height = 'auto';
@@ -1567,8 +1585,7 @@ if (chatInput) {
   chatInput.addEventListener('keydown', function(e) {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (chatForm) chatForm.dispatchEvent(new Event('submit')); }
   });
-  chatInput.addEventListener('focus', () => document.body.style.overflow = 'hidden');
-  chatInput.addEventListener('blur', () => document.body.style.overflow = '');
+  // Focus/blur handlers removed — body overflow manipulation breaks mobile scrolling
 }
 
 document.getElementById('chatClearBtn')?.addEventListener('click', function() {
@@ -1814,11 +1831,12 @@ async function runCode() {
       return;
     }
 
+    const termAbort = new AbortController();
     const res = await fetchWithTimeout(api('/api/code'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ code, language: lang }),
-      signal: _sAbort?.signal || new AbortController().signal
+      signal: termAbort.signal
     }, 30000);
 
     const data = await res.json();
@@ -2318,16 +2336,12 @@ function loadChatHistory() {
   const welcome = document.getElementById('chatWelcome');
   if (welcome) welcome.remove();
   const msgs = ChatState.history.filter(m => m.role === 'user' || m.role === 'assistant');
-  let i = 0;
-  function renderChunk() {
-    const chunk = msgs.slice(i, i + 3);
-    for (const msg of chunk) {
-      try { appendMessage(msg.role, msg.content); } catch(e) { console.error('Failed to render message', e); }
-    }
-    i += 3;
-    if (i < msgs.length) requestAnimationFrame(renderChunk);
+  // Batch render all messages without scrolling, then scroll once at the end
+  for (const msg of msgs) {
+    try { appendMessage(msg.role, msg.content, false, true); } catch(e) { console.error('Failed to render message', e); }
   }
-  renderChunk();
+  const c = document.getElementById('chatContainer');
+  if (c) smartScroll(c, true);
 }
 
 function init() {
@@ -2424,12 +2438,14 @@ function init() {
   function syncChatViewportHeight() {
     const el = document.getElementById('screen-chat');
     if (!el) return;
-    if (currentScreen !== 'chat') { el.style.height = ''; return; }
+    if (currentScreen !== 'chat') { el.style.height = ''; el.style.minHeight = ''; return; }
     const header = document.getElementById('mainHeader');
     const headerH = header ? header.getBoundingClientRect().height : 0;
-    const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+    const vv = window.visualViewport;
+    const vh = vv ? vv.height : window.innerHeight;
     const target = Math.max(200, Math.round(vh - headerH));
     el.style.height = target + 'px';
+    el.style.minHeight = target + 'px';
     const c = document.getElementById('chatContainer');
     if (c) smartScroll(c, true);
   }
