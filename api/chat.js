@@ -1,20 +1,12 @@
 /**
  * ═══════════════════════════════════════════════
- * Noctryx AI V2 - Production Chat Backend
+ * Noctryx AI V2 - Production Chat Backend with Fallback
  * ═══════════════════════════════════════════════
  * 
  * File:        api/chat.js
  * Creator:     Lewis Einstein
  * Runtime:     Node.js 18+ (ES2022)
  * Platform:    Vercel Serverless Functions
- * 
- * Architecture:
- *   • Multi-provider AI with automatic failover
- *   • Intelligent agent routing & dynamic prompts
- *   • Conversation memory & long-term knowledge storage
- *   • Code execution, verification & auto-debugging
- *   • ChatGPT-style Server-Sent Events streaming
- *   • Production security, rate limiting & health monitoring
  * 
  * ═══════════════════════════════════════════════
  */
@@ -56,43 +48,19 @@ const ENV = Object.freeze({
   RATE_LIMIT_SECRET: env('RATE_LIMIT_SECRET', crypto.randomBytes(32).toString('hex')),
   ALLOWED_ORIGINS: env('ALLOWED_ORIGINS', '*'),
   
-  ENABLE_CODE_EXECUTION: env('ENABLE_CODE_EXECUTION', 'true') === 'true',
-  ENABLE_KNOWLEDGE_STORAGE: env('ENABLE_KNOWLEDGE_STORAGE', 'true') === 'true',
-  ENABLE_AUTO_DEBUG: env('ENABLE_AUTO_DEBUG', 'true') === 'true',
   LOG_LEVEL: env('LOG_LEVEL', 'info'),
 });
 
 const CONFIG = Object.freeze({
-  STREAM_CHUNK_SIZE: 16,
-  STREAM_MAX_DURATION_MS: 120000,
-  STREAM_KEEPALIVE_INTERVAL_MS: 15000,
-  
   MAX_CONTEXT_MESSAGES: 50,
-  MAX_CONTEXT_TOKENS: 8000,
-  CONTEXT_TRIM_THRESHOLD: 7500,
-  KNOWLEDGE_MAX_ENTRIES: 10000,
-  KNOWLEDGE_SIMILARITY_THRESHOLD: 0.85,
-  
   RATE_LIMIT_WINDOW_MS: 60000,
   RATE_LIMIT_MAX_REQUESTS: 60,
   RATE_LIMIT_BURST_SIZE: 10,
-  
-  CODE_EXEC_TIMEOUT_MS: 30000,
-  CODE_EXEC_MAX_MEMORY_MB: 128,
-  CODE_EXEC_MAX_OUTPUT_CHARS: 10000,
-  
   PROVIDER_TIMEOUT_MS: 30000,
-  PROVIDER_MAX_RETRIES: 3,
-  PROVIDER_RETRY_DELAY_MS: 1000,
-  PROVIDER_CIRCUIT_BREAKER_THRESHOLD: 5,
+  PROVIDER_CIRCUIT_BREAKER_THRESHOLD: 3,
   PROVIDER_CIRCUIT_BREAKER_RESET_MS: 30000,
-  
   MAX_REQUEST_BODY_SIZE: 1048576,
   MAX_MESSAGE_LENGTH: 32000,
-  REQUEST_TIMEOUT_MS: 125000,
-  
-  AGENT_CONFIDENCE_THRESHOLD: 0.6,
-  AGENT_ROUTING_CACHE_TTL_MS: 300000,
 });
 
 function generateId(prefix = 'nx') {
@@ -101,87 +69,17 @@ function generateId(prefix = 'nx') {
   return `${prefix}_${timestamp}_${random}`;
 }
 
-function deepClone(obj) {
-  if (obj === null || typeof obj !== 'object') return obj;
-  try {
-    return structuredClone(obj);
-  } catch {
-    return JSON.parse(JSON.stringify(obj));
-  }
-}
-
 function safeJsonParse(str, fallback = null) {
-  try {
-    return JSON.parse(str);
-  } catch {
-    return fallback;
-  }
+  try { return JSON.parse(str); } catch { return fallback; }
 }
 
 function safeJsonStringify(value, fallback = 'null') {
-  try {
-    return JSON.stringify(value);
-  } catch {
-    return fallback;
-  }
+  try { return JSON.stringify(value); } catch { return fallback; }
 }
 
 function sanitizeInput(input) {
   if (typeof input !== 'string') return '';
-  return input
-    .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')
-    .replace(/[\u200B-\u200D\uFEFF]/g, '')
-    .trim();
-}
-
-function truncateText(text, maxLength) {
-  if (typeof text !== 'string' || text.length <= maxLength) return text;
-  return text.slice(0, maxLength - 1) + '…';
-}
-
-function estimateTokens(text) {
-  if (typeof text !== 'string') return 0;
-  let tokens = 0;
-  for (const char of text) {
-    tokens += char.charCodeAt(0) > 127 ? 0.5 : 0.25;
-  }
-  return Math.ceil(tokens);
-}
-
-function estimateMessagesTokens(messages) {
-  if (!Array.isArray(messages)) return 0;
-  return messages.reduce((sum, msg) => sum + estimateTokens(msg?.content || ''), 0);
-}
-
-function levenshteinDistance(a, b) {
-  const matrix = Array.from({ length: b.length + 1 }, (_, i) => [i]);
-  for (let j = 1; j <= a.length; j++) matrix[0][j] = j;
-  
-  for (let i = 1; i <= b.length; i++) {
-    for (let j = 1; j <= a.length; j++) {
-      matrix[i][j] = b[i - 1] === a[j - 1]
-        ? matrix[i - 1][j - 1]
-        : Math.min(matrix[i - 1][j - 1], matrix[i][j - 1], matrix[i - 1][j]) + 1;
-    }
-  }
-  return matrix[b.length][a.length];
-}
-
-function textSimilarity(a, b) {
-  if (!a || !b) return 0;
-  const maxLen = Math.max(a.length, b.length);
-  if (maxLen === 0) return 1;
-  const distance = levenshteinDistance(a, b);
-  return 1 - distance / maxLen;
-}
-
-function quickHash(text) {
-  return crypto.createHash('sha256').update(text).digest('hex');
-}
-
-function normalizedHash(text) {
-  const normalized = text.toLowerCase().replace(/\s+/g, ' ').trim();
-  return quickHash(normalized);
+  return input.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '').replace(/[\u200B-\u200D\uFEFF]/g, '').trim();
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -194,398 +92,142 @@ const Security = Object.freeze({
     const allowed = ENV.ALLOWED_ORIGINS.split(',').map(s => s.trim());
     if (allowed.includes('*')) return true;
     return allowed.some(domain => {
-      if (domain.startsWith('*.')) {
-        const suffix = domain.slice(1);
-        return origin.endsWith(suffix);
-      }
+      if (domain.startsWith('*.')) return origin.endsWith(domain.slice(1));
       return origin === domain || origin.startsWith(domain + '/');
     });
   },
-
-  sign(payload, secret = ENV.NOCTRYX_SECRET) {
-    return crypto.createHmac('sha256', secret).update(payload).digest('hex');
-  },
-
-  verifySignature(payload, signature, secret = ENV.NOCTRYX_SECRET) {
-    if (!payload || !signature) return false;
-    const expected = Security.sign(payload, secret);
-    if (signature.length !== expected.length) return false;
-    let result = 0;
-    for (let i = 0; i < signature.length; i++) {
-      result |= signature.charCodeAt(i) ^ expected.charCodeAt(i);
-    }
-    return result === 0;
-  },
-
   hashIp(ip) {
     return crypto.createHash('sha256').update(ip + ENV.RATE_LIMIT_SECRET).digest('hex').slice(0, 32);
   },
-
   sanitizeConversationId(id) {
     if (typeof id !== 'string') return null;
-    const sanitized = id.replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 128);
-    return sanitized.length >= 4 ? sanitized : null;
+    return id.replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 128) || null;
   },
-
   validateMessage(msg) {
-    if (!msg || typeof msg !== 'object') {
-      return { valid: false, error: 'Message must be an object' };
-    }
-    if (!['user', 'assistant', 'system', 'tool'].includes(msg.role)) {
-      return { valid: false, error: `Invalid role: ${msg.role}` };
-    }
-    if (typeof msg.content !== 'string') {
-      return { valid: false, error: 'Message content must be a string' };
-    }
-    if (msg.content.length > CONFIG.MAX_MESSAGE_LENGTH) {
-      return { valid: false, error: `Message exceeds maximum length of ${CONFIG.MAX_MESSAGE_LENGTH}` };
-    }
-    const sanitized = sanitizeInput(msg.content);
-    if (!sanitized && msg.role === 'user') {
-      return { valid: false, error: 'Message content is empty after sanitization' };
-    }
-    return {
-      valid: true,
-      message: {
-        id: msg.id || generateId('msg'),
-        role: msg.role,
-        content: sanitized,
-        timestamp: msg.timestamp || Date.now(),
-        agent: msg.agent || undefined,
-        metadata: msg.metadata || {},
-        toolCalls: Array.isArray(msg.toolCalls) ? msg.toolCalls : undefined,
-      },
-    };
+    if (!msg || typeof msg !== 'object') return { valid: false, error: 'Message must be an object' };
+    if (!['user', 'assistant', 'system', 'tool'].includes(msg.role)) return { valid: false, error: `Invalid role: ${msg.role}` };
+    if (typeof msg.content !== 'string') return { valid: false, error: 'Message content must be a string' };
+    if (msg.content.length > CONFIG.MAX_MESSAGE_LENGTH) return { valid: false, error: 'Message exceeds maximum length' };
+    return { valid: true, message: { id: msg.id || generateId('msg'), role: msg.role, content: sanitizeInput(msg.content), timestamp: msg.timestamp || Date.now() } };
   },
-
   validateRequestBody(body) {
-    if (!body || typeof body !== 'object') {
-      return { valid: false, error: 'Request body must be a JSON object' };
-    }
-
-    let { messages, conversationId, stream, agent, context, options, message, history } = body;
+    if (!body || typeof body !== 'object') return { valid: false, error: 'Request body must be a JSON object' };
+    let { messages, conversationId, stream, message, history } = body;
 
     if ((!Array.isArray(messages) || messages.length === 0) && typeof message === 'string' && message.trim()) {
       const hist = Array.isArray(history) ? history : [];
       messages = [
-        ...hist
-          .filter(m => m && ['user', 'assistant', 'system'].includes(m.role))
-          .map(m => ({ role: m.role, content: typeof m.content === 'string' ? m.content : String(m.content ?? '') })),
-        { role: 'user', content: message },
+        ...hist.filter(m => m && ['user', 'assistant', 'system'].includes(m.role)).map(m => ({ role: m.role, content: String(m.content ?? '') })),
+        { role: 'user', content: message }
       ];
     }
 
-    if (!Array.isArray(messages) || messages.length === 0) {
-      return { valid: false, error: 'messages must be a non-empty array (or provide message + optional history)' };
-    }
-    if (messages.length > CONFIG.MAX_CONTEXT_MESSAGES) {
-      return { valid: false, error: `messages array exceeds limit of ${CONFIG.MAX_CONTEXT_MESSAGES}` };
-    }
-
+    if (!Array.isArray(messages) || messages.length === 0) return { valid: false, error: 'messages array is empty' };
+    
     const validatedMessages = [];
-    for (let i = 0; i < messages.length; i++) {
-      const result = Security.validateMessage(messages[i]);
-      if (!result.valid) {
-        return { valid: false, error: `Message[${i}]: ${result.error}` };
-      }
-      validatedMessages.push(result.message);
+    for (const msg of messages) {
+      const res = Security.validateMessage(msg);
+      if (!res.valid) return { valid: false, error: res.error };
+      validatedMessages.push(res.message);
     }
-
-    const validatedConversationId = Security.sanitizeConversationId(conversationId) || generateId('conv');
 
     return {
       valid: true,
       data: {
         messages: validatedMessages,
-        conversationId: validatedConversationId,
+        conversationId: Security.sanitizeConversationId(conversationId) || generateId('conv'),
         stream: stream !== false,
-        agent: typeof agent === 'string' ? agent.slice(0, 64) : undefined,
-        context: context && typeof context === 'object' ? context : {},
-        options: options && typeof options === 'object' ? options : {},
-      },
+      }
     };
   },
-
   getSecurityHeaders() {
     return {
       'X-Content-Type-Options': 'nosniff',
       'X-Frame-Options': 'DENY',
       'X-XSS-Protection': '1; mode=block',
-      'Referrer-Policy': 'strict-origin-when-cross-origin',
-      'Strict-Transport-Security': 'max-age=63072000; includeSubDomains; preload',
     };
-  },
+  }
 });
 
 class RateLimiter {
-  constructor() {
-    this.buckets = new Map();
-    this.lastCleanup = Date.now();
-    this.cleanupIntervalMs = 60000;
+  constructor() { this.buckets = new Map(); }
+  static getKey(req) {
+    const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.socket?.remoteAddress || 'unknown';
+    return Security.hashIp(ip);
   }
-
-  static getKey(req, userId) {
-    const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim()
-      || req.headers['x-real-ip']
-      || req.socket?.remoteAddress
-      || 'unknown';
-    const base = userId ? `${userId}:${ip}` : ip;
-    return Security.hashIp(base);
-  }
-
-  _gc() {
-    const now = Date.now();
-    if (now - this.lastCleanup < this.cleanupIntervalMs) return;
-    const expiry = now - (CONFIG.RATE_LIMIT_WINDOW_MS * 2);
-    for (const [key, bucket] of this.buckets) {
-      if (bucket.lastRefill < expiry) this.buckets.delete(key);
-    }
-    this.lastCleanup = now;
-  }
-
   check(key) {
-    this._gc();
     const now = Date.now();
-    const windowMs = CONFIG.RATE_LIMIT_WINDOW_MS;
-    let bucket = this.buckets.get(key);
-
-    if (!bucket) {
-      bucket = { tokens: CONFIG.RATE_LIMIT_BURST_SIZE, lastRefill: now, violations: 0 };
-      this.buckets.set(key, bucket);
-    }
-
+    let bucket = this.buckets.get(key) || { tokens: CONFIG.RATE_LIMIT_BURST_SIZE, lastRefill: now };
     const elapsed = now - bucket.lastRefill;
-    const refillRate = CONFIG.RATE_LIMIT_MAX_REQUESTS / windowMs;
-    const tokensToAdd = elapsed * refillRate;
-    bucket.tokens = Math.min(CONFIG.RATE_LIMIT_BURST_SIZE, bucket.tokens + tokensToAdd);
+    bucket.tokens = Math.min(CONFIG.RATE_LIMIT_BURST_SIZE, bucket.tokens + (elapsed * (CONFIG.RATE_LIMIT_MAX_REQUESTS / CONFIG.RATE_LIMIT_WINDOW_MS)));
     bucket.lastRefill = now;
-
     if (bucket.tokens >= 1) {
       bucket.tokens -= 1;
-      return { allowed: true, remaining: Math.floor(bucket.tokens), reset: Math.ceil((now + windowMs) / 1000) };
+      this.buckets.set(key, bucket);
+      return { allowed: true };
     }
-
-    bucket.violations += 1;
-    const retryAfter = Math.ceil((1 - bucket.tokens) / refillRate / 1000);
-    return { allowed: false, remaining: 0, reset: Math.ceil((now + windowMs) / 1000), retryAfter: Math.max(1, retryAfter) };
+    return { allowed: false, retryAfter: 5 };
   }
 }
-
 const rateLimiter = new RateLimiter();
 
 function getCorsHeaders(req) {
-  const origin = req.headers.origin || req.headers.referer || '';
-  if (origin && !Security.validateOrigin(origin)) return null;
-  const allowedOrigin = ENV.ALLOWED_ORIGINS.includes('*')
-    ? (origin || '*')
-    : (origin || ENV.ALLOWED_ORIGINS.split(',')[0].trim() || '*');
+  const origin = req.headers.origin || '*';
   return {
-    'Access-Control-Allow-Origin': allowedOrigin === '*' ? '*' : allowedOrigin,
+    'Access-Control-Allow-Origin': origin,
     'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Request-ID, X-Noctryx-Signature',
-    'Access-Control-Max-Age': '86400',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     'Vary': 'Origin',
   };
 }
 
 async function parseBody(req) {
-  if (req.body !== undefined && req.body !== null) {
-    if (typeof req.body === 'string') {
-      const parsed = safeJsonParse(req.body, null);
-      if (parsed === null && req.body.trim()) throw new Error('Invalid JSON in request body');
-      return parsed || {};
-    }
-    if (typeof req.body === 'object') return req.body;
-  }
-  if (req.readableEnded || req.complete === true) return {};
-
-  return new Promise((resolve, reject) => {
-    const chunks = [];
-    let size = 0;
-    let settled = false;
-
-    const finish = (fn, val) => {
-      if (settled) return;
-      settled = true;
-      fn(val);
-    };
-
-    const timer = setTimeout(() => finish(reject, new Error('Request body parse timeout')), 8000);
-
-    req.on('data', chunk => {
-      size += chunk.length;
-      if (size > CONFIG.MAX_REQUEST_BODY_SIZE) {
-        req.destroy();
-        clearTimeout(timer);
-        finish(reject, new Error('Request body exceeds maximum size'));
-        return;
-      }
-      chunks.push(chunk);
-    });
-
-    req.on('end', () => {
-      clearTimeout(timer);
-      try {
-        const raw = Buffer.concat(chunks).toString('utf-8');
-        if (!raw || !raw.trim()) { finish(resolve, {}); return; }
-        const body = safeJsonParse(raw, null);
-        if (body === null) { finish(reject, new Error('Invalid JSON')); return; }
-        finish(resolve, body);
-      } catch (err) { finish(reject, err); }
-    });
-
-    req.on('error', err => { clearTimeout(timer); finish(reject, err); });
+  if (req.body) return typeof req.body === 'string' ? safeJsonParse(req.body, {}) : req.body;
+  return new Promise((resolve) => {
+    let chunks = [];
+    req.on('data', chunk => chunks.push(chunk));
+    req.on('end', () => resolve(safeJsonParse(Buffer.concat(chunks).toString('utf-8'), {})));
   });
 }
 
-function sendError(res, status, code, message, headers = {}) {
-  const body = safeJsonStringify({ error: true, code, message, timestamp: Date.now() });
-  res.writeHead(status, { 'Content-Type': 'application/json', ...Security.getSecurityHeaders(), ...headers });
-  res.end(body);
+function sendError(res, status, code, message) {
+  res.writeHead(status, { 'Content-Type': 'application/json', ...Security.getSecurityHeaders() });
+  res.end(safeJsonStringify({ error: true, code, message }));
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// PART 3: LOGGING, METRICS & CIRCUIT BREAKER
+// PART 3: LOGGING & CIRCUIT BREAKER
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-const Logger = Object.freeze({
-  _emit(level, message, meta = {}) {
-    const entry = { timestamp: new Date().toISOString(), level: level.toUpperCase(), message, service: 'noctryx-chat', ...meta };
-    if (ENV.NODE_ENV === 'development') {
-      console.log(`[${entry.timestamp}] [${entry.level}] ${message}`, Object.keys(meta).length ? meta : '');
-    } else {
-      console.log(safeJsonStringify(entry));
-    }
-  },
-  debug(msg, meta) { this._emit('debug', msg, meta); },
-  info(msg, meta) { this._emit('info', msg, meta); },
-  warn(msg, meta) { this._emit('warn', msg, meta); },
-  error(msg, meta) { this._emit('error', msg, meta); },
-});
+const Logger = {
+  error(msg, meta) { console.log(safeJsonStringify({ level: 'ERROR', message: msg, ...meta })); }
+};
 
 class CircuitBreaker {
-  constructor() {
-    this.states = new Map();
-  }
-  isClosed(providerName) {
-    const state = this.states.get(providerName);
+  constructor() { this.states = new Map(); }
+  isClosed(name) {
+    const state = this.states.get(name);
     if (!state || state.state === 'closed') return true;
-    if (state.state === 'open') {
-      if (Date.now() - state.lastFailure > CONFIG.PROVIDER_CIRCUIT_BREAKER_RESET_MS) {
-        state.state = 'half-open';
-        state.failures = 0;
-        return true;
-      }
-      return false;
+    if (state.state === 'open' && Date.now() - state.lastFailure > CONFIG.PROVIDER_CIRCUIT_BREAKER_RESET_MS) {
+      state.state = 'closed';
+      state.failures = 0;
+      return true;
     }
-    return true;
+    return state.state === 'closed';
   }
-  recordSuccess(providerName) { this.states.delete(providerName); }
-  recordFailure(providerName) {
-    let state = this.states.get(providerName);
-    if (!state) { state = { failures: 0, lastFailure: Date.now(), state: 'closed' }; this.states.set(providerName, state); }
+  recordSuccess(name) { this.states.delete(name); }
+  recordFailure(name) {
+    let state = this.states.get(name) || { failures: 0, lastFailure: Date.now(), state: 'closed' };
     state.failures += 1;
     state.lastFailure = Date.now();
     if (state.failures >= CONFIG.PROVIDER_CIRCUIT_BREAKER_THRESHOLD) state.state = 'open';
+    this.states.set(name, state);
   }
 }
-
 const circuitBreaker = new CircuitBreaker();
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// PART 4: STORAGE ABSTRACTION
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-class StorageAdapter {
-  async get(key) { throw new Error('Not implemented'); }
-  async set(key, value, ttlMs) { throw new Error('Not implemented'); }
-  async delete(key) { throw new Error('Not implemented'); }
-  async has(key) { throw new Error('Not implemented'); }
-  async list(prefix) { throw new Error('Not implemented'); }
-}
-
-class InMemoryStorage extends StorageAdapter {
-  constructor() {
-    super();
-    this.store = new Map();
-  }
-  async get(key) {
-    const entry = this.store.get(key);
-    if (!entry) return null;
-    if (entry.expiry && entry.expiry < Date.now()) { this.store.delete(key); return null; }
-    return deepClone(entry.value);
-  }
-  async set(key, value, ttlMs = null) {
-    const expiry = ttlMs ? Date.now() + ttlMs : null;
-    this.store.set(key, { value: deepClone(value), expiry });
-  }
-  async delete(key) { this.store.delete(key); }
-  async has(key) { return this.store.has(key); }
-  async list(prefix) {
-    const keys = [];
-    for (const key of this.store.keys()) {
-      if (key.startsWith(prefix)) keys.push(key);
-    }
-    return keys;
-  }
-}
-
-class VercelKVStorage extends StorageAdapter {
-  constructor() {
-    super();
-    this.fallback = new InMemoryStorage();
-  }
-  async _getClient() {
-    if (!ENV.KV_REST_API_URL || !ENV.KV_REST_API_TOKEN) return null;
-    try {
-      const { createClient } = await import('@vercel/kv');
-      return createClient({ url: ENV.KV_REST_API_URL, token: ENV.KV_REST_API_TOKEN });
-    } catch { return null; }
-  }
-  async get(key) {
-    const client = await this._getClient();
-    if (!client) return this.fallback.get(key);
-    try { return await client.get(key); } catch { return this.fallback.get(key); }
-  }
-  async set(key, value, ttlMs = null) {
-    const client = await this._getClient();
-    if (!client) { await this.fallback.set(key, value, ttlMs); return; }
-    try {
-      if (ttlMs) await client.set(key, value, { px: ttlMs });
-      else await client.set(key, value);
-    } catch { await this.fallback.set(key, value, ttlMs); }
-  }
-  async delete(key) {
-    const client = await this._getClient();
-    if (!client) { await this.fallback.delete(key); return; }
-    try { await client.del(key); } catch { await this.fallback.delete(key); }
-  }
-  async has(key) {
-    const client = await this._getClient();
-    if (!client) return this.fallback.has(key);
-    try { return (await client.get(key)) !== null; } catch { return this.fallback.has(key); }
-  }
-  async list(prefix) {
-    return this.fallback.list(prefix);
-  }
-}
-
-const Storage = {
-  _instance: null,
-  getInstance() {
-    if (!this._instance) {
-      if (ENV.KV_REST_API_URL && ENV.KV_REST_API_TOKEN) {
-        this._instance = new VercelKVStorage();
-      } else {
-        this._instance = new InMemoryStorage();
-      }
-    }
-    return this._instance;
-  }
-};
-
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// PART 5: AI PROVIDERS & REGISTRY
+// PART 4: AI PROVIDERS & INTELLIGENT FAILOVER REGISTRY
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 class BaseProvider {
@@ -595,63 +237,48 @@ class BaseProvider {
     this.baseUrl = config.baseUrl;
     this.model = config.model;
     this.priority = config.priority;
-    this.timeoutMs = config.timeoutMs || CONFIG.PROVIDER_TIMEOUT_MS;
   }
-
   async _fetch(url, init) {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), this.timeoutMs);
+    const timer = setTimeout(() => controller.abort(), CONFIG.PROVIDER_TIMEOUT_MS);
     try {
-      const response = await fetch(url, { ...init, signal: controller.signal });
-      clearTimeout(timeout);
-      return response;
-    } catch (error) {
-      clearTimeout(timeout);
-      throw error;
+      const res = await fetch(url, { ...init, signal: controller.signal });
+      clearTimeout(timer);
+      return res;
+    } catch (err) {
+      clearTimeout(timer);
+      throw err;
     }
-  }
-
-  _parseOpenAIChunk(line) {
-    if (!line.startsWith('data: ')) return null;
-    const data = line.slice(6);
-    if (data === '[DONE]') return { type: 'done', data: '' };
-    try {
-      const parsed = JSON.parse(data);
-      const delta = parsed.choices?.[0]?.delta;
-      const content = delta?.content || delta?.text || '';
-      if (content) return { type: 'token', data: content };
-    } catch { return null; }
-    return null;
   }
 }
 
-class OpenAIProvider extends BaseProvider {
+class GroqProvider extends BaseProvider {
   constructor() {
-    super({ name: 'openai', apiKey: ENV.OPENAI_API_KEY, baseUrl: 'https://api.openai.com/v1', model: 'gpt-4o', priority: 1 });
+    super({ name: 'groq', apiKey: ENV.GROQ_API_KEY, baseUrl: 'https://api.groq.com/openai/v1', model: 'llama-3.3-70b-versatile', priority: 1 });
   }
-  async complete(messages, options = {}) {
+  async complete(messages) {
     const res = await this._fetch(`${this.baseUrl}/chat/completions`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${this.apiKey}` },
-      body: JSON.stringify({ model: options.model || this.model, messages })
+      body: JSON.stringify({ model: this.model, messages })
     });
-    if (!res.ok) throw new Error(`OpenAI error: ${res.statusText}`);
+    if (!res.ok) throw new Error(`Groq error: ${res.statusText}`);
     const data = await res.json();
     return { content: data.choices?.[0]?.message?.content || '', usage: data.usage || {} };
   }
-  async stream(messages, options = {}) {
+  async stream(messages) {
     const res = await this._fetch(`${this.baseUrl}/chat/completions`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${this.apiKey}` },
-      body: JSON.stringify({ model: options.model || this.model, messages, stream: true })
+      body: JSON.stringify({ model: this.model, messages, stream: true })
     });
-    if (!res.ok) throw new Error(`OpenAI stream error: ${res.statusText}`);
-    
+    if (!res.ok) throw new Error(`Groq stream error: ${res.statusText}`);
+    return this._transformStream(res);
+  }
+  _transformStream(res) {
     const reader = res.body.getReader();
     const decoder = new TextDecoder();
     let buffer = '';
-    const self = this;
-
     return new ReadableStream({
       async pull(controller) {
         const { done, value } = await reader.read();
@@ -660,8 +287,16 @@ class OpenAIProvider extends BaseProvider {
         const lines = buffer.split('\n');
         buffer = lines.pop() || '';
         for (const line of lines) {
-          const chunk = self._parseOpenAIChunk(line.trim());
-          if (chunk) controller.enqueue(chunk);
+          const trimmed = line.trim();
+          if (trimmed.startsWith('data: ')) {
+            const data = trimmed.slice(6);
+            if (data === '[DONE]') continue;
+            try {
+              const parsed = JSON.parse(data);
+              const content = parsed.choices?.[0]?.delta?.content;
+              if (content) controller.enqueue({ type: 'token', data: content });
+            } catch {}
+          }
         }
       }
     });
@@ -673,7 +308,7 @@ class GeminiProvider extends BaseProvider {
   constructor() {
     super({ name: 'gemini', apiKey: ENV.GEMINI_API_KEY, baseUrl: 'https://generativelanguage.googleapis.com/v1beta', model: 'gemini-1.5-pro', priority: 2 });
   }
-  async complete(messages, options = {}) {
+  async complete(messages) {
     const contents = messages.map(m => ({ role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] }));
     const res = await this._fetch(`${this.baseUrl}/models/${this.model}:generateContent?key=${this.apiKey}`, {
       method: 'POST',
@@ -684,7 +319,7 @@ class GeminiProvider extends BaseProvider {
     const data = await res.json();
     return { content: data.candidates?.[0]?.content?.parts?.[0]?.text || '', usage: {} };
   }
-  async stream(messages, options = {}) {
+  async stream(messages) {
     const contents = messages.map(m => ({ role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] }));
     const res = await this._fetch(`${this.baseUrl}/models/${this.model}:streamGenerateContent?alt=sse&key=${this.apiKey}`, {
       method: 'POST',
@@ -692,11 +327,12 @@ class GeminiProvider extends BaseProvider {
       body: JSON.stringify({ contents })
     });
     if (!res.ok) throw new Error(`Gemini stream error: ${res.statusText}`);
-    
+    return this._transformStream(res);
+  }
+  _transformStream(res) {
     const reader = res.body.getReader();
     const decoder = new TextDecoder();
     let buffer = '';
-
     return new ReadableStream({
       async pull(controller) {
         const { done, value } = await reader.read();
@@ -720,121 +356,138 @@ class GeminiProvider extends BaseProvider {
   async healthCheck() { return !!this.apiKey; }
 }
 
-class GroqProvider extends OpenAIProvider {
+class OpenAIProvider extends BaseProvider {
   constructor() {
-    super();
-    this.name = 'groq';
-    this.apiKey = ENV.GROQ_API_KEY;
-    this.baseUrl = 'https://api.groq.com/openai/v1';
-    this.model = 'llama-3.3-70b-versatile';
+    super({ name: 'openai', apiKey: ENV.OPENAI_API_KEY, baseUrl: 'https://api.openai.com/v1', model: 'gpt-4o', priority: 3 });
+  }
+  async complete(messages) {
+    const res = await this._fetch(`${this.baseUrl}/chat/completions`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${this.apiKey}` },
+      body: JSON.stringify({ model: this.model, messages })
+    });
+    if (!res.ok) throw new Error(`OpenAI error: ${res.statusText}`);
+    const data = await res.json();
+    return { content: data.choices?.[0]?.message?.content || '', usage: data.usage || {} };
+  }
+  async stream(messages) {
+    const res = await this._fetch(`${this.baseUrl}/chat/completions`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${this.apiKey}` },
+      body: JSON.stringify({ model: this.model, messages, stream: true })
+    });
+    if (!res.ok) throw new Error(`OpenAI stream error: ${res.statusText}`);
+    
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+    return new ReadableStream({
+      async pull(controller) {
+        const { done, value } = await reader.read();
+        if (done) { controller.close(); return; }
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+        for (const line of lines) {
+          const trimmed = line.trim();
+          if (trimmed.startsWith('data: ')) {
+            const data = trimmed.slice(6);
+            if (data === '[DONE]') continue;
+            try {
+              const parsed = JSON.parse(data);
+              const content = parsed.choices?.[0]?.delta?.content;
+              if (content) controller.enqueue({ type: 'token', data: content });
+            } catch {}
+          }
+        }
+      }
+    });
   }
   async healthCheck() { return !!this.apiKey; }
 }
 
 const ProviderRegistry = {
-  getProviders() {
-    const providers = [];
-    if (ENV.OPENAI_API_KEY) providers.push(new OpenAIProvider());
-    if (ENV.GEMINI_API_KEY) providers.push(new GeminiProvider());
-    if (ENV.GROQ_API_KEY) providers.push(new GroqProvider());
+  getAvailableProviders() {
+    const providers = [
+      new GroqProvider(),
+      new GeminiProvider(),
+      new OpenAIProvider(),
+    ].filter(p => p.apiKey && circuitBreaker.isClosed(p.name));
     return providers.sort((a, b) => a.priority - b.priority);
-  },
-  getDefaultProvider() {
-    const providers = this.getProviders();
-    return providers.find(p => circuitBreaker.isClosed(p.name)) || providers[0] || null;
   }
 };
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// PART 6: VERCEL SERVERLESS HTTP HANDLER ENTRYPOINT
+// PART 5: VERCEL HANDLER WITH AUTOMATIC FAILOVER
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 module.exports = async function handler(req, res) {
   const cors = getCorsHeaders(req);
-  if (!cors) {
-    return sendError(res, 403, 'FORBIDDEN_ORIGIN', 'Origin not permitted');
-  }
+  for (const [key, value] of Object.entries(cors)) res.setHeader(key, value);
 
-  for (const [key, value] of Object.entries(cors)) {
-    res.setHeader(key, value);
-  }
+  if (req.method === 'OPTIONS') { res.writeHead(204); res.end(); return; }
+  if (req.method === 'GET') { res.writeHead(200); res.end(safeJsonStringify({ status: 'healthy' })); return; }
+  if (req.method !== 'POST') return sendError(res, 405, 'METHOD_NOT_ALLOWED', 'Only POST supported');
 
-  if (req.method === 'OPTIONS') {
-    res.writeHead(204);
-    res.end();
-    return;
-  }
-
-  if (req.method === 'GET' && (req.url.includes('/health') || req.url === '/')) {
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(safeJsonStringify({ status: 'healthy', timestamp: Date.now(), service: 'Noctryx AI V2' }));
-    return;
-  }
-
-  if (req.method !== 'POST') {
-    return sendError(res, 405, 'METHOD_NOT_ALLOWED', 'Only POST requests are supported');
-  }
-
-  const rateLimitKey = RateLimiter.getKey(req);
-  const rateLimitResult = rateLimiter.check(rateLimitKey);
-  if (!rateLimitResult.allowed) {
-    return sendError(res, 429, 'RATE_LIMIT_EXCEEDED', 'Too many requests, please slow down', {
-      'Retry-After': String(rateLimitResult.retryAfter),
-    });
-  }
+  const rateLimit = rateLimiter.check(RateLimiter.getKey(req));
+  if (!rateLimit.allowed) return sendError(res, 429, 'RATE_LIMIT', 'Too many requests');
 
   try {
     const rawBody = await parseBody(req);
     const validation = Security.validateRequestBody(rawBody);
-    if (!validation.valid) {
-      return sendError(res, 400, 'INVALID_REQUEST', validation.error);
-    }
+    if (!validation.valid) return sendError(res, 400, 'INVALID_REQUEST', validation.error);
 
     const { messages, stream } = validation.data;
-    const provider = ProviderRegistry.getDefaultProvider();
-    
-    if (!provider) {
-      return sendError(res, 503, 'NO_AI_PROVIDER', 'No active AI providers are currently configured. Please check API keys.');
+    const providers = ProviderRegistry.getAvailableProviders();
+
+    if (providers.length === 0) {
+      return sendError(res, 503, 'NO_PROVIDERS', 'No active AI providers are configured or available.');
     }
 
-    if (stream) {
-      res.writeHead(200, {
-        'Content-Type': 'text/event-stream',
-        'Cache-Control': 'no-cache',
-        'Connection': 'keep-alive',
-      });
+    let successResult = null;
+    let lastError = null;
 
-      const aiStream = await provider.stream(messages);
-      const reader = aiStream.getReader();
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        if (value.type === 'token') {
-          res.write(`data: ${safeJsonStringify({ type: 'token', content: value.data })}\n\n`);
-        }
-      }
-      res.write(`data: [DONE]\n\n`);
-      res.end();
-    } else {
-      const result = await provider.complete(messages);
-      res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(safeJsonStringify({ success: true, message: result.content, usage: result.usage }));
-    }
-  } catch (err) {
-    Logger.error('Chat endpoint execution error', { error: err.message, stack: err.stack });
-    
-    // SAFEGUARD: Prevent ERR_HTTP_HEADERS_SENT crash if streaming already started headers
-    if (res.headersSent) {
+    // AUTOMATIC FAILOVER LOOP: Try providers one by one until one succeeds
+    for (const provider of providers) {
       try {
-        res.write(`data: ${safeJsonStringify({ type: 'error', message: err.message || 'Stream processing failed' })}\n\n`);
-        res.end();
-      } catch {
-        // If the socket is already dead, just swallow the secondary error
+        if (stream) {
+          const aiStream = await provider.stream(messages);
+          circuitBreaker.recordSuccess(provider.name);
+          
+          res.writeHead(200, { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache', 'Connection': 'keep-alive' });
+          const reader = aiStream.getReader();
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            if (value?.type === 'token') {
+              res.write(`data: ${safeJsonStringify({ type: 'token', content: value.data })}\n\n`);
+            }
+          }
+          res.write(`data: [DONE]\n\n`);
+          res.end();
+          return;
+        } else {
+          const result = await provider.complete(messages);
+          circuitBreaker.recordSuccess(provider.name);
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(safeJsonStringify({ success: true, message: result.content, providerUsed: provider.name }));
+          return;
+        }
+      } catch (err) {
+        lastError = err;
+        circuitBreaker.recordFailure(provider.name);
+        Logger.error(`Provider ${provider.name} failed, trying next provider if available`, { error: err.message });
       }
+    }
+
+    // If all providers failed
+    throw new Error(lastError?.message || 'All AI providers failed to respond.');
+
+  } catch (err) {
+    if (res.headersSent) {
+      try { res.write(`data: ${safeJsonStringify({ type: 'error', message: err.message })}\n\n`); res.end(); } catch {}
       return;
     }
-
-    return sendError(res, 500, 'INTERNAL_SERVER_ERROR', err.message || 'An unexpected backend error occurred.');
+    return sendError(res, 500, 'INTERNAL_SERVER_ERROR', err.message);
   }
 };
