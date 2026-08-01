@@ -1,6 +1,6 @@
 /**
  * ═══════════════════════════════════════════════
- * Noctryx AI V2 - Production Chat Backend
+ * Noctryx AI V2 - Bulletproof Chat Backend
  * ═══════════════════════════════════════════════
  */
 
@@ -22,14 +22,15 @@ class GroqProvider {
     this.apiKey = ENV.GROQ_API_KEY;
     this.model = 'llama-3.3-70b-versatile';
   }
-  async stream(messages) {
+  async complete(messages) {
     const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${this.apiKey}` },
-      body: JSON.stringify({ model: this.model, messages, stream: true })
+      body: JSON.stringify({ model: this.model, messages })
     });
     if (!res.ok) throw new Error(`Groq error: ${res.statusText}`);
-    return res.body;
+    const data = await res.json();
+    return data.choices?.[0]?.message?.content || '';
   }
 }
 
@@ -39,15 +40,16 @@ class GeminiProvider {
     this.apiKey = ENV.GEMINI_API_KEY;
     this.model = 'gemini-1.5-pro';
   }
-  async stream(messages) {
+  async complete(messages) {
     const contents = messages.map(m => ({ role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] }));
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${this.model}:streamGenerateContent?alt=sse&key=${this.apiKey}`, {
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${this.model}:generateContent?key=${this.apiKey}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ contents })
     });
     if (!res.ok) throw new Error(`Gemini error: ${res.statusText}`);
-    return res.body;
+    const data = await res.json();
+    return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
   }
 }
 
@@ -57,14 +59,15 @@ class OpenAIProvider {
     this.apiKey = ENV.OPENAI_API_KEY;
     this.model = 'gpt-4o';
   }
-  async stream(messages) {
+  async complete(messages) {
     const res = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${this.apiKey}` },
-      body: JSON.stringify({ model: this.model, messages, stream: true })
+      body: JSON.stringify({ model: this.model, messages })
     });
     if (!res.ok) throw new Error(`OpenAI error: ${res.statusText}`);
-    return res.body;
+    const data = await res.json();
+    return data.choices?.[0]?.message?.content || '';
   }
 }
 
@@ -92,6 +95,7 @@ module.exports = async function handler(req, res) {
     return;
   }
 
+  // Priority order: Groq first (fast, reliable), then Gemini, then OpenAI (fallback)
   const providers = [
     new GroqProvider(),
     new GeminiProvider(),
@@ -107,65 +111,21 @@ module.exports = async function handler(req, res) {
 
   for (const provider of providers) {
     try {
-      const rawStream = await provider.stream(messages);
+      const text = await provider.complete(messages);
       
-      res.writeHead(200, { 
-        'Content-Type': 'text/event-stream', 
-        'Cache-Control': 'no-cache', 
-        'Connection': 'keep-alive' 
+      // Return a standard JSON response that your frontend JavaScript can parse instantly
+      res.status(200).json({ 
+        success: true, 
+        message: text, 
+        providerUsed: provider.name 
       });
-
-      const reader = rawStream.getReader();
-      const decoder = new TextDecoder();
-      let buffer = '';
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        
-        buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split('\n');
-        buffer = lines.pop() || '';
-
-        for (const line of lines) {
-          const trimmed = line.trim();
-          if (!trimmed || trimmed.startsWith(':')) continue;
-
-          if (trimmed.startsWith('data: ')) {
-            const dataStr = trimmed.slice(6);
-            if (dataStr === '[DONE]') continue;
-
-            try {
-              const json = JSON.parse(dataStr);
-              let text = '';
-
-              if (provider.name === 'gemini') {
-                text = json.candidates?.[0]?.content?.parts?.[0]?.text || '';
-              } else {
-                // Groq & OpenAI format
-                text = json.choices?.[0]?.delta?.content || '';
-              }
-
-              if (text) {
-                // Write standard SSE chunk format expected by UI clients
-                res.write(`data: ${JSON.stringify({ text })}\n\n`);
-              }
-            } catch {}
-          }
-        }
-      }
-
-      res.write('data: [DONE]\n\n');
-      res.end();
       return;
 
     } catch (err) {
       lastError = err;
-      console.warn(`Provider ${provider.name} failed: ${err.message}. Trying next...`);
+      console.warn(`[Failover] Provider ${provider.name} failed: ${err.message}. Trying next...`);
     }
   }
 
-  if (!res.headersSent) {
-    res.status(500).json({ error: lastError?.message || 'All AI providers failed.' });
-  }
+  res.status(500).json({ error: lastError?.message || 'All AI providers failed.' });
 };
