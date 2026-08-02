@@ -1,12 +1,21 @@
 {
-  "version": 2,
-  "outputDirectory": "dist",
   "rewrites": [
     { "source": "/api/health", "destination": "/api/health.js" },
     { "source": "/api/chat", "destination": "/api/chat.js" },
     { "source": "/api/vision", "destination": "/api/vision.js" },
     { "source": "/api/providers", "destination": "/api/_utils.js" },
     { "source": "/api/github/(.*)", "destination": "/api/github/[username].js" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/((?!api/).*)", "destination": "/index.html" }
+  ],
+  "headers": [
+    {
+      "source": "/sw.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    }
   ]
 }
