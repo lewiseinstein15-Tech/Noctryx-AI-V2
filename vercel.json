@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "routes": [
-    { "src": "/api/health", "dest": "/api/health.js" },
-    { "src": "/api/chat", "dest": "/api/chat.js" },
-    { "src": "/api/vision", "dest": "/api/vision.js" },
-    { "src": "/api/providers", "dest": "/api/_utils.js" },
-    { "src": "/api/github/(.*)", "dest": "/api/github/[username].js" },
-    { "src": "/(.*)", "dest": "/index.html" }
+  "outputDirectory": "dist",
+  "rewrites": [
+    { "source": "/api/health", "destination": "/api/health.js" },
+    { "source": "/api/chat", "destination": "/api/chat.js" },
+    { "source": "/api/vision", "destination": "/api/vision.js" },
+    { "source": "/api/providers", "destination": "/api/_utils.js" },
+    { "source": "/api/github/(.*)", "destination": "/api/github/[username].js" },
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
