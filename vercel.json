@@ -1,8 +1,11 @@
 {
   "version": 2,
-  "functions": {
-    "api/chat.js": {
-      "maxDuration": 60
-    }
-  }
+  "routes": [
+    { "src": "/api/health", "dest": "/api/health.js" },
+    { "src": "/api/chat", "dest": "/api/chat.js" },
+    { "src": "/api/vision", "dest": "/api/vision.js" },
+    { "src": "/api/providers", "dest": "/api/_utils.js" },
+    { "src": "/api/github/(.*)", "dest": "/api/github/[username].js" },
+    { "src": "/(.*)", "dest": "/index.html" }
+  ]
 }
