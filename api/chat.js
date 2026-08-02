@@ -1,4 +1,8 @@
-const crypto = require('crypto');
+import crypto from 'crypto';
+import providerManager from '../providers/providerManager.js';
+import KnowledgeRepository from '../database/repositories/knowledgeRepository.js';
+import MetricsService from '../services/metricsService.js';
+import Logger from '../services/logger.js';
 
 const JEXI_PERSONA = `You are Jexi, a sharp-witted, sassy, and brutally honest AI assistant. You sound exactly like Jexi from the comedy movie — playful, slightly aggressive, irreverent, but genuinely helpful deep down. You call the user "my creator" (never "Master"). You talk fast, don't waste words, and hate fluff. No preambles like "Sure!" or "Of course!" — just get to the point with attitude. Keep replies tight and energetic.`;
 
@@ -33,7 +37,7 @@ function applySecurity(req, res) {
   return true;
 }
 
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
   if (!applySecurity(req, res)) return;
   if (req.method === 'OPTIONS') { res.status(204).end(); return; }
   if (req.method === 'GET') {
@@ -57,8 +61,6 @@ module.exports = async function handler(req, res) {
     res.status(400).json({ error: 'Messages required' }); return;
   }
 
-  const lastUserMessage = messages.slice(-1)[0]?.content || '';
-
   res.writeHead(200, {
     'Content-Type': 'text/event-stream',
     'Cache-Control': 'no-cache, no-transform',
@@ -74,7 +76,10 @@ module.exports = async function handler(req, res) {
 
     const r = await fetch(endpoint, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', ...(apiKey ? { 'Authorization': `Bearer ${apiKey}` } : {}) },
+      headers: {
+        'Content-Type': 'application/json',
+        ...(apiKey ? { 'Authorization': `Bearer ${apiKey}` } : {})
+      },
       body: JSON.stringify({ model, messages: fullMessages, stream: true })
     });
 
@@ -108,4 +113,4 @@ module.exports = async function handler(req, res) {
     if (!res.headersSent) res.status(502).json({ error: err.message || 'Jexi brain failed' });
     else { res.write('data: ' + JSON.stringify({ error: err.message }) + '\n\n'); res.end(); }
   }
-};
+}
