@@ -19,7 +19,7 @@ COPY_LIST.forEach((item) => {
   const srcPath = path.join(SRC, item);
   const destPath = path.join(DIST, item);
   if (!fs.existsSync(srcPath)) {
-    console.warn(`⚠️ Missing: ${item}`);
+    console.warn(`⚠️  Missing: ${item}`);
     return;
   }
   const stat = fs.statSync(srcPath);
@@ -31,14 +31,14 @@ COPY_LIST.forEach((item) => {
   console.log(`✅ Copied: ${item}`);
 });
 
-// Copy service worker
+// Service worker
 const swSrc = path.join(SRC, 'sw.js');
 const swDest = path.join(DIST, 'sw.js');
 if (fs.existsSync(swSrc)) {
   fs.copyFileSync(swSrc, swDest);
   console.log('✅ Copied: sw.js');
 } else {
-  console.warn('⚠️ Missing: sw.js');
+  console.warn('⚠️  Missing: sw.js');
 }
 
 console.log('🚀 Build complete. dist/ is ready.');
