@@ -1,34 +1,34 @@
-/**
- * ═══════════════════════════════════════════════
- * Noctryx AI V2 - Serverless Safe Database Layer
- * Creator: Lewis Einstein
- * ═══════════════════════════════════════════════
- */
+import Database from 'better-sqlite3';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-// In-memory fallback map for serverless environments where local disk writing is blocked
-const memoryStore = new Map();
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const DB_PATH = process.env.DATABASE_URL || path.join(__dirname, 'jexi.sqlite');
 
-const db = {
-  prepare(sql) {
-    return {
-      get(...params) {
-        // Return null or mock result for repository queries
-        return null;
-      },
-      run(...params) {
-        return { changes: 1 };
-      },
-      all(...params) {
-        return [];
-      }
-    };
-  },
-  pragma() {
-    return true;
-  },
-  exec() {
-    return true;
-  }
-};
+const db = new Database(DB_PATH);
 
-module.exports = db;
+db.exec(`
+  CREATE TABLE IF NOT EXISTS provider_metrics (
+    id TEXT PRIMARY KEY,
+    provider_name TEXT,
+    latency_ms INTEGER,
+    success INTEGER,
+    error_message TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  );
+  CREATE TABLE IF NOT EXISTS knowledge (
+    id TEXT PRIMARY KEY,
+    query TEXT UNIQUE,
+    topic TEXT,
+    content TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  );
+  CREATE TABLE IF NOT EXISTS notes (
+    id TEXT PRIMARY KEY,
+    session TEXT,
+    content TEXT,
+    created_at INTEGER
+  );
+`);
+
+export default db;
