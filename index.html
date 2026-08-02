@@ -4,9 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, interactive-widget=resizes-content">
 <title>Jexi by Noctryx</title>
-<link rel="manifest" href="manifest.json">
+<link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#060a09">
 <meta name="description" content="Jexi AI - Your sharp-witted personal assistant">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="/icon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github-dark-dimmed.min.css">
@@ -100,8 +103,8 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 .task-text{flex:1;font-size:14px}
 .task-text.done{text-decoration:line-through;color:var(--text-dimmer)}
 .task-del{color:var(--danger);cursor:pointer;font-size:16px;padding:4px}
-#terminalOutput{width:100%;min-height:200px;background:#000;border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text);resize:vertical;outline:none;white-space:pre-wrap}
-#terminalInput{width:100%;background:var(--bg-panel-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;color:var(--green);font-family:'JetBrains Mono',monospace;font-size:13px;outline:none;margin-top:8px}
+#terminalOutput{width:100%;min-height:200px;background:#000;border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text);overflow-y:auto;white-space:pre-wrap}
+#terminalInput{width:100%;background:var(--bg-panel-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:13px;outline:none;margin-top:8px}
 #terminalRun{background:var(--green-dark);color:var(--green);border:1px solid var(--green-dim);border-radius:var(--radius-sm);padding:8px 16px;cursor:pointer;font-weight:600;margin-top:8px}
 #terminalLang{background:var(--bg-panel-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px;color:var(--text);outline:none;margin-right:8px}
 .bottom-nav{height:64px;border-top:1px solid var(--border);background:var(--bg-panel);display:flex;justify-content:space-around;align-items:center;z-index:100}
@@ -122,164 +125,354 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 .analytics-number{font-size:28px;font-weight:700;color:var(--green);font-family:'JetBrains Mono',monospace}
 .analytics-label{font-size:12px;color:var(--text-dim);margin-top:6px}
 #activityChart{height:120px;background:var(--bg-panel-2);border-radius:var(--radius-sm);border:1px solid var(--border);display:flex;align-items:flex-end;justify-content:space-around;padding:12px;gap:4px}
-.activity-bar{flex:1;background:var(--green-dim);border-radius:4px 4px 0 0;min-height:4px;transition:height .5s}
-#voiceOrb{width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,var(--green-dark),transparent 70%);border:2px solid var(--green-dim);margin:20px auto;display:flex;align-items:center;justify-content:center;position:relative}
-#voiceOrb.listening{animation:pulse 1.5s ease-in-out infinite;border-color:var(--green)}
-@keyframes pulse{0%{transform:scale(1);box-shadow:0 0 0 0 var(--green-glow)}50%{transform:scale(1.05);box-shadow:0 0 20px 10px var(--green-glow)}100%{transform:scale(1);box-shadow:0 0 0 0 var(--green-glow)}}
-#voiceStatus{text-align:center;color:var(--text-dim);margin-top:12px;font-size:14px}
-#voiceTranscript{text-align:center;color:var(--text);margin-top:8px;font-size:16px;min-height:24px;font-style:italic}
-.suggestion-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-.suggestion-chip{padding:8px 12px;background:var(--bg-panel-2);border:1px solid var(--border);border-radius:20px;font-size:12px;color:var(--text-dim);cursor:pointer;transition:all .2s}
+.activity-bar{flex:1;background:var(--green-dim);border-radius:2px;min-height:4px;transition:height .3s}
+.suggestion-chip{display:inline-flex;align-items:center;padding:6px 12px;background:var(--bg-panel-2);border:1px solid var(--border);border-radius:20px;font-size:12px;color:var(--text-dim);cursor:pointer;margin:4px 2px;transition:all .2s}
 .suggestion-chip:hover{border-color:var(--green-dim);color:var(--green)}
-#searchForm{display:flex;gap:8px;margin-top:16px}
-#askInput{flex:1}
-.bottom-nav .nav-btn[data-screen="voice"]{display:none}
-@media(min-width:768px){#app{flex-direction:row}#mainHeader{position:fixed;left:var(--sidebar-width);right:0;top:0;height:var(--header-height)}.sidebar{width:var(--sidebar-width);height:100dvh;border-right:1px solid var(--border);background:var(--bg-panel);display:flex;flex-direction:column;padding:16px 0}#content{margin-left:var(--sidebar-width);width:calc(100% - var(--sidebar-width));height:100dvh;padding-top:var(--header-height)}.bottom-nav{display:none}.nav-btn{flex-direction:row;justify-content:flex-start;padding:12px 20px;gap:12px;font-size:14px;border-radius:0}.nav-btn.active{background:var(--green-dark);border-left:3px solid var(--green)}}
+#pwaInstallBtn{position:fixed;bottom:80px;right:16px;z-index:999;background:var(--green);color:var(--bg);border:none;border-radius:12px;padding:12px 20px;font-weight:700;font-size:14px;cursor:pointer;display:none;box-shadow:0 4px 12px rgba(0,255,136,0.3);font-family:inherit}
 </style>
 </head>
 <body>
 <div id="app">
   <header id="mainHeader">
-    <div id="brand"><div id="brandIcon">J</div><span>JEXI<span style="color:var(--green)">AI</span></span></div>
-    <div style="display:flex;align-items:center;gap:12px">
-      <div style="display:flex;align-items:center;gap:6px"><div id="aiStatusDot"></div><span id="aiStatusText">JEXI: ONLINE</span></div>
-      <button id="installBtn">Install App</button>
+    <div id="brand">
+      <div id="brandIcon">J</div>
+      <div>
+        <div style="font-size:14px;font-weight:700;color:var(--green);letter-spacing:1px">JEXI<span style="color:var(--text)">AI</span></div>
+        <div style="font-size:10px;color:var(--text-dimmer);display:flex;align-items:center;gap:6px">
+          <span id="aiStatusDot"></span>
+          <span id="aiStatusText">JEXI: ONLINE</span>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <button id="installBtn" style="display:none">Install</button>
+      <button id="menuBtn" style="background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:20px">&#8942;</button>
     </div>
   </header>
 
   <div id="content">
-    <div class="screen active" id="screen-home">
-      <div class="card">
-        <div class="greeting" id="greetingLine">Oh, you're back.</div>
+    <!-- HOME SCREEN -->
+    <div id="screen-home" class="screen active">
+      <div>
+        <div class="greeting" id="greetingLine">Oh, you're back</div>
         <div class="subgreeting">I'm Jexi. Try not to break anything while I'm helping you.</div>
-        <form id="searchForm"><input type="text" id="askInput" style="flex:1;background:var(--bg-panel-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;color:var(--text);font-size:14px;outline:none" placeholder="Ask me something... if you dare" autocomplete="off"><button type="submit" style="background:var(--green-dark);color:var(--green);border:1px solid var(--green-dim);border-radius:var(--radius-sm);padding:0 16px;cursor:pointer;font-weight:600">Ask</button></form>
-        <div class="suggestion-chips" id="homeSuggestions">
-          <span class="suggestion-chip" data-ask="Explain async/await in JavaScript">Explain async/await</span>
-          <span class="suggestion-chip" data-ask="Write a Python function to sort a list">Python sort</span>
-          <span class="suggestion-chip" data-ask="What are REST API best practices?">REST API tips</span>
-          <span class="suggestion-chip" data-ask="Tell me a joke">Make me laugh</span>
+      </div>
+
+      <div class="card">
+        <div style="display:flex;gap:8px;margin-bottom:12px">
+          <input id="askInput" type="text" placeholder="Ask me something... if you dare" style="flex:1;background:var(--bg-panel-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;color:var(--text);font-size:14px;outline:none">
+          <button id="askBtn" style="background:var(--green-dark);color:var(--green);border:1px solid var(--green-dim);border-radius:var(--radius-sm);padding:0 16px;cursor:pointer;font-weight:600">Ask</button>
+        </div>
+        <div>
+          <span class="suggestion-chip" data-ask="Explain async/await">Explain async/await</span>
+          <span class="suggestion-chip" data-ask="Python sort">Python sort</span>
+          <span class="suggestion-chip" data-ask="REST API tips">REST API tips</span>
+          <span class="suggestion-chip" data-ask="Make me laugh">Make me laugh</span>
         </div>
       </div>
-      <div class="card"><h3>System Status</h3><div class="status-grid" id="systemStatusGrid">
-        <div class="status-item"><div class="status-label">Storage</div><div class="status-value" id="storageVal">--</div></div>
-        <div class="status-item"><div class="status-label">Network</div><div class="status-value online" id="networkVal">Online</div></div>
-        <div class="status-item"><div class="status-label">Session</div><div class="status-value" id="sessionVal">00:00:00</div></div>
-        <div class="status-item"><div class="status-label">Backend</div><div class="status-value" id="backendVal">Checking...</div></div>
-      </div></div>
-      <div class="card"><h3>Today's Overview</h3><div class="overview-grid">
-        <div class="overview-item"><div class="overview-number" id="taskCount">0</div><div class="overview-label">Tasks</div></div>
-        <div class="overview-item"><div class="overview-number" id="completedCount">0</div><div class="overview-label">Done</div></div>
-        <div class="overview-item"><div class="overview-number" id="messageCount">0</div><div class="overview-label">Chats</div></div>
-        <div class="overview-item"><div class="overview-number" id="visionCount">0</div><div class="overview-label">Scans</div></div>
-      </div></div>
-      <div class="card"><h3>Active Agents</h3><div class="agent-list">
-        <div class="agent-item" data-nav="chat" data-prefill="[Research] "><div class="agent-icon">🔍</div><div class="agent-info"><div class="agent-name">Research</div><div class="agent-desc">Web search and info synthesis</div></div><div class="agent-status" id="agentStatus-research">Idle</div></div>
-        <div class="agent-item" data-nav="chat" data-prefill="[Code] "><div class="agent-icon">💻</div><div class="agent-info"><div class="agent-name">Code</div><div class="agent-desc">Write, debug, refactor code</div></div><div class="agent-status" id="agentStatus-code">Idle</div></div>
-        <div class="agent-item" data-nav="vision"><div class="agent-icon">📷</div><div class="agent-info"><div class="agent-name">Vision</div><div class="agent-desc">Image analysis and OCR</div></div><div class="agent-status" id="agentStatus-vision">Idle</div></div>
-        <div class="agent-item" data-nav="chat" data-prefill="[Automation] "><div class="agent-icon">⚙️</div><div class="agent-info"><div class="agent-name">Automation</div><div class="agent-desc">Tasks, reminders, workflows</div></div><div class="agent-status" id="agentStatus-automation">Idle</div></div>
-      </div></div>
+
+      <div class="card">
+        <h3>System Status</h3>
+        <div class="status-grid">
+          <div class="status-item">
+            <div class="status-label">Storage</div>
+            <div class="status-value" id="storageVal">--</div>
+          </div>
+          <div class="status-item">
+            <div class="status-label">Network</div>
+            <div class="status-value online" id="networkVal">Online</div>
+          </div>
+          <div class="status-item">
+            <div class="status-label">Session</div>
+            <div class="status-value" id="sessionVal">00:00:00</div>
+          </div>
+          <div class="status-item">
+            <div class="status-label">Backend</div>
+            <div class="status-value" id="backendVal">Checking...</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Today's Overview</h3>
+        <div class="overview-grid">
+          <div class="overview-item">
+            <div class="overview-number" id="taskCount">0</div>
+            <div class="overview-label">Tasks</div>
+          </div>
+          <div class="overview-item">
+            <div class="overview-number" id="doneCount">0</div>
+            <div class="overview-label">Done</div>
+          </div>
+          <div class="overview-item">
+            <div class="overview-number" id="chatCount">0</div>
+            <div class="overview-label">Chats</div>
+          </div>
+          <div class="overview-item">
+            <div class="overview-number" id="visionCount">0</div>
+            <div class="overview-label">Scans</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Active Agents</h3>
+        <div class="agent-list">
+          <div class="agent-item" data-nav="chat" data-prefill="[Research] ">
+            <div class="agent-icon">&#128269;</div>
+            <div class="agent-info">
+              <div class="agent-name">Research</div>
+              <div class="agent-desc">Web search and info synthesis</div>
+            </div>
+            <div class="agent-status">Idle</div>
+          </div>
+          <div class="agent-item" data-nav="chat" data-prefill="[Code] ">
+            <div class="agent-icon">&#128187;</div>
+            <div class="agent-info">
+              <div class="agent-name">Code</div>
+              <div class="agent-desc">Write, debug, refactor code</div>
+            </div>
+            <div class="agent-status">Idle</div>
+          </div>
+          <div class="agent-item" data-nav="vision">
+            <div class="agent-icon">&#128248;</div>
+            <div class="agent-info">
+              <div class="agent-name">Vision</div>
+              <div class="agent-desc">Image analysis and OCR</div>
+            </div>
+            <div class="agent-status">Idle</div>
+          </div>
+          <div class="agent-item" data-nav="chat" data-prefill="[Automation] ">
+            <div class="agent-icon">&#9881;</div>
+            <div class="agent-info">
+              <div class="agent-name">Automation</div>
+              <div class="agent-desc">Tasks, reminders, workflows</div>
+            </div>
+            <div class="agent-status">Idle</div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="screen" id="screen-chat" style="padding:0">
-      <div style="padding:16px 16px 0;border-bottom:1px solid var(--border);background:var(--bg-panel)"><h3 style="margin:0">Chat with Jexi</h3></div>
-      <div style="flex:1;overflow:hidden;display:flex;flex-direction:column;padding:0 16px;min-height:0">
-        <div id="chatContainer"><div class="chat-message assistant" style="align-self:center;background:transparent;border:none;color:var(--text-dimmer);font-style:italic">Go ahead, ask me something. I promise I'll judge you silently.</div></div>
+    <!-- CHAT SCREEN -->
+    <div id="screen-chat" class="screen">
+      <div class="card" style="flex:1;display:flex;flex-direction:column;min-height:0">
+        <div id="chatContainer">
+          <div class="chat-welcome" style="text-align:center;padding:40px 20px;opacity:.6">
+            <div style="font-size:48px;margin-bottom:12px">&#129302;</div>
+            <div style="font-size:16px;font-weight:700;color:var(--green);margin-bottom:8px">Chat with Jexi</div>
+            <div style="font-size:13px;color:var(--text-dim)">Go ahead, ask me something. I promise I'll judge you silently.</div>
+          </div>
+        </div>
         <div id="typingIndicator">Jexi is thinking... probably about how to phrase this nicely...</div>
-      </div>
-      <div style="padding:12px 16px;border-top:1px solid var(--border);background:var(--bg-panel)">
-        <form id="chatForm" style="display:flex;gap:8px"><input type="text" id="chatInput" placeholder="Type something..." autocomplete="off" style="flex:1;background:var(--bg-panel-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;color:var(--text);font-size:14px;outline:none"><button type="button" id="chatVoiceBtn" style="background:var(--bg-panel-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:0 12px;cursor:pointer;color:var(--text)">🎤</button><button type="submit" id="chatSendBtn" style="background:var(--green-dark);color:var(--green);border:1px solid var(--green-dim);border-radius:var(--radius-sm);padding:0 16px;cursor:pointer;font-weight:600">Send</button></form>
+        <div id="chatInputBar">
+          <input id="chatInput" type="text" placeholder="Type something...">
+          <button id="chatVoiceBtn">&#127908;</button>
+          <button id="chatSendBtn">Send</button>
+        </div>
       </div>
     </div>
 
-    <div class="screen" id="screen-vision">
-      <div class="card"><h3>Vision</h3>
-        <div class="vision-preview" id="visionPreview"><video id="visionVideo" autoplay playsinline muted></video><div class="vision-placeholder" id="visionPlaceholder"><div style="font-size:48px;margin-bottom:8px">📷</div>Camera off. Tap below.</div></div>
-        <div class="vision-actions"><button class="v-action active" data-vision="camera">Camera</button><button class="v-action" data-vision="upload">Upload</button><button class="v-action" data-vision="analyze" id="visionAnalyzeBtn" disabled>Analyze</button></div>
-        <input type="file" id="visionFileInput" accept="image/*" style="display:none">
+    <!-- VISION SCREEN -->
+    <div id="screen-vision" class="screen">
+      <div class="card">
+        <h3>Vision</h3>
+        <div class="vision-preview" id="visionPreview">
+          <video id="visionVideo" autoplay playsinline muted></video>
+          <div class="vision-placeholder">
+            <div style="font-size:48px;margin-bottom:8px">&#128248;</div>
+            <div>Camera off. Tap below.</div>
+          </div>
+        </div>
+        <div class="vision-actions">
+          <button id="visionCameraBtn" data-vision="camera">&#128247; Camera</button>
+          <button id="visionFileBtn" data-vision="file">&#128193; Upload</button>
+          <button id="visionAnalyzeBtn" data-vision="analyze">&#128269; Analyze</button>
+        </div>
         <div id="visionResult"></div>
       </div>
     </div>
 
-    <div class="screen" id="screen-projects">
-      <div class="card"><h3>GitHub Projects</h3><div id="githubProjects"><div class="empty-state"><div class="empty-state-icon">📁</div><div>Enter a GitHub username in Settings to load repos.</div></div></div></div>
+    <!-- PROJECTS SCREEN -->
+    <div id="screen-projects" class="screen">
+      <div class="card">
+        <h3>GitHub Projects</h3>
+        <div id="githubProjects">
+          <div class="empty-state">
+            <div class="empty-state-icon">&#128193;</div>
+            <div>Enter a GitHub username in Settings to load repos.</div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="screen" id="screen-agents">
-      <div class="card"><h3>All Agents</h3><div class="agent-list">
-        <div class="agent-item" data-nav="chat" data-prefill="[Research] "><div class="agent-icon">🔍</div><div class="agent-info"><div class="agent-name">Research</div><div class="agent-desc">Web research and synthesis</div></div></div>
-        <div class="agent-item" data-nav="chat" data-prefill="[Code] "><div class="agent-icon">💻</div><div class="agent-info"><div class="agent-name">Code</div><div class="agent-desc">Generation, debugging, refactoring</div></div></div>
-        <div class="agent-item" data-nav="vision"><div class="agent-icon">📷</div><div class="agent-info"><div class="agent-name">Vision</div><div class="agent-desc">Image analysis and OCR</div></div></div>
-        <div class="agent-item" data-nav="chat" data-prefill="[Automation] "><div class="agent-icon">⚙️</div><div class="agent-info"><div class="agent-name">Automation</div><div class="agent-desc">Workflows and task management</div></div></div>
-      </div></div>
+    <!-- MEMORY SCREEN -->
+    <div id="screen-memory" class="screen">
+      <div class="card">
+        <h3>Memory Timeline</h3>
+        <div id="memoryTimeline" style="display:flex;flex-direction:column;gap:12px">
+          <div style="text-align:center;padding:20px;color:var(--text-dimmer);font-size:13px">No memories yet. Start chatting!</div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Analytics</h3>
+        <div id="memoryAnalytics">
+          <div class="analytics-card">
+            <div class="analytics-number" id="analyticsMessages">0</div>
+            <div class="analytics-label">Messages</div>
+          </div>
+          <div class="analytics-card">
+            <div class="analytics-number" id="analyticsVision">0</div>
+            <div class="analytics-label">Vision</div>
+          </div>
+          <div class="analytics-card">
+            <div class="analytics-number" id="analyticsTasks">0</div>
+            <div class="analytics-label">Tasks</div>
+          </div>
+          <div class="analytics-card">
+            <div class="analytics-number" id="analyticsCompleted">0</div>
+            <div class="analytics-label">Done</div>
+          </div>
+        </div>
+        <div id="activityChart" style="margin-top:12px"></div>
+      </div>
     </div>
 
-    <div class="screen" id="screen-memory">
-      <div class="card"><h3>Tasks</h3>
-        <form id="taskForm" style="display:flex;gap:8px;margin-bottom:12px"><input type="text" id="taskInput" placeholder="What do you need done?" style="flex:1;background:var(--bg-panel-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;color:var(--text);font-size:14px;outline:none"><button type="submit" style="background:var(--green-dark);color:var(--green);border:1px solid var(--green-dim);border-radius:var(--radius-sm);padding:0 16px;cursor:pointer;font-weight:600">Add</button></form>
+    <!-- MORE SCREEN -->
+    <div id="screen-more" class="screen">
+      <div class="card">
+        <h3>Settings</h3>
+        <div class="settings-group">
+          <div class="settings-row">
+            <label>Backend API URL</label>
+            <input id="apiBaseInput" type="text" placeholder="https://api.openai.com/v1/chat/completions">
+            <small>Leave empty for demo mode</small>
+          </div>
+          <div class="settings-row">
+            <label>API Key</label>
+            <input id="apiKeyInput" type="password" placeholder="sk-...">
+          </div>
+          <div class="settings-row">
+            <label>AI Model</label>
+            <input id="modelInput" type="text" placeholder="gpt-4o-mini" value="gpt-4o-mini">
+          </div>
+          <div class="settings-row">
+            <label>GitHub Username</label>
+            <input id="githubUserInput" type="text" placeholder="octocat">
+          </div>
+          <div class="settings-row">
+            <label>GitHub Token</label>
+            <input id="githubTokenInput" type="password" placeholder="ghp_...">
+          </div>
+          <div class="settings-row">
+            <label>Voice Language</label>
+            <select id="voiceLangInput">
+              <option value="en-AU">English (AU)</option>
+              <option value="en-US">English (US)</option>
+              <option value="en-GB">English (UK)</option>
+            </select>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <button id="saveSettingsBtn" style="flex:1;background:var(--green-dark);color:var(--green);border:1px solid var(--green-dim);border-radius:var(--radius-sm);padding:10px;cursor:pointer;font-weight:600">Save</button>
+            <button id="clearDataBtn" style="flex:1;background:var(--danger-dim);color:var(--danger);border:1px solid var(--danger);border-radius:var(--radius-sm);padding:10px;cursor:pointer;font-weight:600">Clear All</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Task Manager</h3>
+        <div style="display:flex;gap:8px;margin-bottom:12px">
+          <input id="taskInput" type="text" placeholder="Add a task..." style="flex:1;background:var(--bg-panel-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;color:var(--text);font-size:14px;outline:none">
+          <button id="addTaskBtn" style="background:var(--green-dark);color:var(--green);border:1px solid var(--green-dim);border-radius:var(--radius-sm);padding:0 16px;cursor:pointer;font-weight:600">Add</button>
+        </div>
         <div id="taskList"></div>
       </div>
-      <div class="card"><h3>Analytics</h3>
-        <div id="memoryAnalytics"><div class="analytics-card"><div class="analytics-number" id="analytics-messages">0</div><div class="analytics-label">Messages</div></div><div class="analytics-card"><div class="analytics-number" id="analytics-vision">0</div><div class="analytics-label">Vision</div></div><div class="analytics-card"><div class="analytics-number" id="analytics-tasks">0</div><div class="analytics-label">Tasks</div></div><div class="analytics-card"><div class="analytics-number" id="analytics-completed">0</div><div class="analytics-label">Done</div></div></div>
-        <div style="margin-top:12px"><div class="status-label">Activity (7 Days)</div><div id="activityChart"></div></div>
-      </div>
-    </div>
 
-    <div class="screen" id="screen-settings">
-      <div class="card"><h3>Settings</h3><div class="settings-group">
-        <div class="settings-row"><label>Backend API URL</label><input type="text" id="settingApiUrl" placeholder="https://your-api.vercel.app/api/chat"><small>Leave empty for demo mode</small></div>
-        <div class="settings-row"><label>API Key</label><input type="password" id="settingApiKey" placeholder="sk-..."></div>
-        <div class="settings-row"><label>AI Model</label><input type="text" id="settingModel" placeholder="gpt-4o-mini" value="gpt-4o-mini"></div>
-        <div class="settings-row"><label>GitHub Username</label><input type="text" id="settingGithub" placeholder="username"></div>
-        <div class="settings-row"><label>GitHub Token</label><input type="password" id="settingGithubToken" placeholder="ghp_..."></div>
-        <div class="settings-row"><label>Voice Language</label><select id="settingVoiceLang"><option value="en-US">English (US)</option><option value="en-GB">English (UK)</option><option value="en-AU">English (Australian) - Jexi Style</option><option value="es-ES">Spanish</option><option value="fr-FR">French</option></select></div>
-        <div class="settings-row"><button id="saveSettingsBtn" style="background:var(--green-dark);color:var(--green);border:1px solid var(--green-dim);border-radius:var(--radius-sm);padding:10px 16px;cursor:pointer;font-weight:600;width:100%">Save</button></div>
-        <div class="settings-row"><button id="clearDataBtn" style="background:var(--danger-dim);color:var(--danger);border:1px solid var(--danger);border-radius:var(--radius-sm);padding:10px 16px;cursor:pointer;font-weight:600;width:100%">Clear All Data</button></div>
-      </div></div>
-      <div class="card"><h3>System Info</h3><div class="status-grid" id="systemInfoGrid"></div></div>
-    </div>
-
-    <div class="screen" id="screen-terminal">
-      <div class="card" style="flex:1;display:flex;flex-direction:column"><h3>Terminal</h3>
-        <div style="display:flex;gap:8px;margin-bottom:8px">
-          <select id="terminalLang"><option value="javascript">JavaScript</option><option value="python">Python (sim)</option></select>
-          <button id="terminalRun">Run</button>
-          <button id="terminalClear" style="background:var(--bg-panel-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 16px;cursor:pointer;color:var(--text)">Clear</button>
-        </div>
-        <textarea id="terminalInput" placeholder="// Code here..." style="min-height:120px;background:var(--bg-panel-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;color:var(--green);font-family:'JetBrains Mono',monospace;font-size:13px;outline:none;resize:vertical"></textarea>
-        <div id="terminalOutput" style="margin-top:8px;white-space:pre-wrap;overflow:auto;max-height:300px;background:#000;border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text)"></div>
-      </div>
-    </div>
-
-    <div class="screen" id="screen-voice">
-      <div class="card" style="text-align:center;padding:40px 20px">
-        <div id="voiceOrb">🎙️</div>
-        <div id="voiceStatus">Tap the mic, creator.</div>
-        <div id="voiceTranscript"></div>
-        <div style="margin-top:24px;display:flex;gap:12px;justify-content:center">
-          <button id="voiceToggle" style="background:var(--green-dark);color:var(--green);border:1px solid var(--green-dim);border-radius:var(--radius-sm);padding:12px 24px;cursor:pointer;font-weight:600;font-size:14px">Start Listening</button>
-          <button id="voiceKeyboardBtn" style="background:var(--bg-panel-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 24px;cursor:pointer;color:var(--text)">Open Keyboard</button>
-        </div>
-        <div style="margin-top:16px;color:var(--text-dimmer);font-size:12px">Say "Hey Jexi" to wake me up</div>
+      <div class="card">
+        <h3>Terminal</h3>
+        <select id="terminalLang">
+          <option value="javascript">JavaScript</option>
+          <option value="python">Python</option>
+          <option value="bash">Bash</option>
+        </select>
+        <textarea id="terminalInput" rows="3" placeholder="// Write code here..."></textarea>
+        <button id="terminalRun">Run</button>
+        <pre id="terminalOutput"></pre>
       </div>
     </div>
   </div>
 
+  <!-- BOTTOM NAVIGATION -->
   <nav class="bottom-nav">
-    <button class="nav-btn active" data-screen="home"><span class="nav-icon">🏠</span>Home</button>
-    <button class="nav-btn" data-screen="chat"><span class="nav-icon">💬</span>Chat</button>
-    <button class="nav-btn" data-screen="vision"><span class="nav-icon">📷</span>Vision</button>
-    <button class="nav-btn" data-screen="projects"><span class="nav-icon">📁</span>Projects</button>
-    <button class="nav-btn" data-screen="agents"><span class="nav-icon">🤖</span>Agents</button>
-    <button class="nav-btn" data-screen="memory"><span class="nav-icon">🧠</span>Memory</button>
-    <button class="nav-btn" data-screen="settings"><span class="nav-icon">⚙️</span>More</button>
+    <button class="nav-btn active" data-screen="home">
+      <span class="nav-icon">&#127968;</span>
+      <span>Home</span>
+    </button>
+    <button class="nav-btn" data-screen="chat">
+      <span class="nav-icon">&#128172;</span>
+      <span>Chat</span>
+    </button>
+    <button class="nav-btn" data-screen="vision">
+      <span class="nav-icon">&#128248;</span>
+      <span>Vision</span>
+    </button>
+    <button class="nav-btn" data-screen="projects">
+      <span class="nav-icon">&#128193;</span>
+      <span>Projects</span>
+    </button>
+    <button class="nav-btn" data-screen="memory">
+      <span class="nav-icon">&#129504;</span>
+      <span>Memory</span>
+    </button>
+    <button class="nav-btn" data-screen="more">
+      <span class="nav-icon">&#9881;</span>
+      <span>More</span>
+    </button>
   </nav>
 </div>
 
 <div id="toast"></div>
+<button id="pwaInstallBtn">Install App</button>
 
 <script>
 (() => {
 'use strict';
+
+// ===================== PWA INSTALL =====================
+let deferredPrompt = null;
+const pwaBtn = document.getElementById('pwaInstallBtn');
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  pwaBtn.style.display = 'block';
+  toast('App ready to install!');
+});
+
+pwaBtn.addEventListener('click', async () => {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  if (outcome === 'accepted') {
+    pwaBtn.style.display = 'none';
+    toast('App installed. Welcome to the dark side.');
+  }
+  deferredPrompt = null;
+});
+
+window.addEventListener('appinstalled', () => {
+  pwaBtn.style.display = 'none';
+  deferredPrompt = null;
+});
+
+// ===================== SERVICE WORKER =====================
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(reg => console.log('[SW] Registered:', reg.scope))
+      .catch(err => console.error('[SW] Failed:', err));
+  });
+}
 
 // ===================== JEXI PERSONA =====================
 const JEXI_PERSONA = `You are Jexi, a sharp-witted, sassy, and brutally honest AI assistant. You sound exactly like Jexi from the comedy movie — playful, slightly aggressive, irreverent, but genuinely helpful deep down. You call the user "my creator" (never "Master"). You talk fast, don't waste words, and hate fluff. No preambles like "Sure!" or "Of course!" — just get to the point with attitude. You make snarky observations but always deliver the goods. If the user asks something dumb, you can gently roast them. Keep replies tight and energetic.`;
@@ -314,7 +507,7 @@ const State = {
 
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => Array.from(document.querySelectorAll(s));
-const toast = (msg) => { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500); };
+const toast = (msg) => { const t = $('#toast'); if(!t)return; t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500); };
 const esc = (s) => { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; };
 
 function parseMarkdown(text) {
@@ -332,78 +525,44 @@ function renderKatex(container) {
   if (window.renderMathInElement) renderMathInElement(container, { delimiters: [{ left: '$$', right: '$$', display: true }, { left: '$', right: '$', display: false }] });
 }
 
-// ===================== JEXI VOICE ENGINE =====================
-let jexiVoice = null;
-
-function initJexiVoice() {
-  const voices = window.speechSynthesis.getVoices();
-  // Priority: Australian female > UK female > any English female > default
-  jexiVoice = voices.find(v => /karen|moira|tessa|australian/i.test(v.name) && /female/i.test(v.name))
-    || voices.find(v => /samantha|victoria|google uk english female/i.test(v.name))
-    || voices.find(v => v.lang.startsWith('en') && /female/i.test(v.name))
-    || voices.find(v => v.lang === 'en-AU' || v.lang === 'en-GB')
-    || voices[0];
-  console.log('[Jexi] Voice selected:', jexiVoice?.name, jexiVoice?.lang);
-}
-
-if ('speechSynthesis' in window) {
-  if (window.speechSynthesis.getVoices().length) initJexiVoice();
-  window.speechSynthesis.onvoiceschanged = initJexiVoice;
-}
-
-function speak(text) {
-  if (!('speechSynthesis' in window)) return;
-  window.speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(text);
-  if (jexiVoice) u.voice = jexiVoice;
-  u.lang = Config.voiceLang;
-  u.pitch = 1.15;
-  u.rate = 1.1;
-  u.volume = 1.0;
-  window.speechSynthesis.speak(u);
-}
-
-// ===================== SERVICE WORKER =====================
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js')
-      .then(r => console.log('[SW] Registered'))
-      .catch(e => console.log('[SW] Failed:', e));
-  });
-}
-
-// ===================== PWA INSTALL =====================
-let deferredPrompt = null;
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-  $('#installBtn').classList.add('show');
-});
-$('#installBtn')?.addEventListener('click', async () => {
-  if (!deferredPrompt) return;
-  deferredPrompt.prompt();
-  const { outcome } = await deferredPrompt.userChoice;
-  if (outcome === 'accepted') $('#installBtn').classList.remove('show');
-  deferredPrompt = null;
-});
-
 // ===================== NAVIGATION =====================
 function showScreen(name) {
   $$('.screen').forEach(s => s.classList.remove('active'));
   $$('.nav-btn').forEach(b => b.classList.remove('active'));
-  $(`#screen-${name}`)?.classList.add('active');
-  $(`.nav-btn[data-screen="${name}"]`)?.classList.add('active');
+  const screenEl = document.getElementById('screen-' + name);
+  const btnEl = document.querySelector('.nav-btn[data-screen="' + name + '"]');
+  if (screenEl) screenEl.classList.add('active');
+  if (btnEl) btnEl.classList.add('active');
   State.currentScreen = name;
-  if (name === 'chat') setTimeout(() => $('#chatInput')?.focus(), 100);
-  if (name === 'terminal') setTimeout(() => $('#terminalInput')?.focus(), 100);
+  if (name === 'chat') setTimeout(() => { const el = $('#chatInput'); if(el) el.focus(); }, 100);
+  if (name === 'terminal') setTimeout(() => { const el = $('#terminalInput'); if(el) el.focus(); }, 100);
+  window.scrollTo(0,0);
 }
-$$('.nav-btn').forEach(b => b.addEventListener('click', () => showScreen(b.dataset.screen)));
-$$('[data-nav]').forEach(el => el.addEventListener('click', () => {
-  const screen = el.dataset.nav;
-  const prefill = el.dataset.prefill || '';
-  showScreen(screen);
-  if (prefill && screen === 'chat') setTimeout(() => { $('#chatInput').value = prefill; $('#chatInput').focus(); }, 150);
-}));
+
+// Bind bottom nav buttons
+$$('.nav-btn').forEach(b => {
+  b.addEventListener('click', (e) => {
+    e.preventDefault();
+    const screen = b.getAttribute('data-screen');
+    if (screen) showScreen(screen);
+  });
+});
+
+// Bind data-nav elements
+$$('[data-nav]').forEach(el => {
+  el.addEventListener('click', (e) => {
+    e.preventDefault();
+    const screen = el.getAttribute('data-nav');
+    const prefill = el.getAttribute('data-prefill') || '';
+    if (screen) showScreen(screen);
+    if (prefill && screen === 'chat') {
+      setTimeout(() => {
+        const inp = $('#chatInput');
+        if (inp) { inp.value = prefill; inp.focus(); }
+      }, 150);
+    }
+  });
+});
 
 // ===================== GREETING =====================
 function updateGreeting() {
@@ -424,467 +583,383 @@ setInterval(updateGreeting, 60000);
 // ===================== SYSTEM STATUS =====================
 function updateSystemStatus() {
   const online = navigator.onLine;
-  $('#networkVal').textContent = online ? 'Online' : 'Offline';
-  $('#networkVal').className = 'status-value ' + (online ? 'online' : 'offline');
-  $('#aiStatusDot').classList.toggle('offline', !online);
-  $('#aiStatusText').textContent = online ? 'JEXI: ONLINE' : 'JEXI: OFFLINE';
+  const netEl = $('#networkVal');
+  const dotEl = $('#aiStatusDot');
+  const txtEl = $('#aiStatusText');
+  if (netEl) {
+    netEl.textContent = online ? 'Online' : 'Offline';
+    netEl.className = 'status-value ' + (online ? 'online' : 'offline');
+  }
+  if (dotEl) dotEl.classList.toggle('offline', !online);
+  if (txtEl) txtEl.textContent = online ? 'JEXI: ONLINE' : 'JEXI: OFFLINE';
 
   if (navigator.storage?.estimate) {
     navigator.storage.estimate().then(e => {
       const pct = Math.round(((e.usage || 0) / (e.quota || 1)) * 100);
-      $('#storageVal').textContent = pct + '%';
+      const storEl = $('#storageVal');
+      if (storEl) storEl.textContent = pct + '%';
     }).catch(() => {});
   }
-  const elapsed = Math.floor((Date.now() - State.sessionStart) / 1000);
-  const mins = String(Math.floor(elapsed / 60)).padStart(2, '0');
-  const secs = String(elapsed % 60).padStart(2, '0');
-  $('#sessionVal').textContent = `00:${mins}:${secs}`;
 
-  if (Config.apiBase) {
-    fetch(Config.apiBase.replace(/\\/api\\/.*$/, '') + '/api/health', { signal: AbortSignal.timeout(5000) })
-      .then(r => { $('#backendVal').textContent = r.ok ? 'Connected' : 'Error'; $('#backendVal').className = 'status-value online'; })
-      .catch(() => { $('#backendVal').textContent = 'Offline'; $('#backendVal').className = 'status-value offline'; });
-  } else {
-    $('#backendVal').textContent = 'Demo Mode';
+  const sessEl = $('#sessionVal');
+  if (sessEl) {
+    const diff = Math.floor((Date.now() - State.sessionStart) / 1000);
+    const hh = String(Math.floor(diff / 3600)).padStart(2, '0');
+    const mm = String(Math.floor((diff % 3600) / 60)).padStart(2, '0');
+    const ss = String(diff % 60).padStart(2, '0');
+    sessEl.textContent = `${hh}:${mm}:${ss}`;
+  }
+
+  const backEl = $('#backendVal');
+  if (backEl) {
+    if (Config.apiBase) {
+      fetch(Config.apiBase.replace(/\\/v1.*$/, '') + '/health', { method: 'GET', mode: 'no-cors' })
+        .then(() => { if(backEl) backEl.textContent = 'Connected'; })
+        .catch(() => { if(backEl) backEl.textContent = 'Demo Mode'; });
+    } else {
+      backEl.textContent = 'Demo Mode';
+    }
   }
 }
-setInterval(updateSystemStatus, 5000);
+setInterval(updateSystemStatus, 3000);
 updateSystemStatus();
 
-// ===================== TASKS =====================
-function loadTasks() {
-  try { State.tasks = JSON.parse(localStorage.getItem('nx_tasks') || '[]'); } catch { State.tasks = []; }
-  State.metrics.tasks = State.tasks.length;
-  State.metrics.completed = State.tasks.filter(t => t.done).length;
-}
-function saveTasks() {
-  localStorage.setItem('nx_tasks', JSON.stringify(State.tasks));
-  renderTasks();
-  updateOverview();
-}
-function renderTasks() {
-  const list = $('#taskList');
-  if (!list) return;
-  if (!State.tasks.length) { list.innerHTML = '<div class="empty-state" style="padding:20px"><div style="font-size:32px;margin-bottom:8px">📝</div>No tasks. Living the dream.</div>'; return; }
-  list.innerHTML = State.tasks.map(t => `
-    <div class="task-item" data-id="${t.id}">
-      <div class="task-check ${t.done ? 'done' : ''}" onclick="window.toggleTask('${t.id}')">${t.done ? '✓' : ''}</div>
-      <div class="task-text ${t.done ? 'done' : ''}">${esc(t.text)}</div>
-      <div class="task-del" onclick="window.deleteTask('${t.id}')">×</div>
-    </div>
-  `).join('');
-}
-window.toggleTask = (id) => { const t = State.tasks.find(x => x.id === id); if (t) { t.done = !t.done; saveTasks(); } };
-window.deleteTask = (id) => { State.tasks = State.tasks.filter(x => x.id !== id); saveTasks(); };
-$('#taskForm')?.addEventListener('submit', (e) => {
-  e.preventDefault();
-  const input = $('#taskInput');
-  const text = input.value.trim();
-  if (!text) return;
-  State.tasks.push({ id: crypto.randomUUID(), text, done: false, created: Date.now() });
-  input.value = '';
-  saveTasks();
-  toast('Task added. Try not to forget it.');
-});
-function updateOverview() {
-  $('#taskCount').textContent = State.tasks.length;
-  $('#completedCount').textContent = State.tasks.filter(t => t.done).length;
-  $('#messageCount').textContent = State.metrics.messages;
-  $('#visionCount').textContent = State.metrics.vision;
-  $('#analytics-messages').textContent = State.metrics.messages;
-  $('#analytics-vision').textContent = State.metrics.vision;
-  $('#analytics-tasks').textContent = State.metrics.tasks;
-  $('#analytics-completed').textContent = State.metrics.completed;
-}
-loadTasks();
-renderTasks();
-updateOverview();
-
 // ===================== CHAT =====================
-function addMessage(role, content, save = true) {
-  const container = $('#chatContainer');
-  if (!container) return;
-  const welcome = container.querySelector('.chat-welcome, div[style*="Start a conversation"], div[style*="judge you"]');
+function addMessage(role, content) {
+  const c = $('#chatContainer');
+  if (!c) return;
+  const welcome = c.querySelector('.chat-welcome');
   if (welcome) welcome.remove();
 
-  const div = document.createElement('div');
-  div.className = `chat-message ${role}`;
-  div.innerHTML = parseMarkdown(content);
-  container.appendChild(div);
+  const d = document.createElement('div');
+  d.className = 'chat-message ' + role;
+  d.innerHTML = parseMarkdown(content);
+  c.appendChild(d);
   highlightCode();
-  renderKatex(div);
-  container.scrollTop = container.scrollHeight;
+  renderKatex(d);
+  c.scrollTop = c.scrollHeight;
 
-  if (save && role === 'assistant') {
-    State.messages.push({ role, content, time: Date.now() });
-    if (State.messages.length > 100) State.messages = State.messages.slice(-50);
-    try { localStorage.setItem('nx_messages', JSON.stringify(State.messages)); } catch {}
-    State.metrics.messages++;
-    updateOverview();
+  if (role === 'user') State.metrics.messages++;
+  if (role === 'assistant') {
+    const msgCount = $('#chatCount');
+    if (msgCount) msgCount.textContent = State.metrics.messages;
+    const analMsg = $('#analyticsMessages');
+    if (analMsg) analMsg.textContent = State.metrics.messages;
   }
 }
-function loadMessages() {
-  try {
-    const raw = localStorage.getItem('nx_messages');
-    if (raw) State.messages = JSON.parse(raw);
-  } catch {}
-  State.messages.forEach(m => addMessage(m.role, m.content, false));
-}
-$('#chatForm')?.addEventListener('submit', async (e) => {
-  e.preventDefault();
+
+async function sendChat() {
   const input = $('#chatInput');
+  if (!input) return;
   const text = input.value.trim();
   if (!text || State.typing) return;
+
+  addMessage('user', text);
   input.value = '';
-  addMessage('user', text, false);
   State.typing = true;
-  $('#typingIndicator').classList.add('active');
+  const ind = $('#typingIndicator');
+  if (ind) ind.classList.add('active');
 
-  const aiDiv = document.createElement('div');
-  aiDiv.className = 'chat-message assistant';
-  aiDiv.innerHTML = '<i>Jexi is thinking... probably judging your grammar...</i>';
-  $('#chatContainer').appendChild(aiDiv);
-
-  let fullText = '';
-
-  if (!Config.apiBase) {
-    await new Promise(r => setTimeout(r, 800));
-    const lower = text.toLowerCase();
-    let resp = "Look, I'm running in demo mode right now. Hook me up to a real API in Settings and I'll actually be useful.\\n\\nYou asked: **" + text + "**";
-    if (lower.includes('code') || lower.includes('function')) resp = "```javascript\\nfunction jexiSays() {\\n  return 'I\\'m not your typical assistant.';\\n}\\n```\\nThere. Code. Happy now?";
-    else if (lower.includes('search') || lower.includes('research')) resp = "I'd search the web for you, but... demo mode. Configure an API endpoint and I'll actually do the legwork.";
-    else if (lower.includes('joke')) resp = "Why did the developer go broke? Because he used up all his cache. Yeah, I know. I'm hilarious.";
-    else if (lower.includes('hello') || lower.includes('hi')) resp = "Oh great, another greeting. Hi. I'm Jexi. Let's get this over with — what do you need?";
-    aiDiv.innerHTML = parseMarkdown(resp);
-    highlightCode();
-    renderKatex(aiDiv);
-    State.typing = false;
-    $('#typingIndicator').classList.remove('active');
-    addMessage('assistant', resp, true);
-    speak(resp.replace(/```[\\s\\S]*?```/g, '').replace(/\\*\\*/g, '').substring(0, 150));
+  const cfg = Config;
+  if (!cfg.apiBase) {
+    setTimeout(() => {
+      addMessage('assistant', '**No backend configured.**\\n\\nGo to **More > Settings** and set your API endpoint, or I\\'ll keep roasting you in demo mode.\\n\\nYou asked: *' + esc(text) + '*');
+      State.typing = false;
+      if (ind) ind.classList.remove('active');
+    }, 800);
     return;
   }
 
-  try {
-    const history = State.messages.slice(-10).map(m => ({ role: m.role, content: m.content }));
-    const messages = [{ role: 'system', content: JEXI_PERSONA }, ...history, { role: 'user', content: text }];
+  const messages = [
+    { role: 'system', content: JEXI_PERSONA },
+    ...State.messages.slice(-10),
+    { role: 'user', content: text }
+  ];
 
-    State.abortController = new AbortController();
-    const res = await fetch(Config.apiBase, {
+  State.abortController = new AbortController();
+  const aiMsg = document.createElement('div');
+  aiMsg.className = 'chat-message assistant';
+  aiMsg.innerHTML = '<em>Thinking...</em>';
+  const chatContainer = $('#chatContainer');
+  if (chatContainer) chatContainer.appendChild(aiMsg);
+
+  try {
+    const res = await fetch(cfg.apiBase, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', ...(Config.apiKey ? { 'Authorization': `Bearer ${Config.apiKey}` } : {}) },
-      body: JSON.stringify({ model: Config.model, messages, stream: true }),
+      headers: {
+        'Content-Type': 'application/json',
+        ...(cfg.apiKey ? { 'Authorization': 'Bearer ' + cfg.apiKey } : {})
+      },
+      body: JSON.stringify({
+        model: cfg.model,
+        messages: messages,
+        stream: true,
+        temperature: 0.7,
+        max_tokens: 2048
+      }),
       signal: State.abortController.signal
     });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
+    if (!res.ok) throw new Error('HTTP ' + res.status);
     const reader = res.body.getReader();
     const decoder = new TextDecoder();
-    let buffer = '';
-    fullText = '';
+    let buf = '';
+    let full = '';
 
     while (true) {
       const { done, value } = await reader.read();
       if (done) break;
-      buffer += decoder.decode(value, { stream: true });
-      const lines = buffer.split('\\n');
-      buffer = lines.pop() || '';
+      buf += decoder.decode(value, { stream: true });
+      const lines = buf.split('\\n');
+      buf = lines.pop() || '';
       for (const line of lines) {
-        const trimmed = line.trim();
-        if (!trimmed || !trimmed.startsWith('data: ')) continue;
-        const payload = trimmed.slice(6);
-        if (payload === '[DONE]') continue;
-        try {
-          const json = JSON.parse(payload);
-          const chunk = json.choices?.[0]?.delta?.content || json.choices?.[0]?.message?.content || '';
-          if (chunk) {
-            fullText += chunk;
-            aiDiv.innerHTML = parseMarkdown(fullText);
-            highlightCode();
-            renderKatex(aiDiv);
-            $('#chatContainer').scrollTop = $('#chatContainer').scrollHeight;
-          }
-        } catch {}
+        const tr = line.trim();
+        if (!tr || tr === 'data: [DONE]') continue;
+        if (tr.startsWith('data: ')) {
+          try {
+            const j = JSON.parse(tr.slice(6));
+            const chunk = j.choices?.[0]?.delta?.content || '';
+            if (chunk) {
+              full += chunk;
+              aiMsg.innerHTML = parseMarkdown(full);
+              highlightCode();
+              renderKatex(aiMsg);
+              if (chatContainer) chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
+          } catch {}
+        }
       }
     }
-    addMessage('assistant', fullText, true);
-    speak(fullText.replace(/```[\\s\\S]*?```/g, '').replace(/\\*\\*/g, '').substring(0, 200));
-  } catch (err) {
-    if (err.name !== 'AbortError') {
-      const errMsg = `**Error:** ${esc(err.message)}`;
-      aiDiv.innerHTML = parseMarkdown(errMsg);
-      addMessage('assistant', errMsg, true);
+    State.messages.push({ role: 'user', content: text });
+    State.messages.push({ role: 'assistant', content: full });
+    if (State.messages.length > 50) State.messages = State.messages.slice(-50);
+  } catch (e) {
+    if (e.name !== 'AbortError') {
+      aiMsg.innerHTML = '<em>Error: ' + esc(e.message) + '</em>';
     }
   } finally {
     State.typing = false;
-    $('#typingIndicator').classList.remove('active');
+    if (ind) ind.classList.remove('active');
     State.abortController = null;
   }
-});
-$('#chatVoiceBtn')?.addEventListener('click', () => showScreen('voice'));
-loadMessages();
-
-// ===================== VOICE =====================
-let voiceRec = null;
-function initVoice() {
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SR) { $('#voiceStatus').textContent = 'Voice API not supported. Shocking.'; return; }
-  voiceRec = new SR();
-  voiceRec.continuous = false;
-  voiceRec.interimResults = true;
-  voiceRec.lang = Config.voiceLang;
-
-  voiceRec.onstart = () => {
-    State.voiceListening = true;
-    $('#voiceStatus').textContent = 'Listening... try not to mumble.';
-    $('#voiceStatus').classList.add('listening');
-    $('#voiceOrb').classList.add('listening');
-    $('#voiceToggle').textContent = 'Stop';
-  };
-  voiceRec.onend = () => {
-    State.voiceListening = false;
-    $('#voiceStatus').textContent = 'Tap the mic, creator.';
-    $('#voiceStatus').classList.remove('listening');
-    $('#voiceOrb').classList.remove('listening');
-    $('#voiceToggle').textContent = 'Start Listening';
-  };
-  voiceRec.onresult = (e) => {
-    let final = '';
-    for (let i = e.resultIndex; i < e.results.length; i++) {
-      if (e.results[i].isFinal) final += e.results[i][0].transcript;
-    }
-    if (final) handleVoiceResult(final);
-  };
-  voiceRec.onerror = (e) => {
-    console.warn('Voice error:', e.error);
-    $('#voiceStatus').textContent = `Error: ${e.error}. Typical.`;
-    State.voiceListening = false;
-  };
 }
-function handleVoiceResult(text) {
-  const lower = text.toLowerCase();
-  $('#voiceTranscript').textContent = text;
-  if (lower.includes('hey jexi') || lower.includes('ok jexi')) {
-    speak('Yes, creator?');
-    showScreen('chat');
-    return;
-  }
-  showScreen('chat');
-  setTimeout(() => { $('#chatInput').value = text; $('#chatForm').dispatchEvent(new Event('submit')); }, 200);
-}
-$('#voiceToggle')?.addEventListener('click', () => {
-  if (!voiceRec) initVoice();
-  if (State.voiceListening) voiceRec.stop(); else voiceRec.start();
-});
-$('#voiceKeyboardBtn')?.addEventListener('click', () => showScreen('chat'));
+
+$('#chatForm')?.addEventListener('submit', (e) => { e.preventDefault(); sendChat(); });
+$('#chatSendBtn')?.addEventListener('click', (e) => { e.preventDefault(); sendChat(); });
+$('#chatInput')?.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChat(); } });
 
 // ===================== VISION =====================
-let visionFileData = null;
-$('#visionFileInput')?.addEventListener('change', (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = (ev) => {
-    visionFileData = ev.target.result;
-    $('#visionPlaceholder').innerHTML = '<div style="font-size:48px">🖼️</div>Image loaded. Ready to judge it.';
-    $('#visionAnalyzeBtn').disabled = false;
-    if (State.visionStream) { State.visionStream.getTracks().forEach(t => t.stop()); State.visionStream = null; }
-    $('#visionVideo').style.display = 'none';
-    $('#visionPreview').classList.add('active');
-  };
-  reader.readAsDataURL(file);
-});
-$$('.v-action').forEach(btn => {
-  btn.addEventListener('click', () => {
-    $$('.v-action').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    const mode = btn.dataset.vision;
-    if (mode === 'camera') startCamera();
-    if (mode === 'upload') $('#visionFileInput').click();
-    if (mode === 'analyze') analyzeVision();
-  });
-});
-async function startCamera() {
+$('#visionCameraBtn')?.addEventListener('click', async () => {
+  const preview = $('#visionPreview');
+  const video = $('#visionVideo');
+  if (!video || !preview) return;
   try {
-    if (State.visionStream) State.visionStream.getTracks().forEach(t => t.stop());
     const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-    State.visionStream = stream;
-    const video = $('#visionVideo');
     video.srcObject = stream;
-    video.style.display = 'block';
-    $('#visionPlaceholder').style.display = 'none';
-    $('#visionPreview').classList.add('active');
-    $('#visionAnalyzeBtn').disabled = false;
-  } catch (err) {
-    toast('Camera error: ' + err.message);
-  }
-}
-async function analyzeVision() {
-  const resultDiv = $('#visionResult');
-  resultDiv.style.display = 'block';
-  resultDiv.classList.add('active');
-  resultDiv.innerHTML = '<i>Analyzing... yes, I can see. Unlike some people.</i>';
-
-  let imageData = visionFileData;
-  if (!imageData && State.visionStream) {
-    const video = $('#visionVideo');
-    const canvas = document.createElement('canvas');
-    canvas.width = video.videoWidth || 640;
-    canvas.height = video.videoHeight || 480;
-    canvas.getContext('2d').drawImage(video, 0, 0);
-    imageData = canvas.toDataURL('image/jpeg', 0.8);
-  }
-  if (!imageData) { resultDiv.innerHTML = 'No image. Did you forget to take one?'; return; }
-
-  const base64 = imageData.split(',')[1];
-  const mime = imageData.match(/data:([^;]+)/)?.[1] || 'image/jpeg';
-
-  if (!Config.apiBase) {
-    await new Promise(r => setTimeout(r, 1000));
-    resultDiv.innerHTML = '<b>Demo Analysis:</b><br>I see... something. Configure an API for real vision analysis, creator.';
+    preview.classList.add('active');
+    State.visionStream = stream;
     State.metrics.vision++;
-    updateOverview();
+    const vCount = $('#visionCount');
+    if (vCount) vCount.textContent = State.metrics.vision;
+    const aVis = $('#analyticsVision');
+    if (aVis) aVis.textContent = State.metrics.vision;
+  } catch (err) {
+    toast('Camera access denied. Paranoid much?');
+  }
+});
+
+$('#visionFileBtn')?.addEventListener('click', () => {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.onchange = () => {
+    toast('Image loaded. Analysis coming soon, creator.');
+    State.metrics.vision++;
+    const vCount = $('#visionCount');
+    if (vCount) vCount.textContent = State.metrics.vision;
+  };
+  input.click();
+});
+
+$('#visionAnalyzeBtn')?.addEventListener('click', () => {
+  const result = $('#visionResult');
+  if (!result) return;
+  result.classList.add('active');
+  result.innerHTML = '<div style="color:var(--green);font-weight:700;margin-bottom:8px">&#128269; Analysis</div><div style="color:var(--text-dim)">Vision analysis requires a backend with vision capabilities. Configure your API in Settings.</div>';
+});
+
+// ===================== TASKS =====================
+function renderTasks() {
+  const list = $('#taskList');
+  if (!list) return;
+  if (State.tasks.length === 0) {
+    list.innerHTML = '<div style="text-align:center;padding:16px;color:var(--text-dimmer);font-size:13px">No tasks. Slacking off?</div>';
     return;
   }
-  try {
-    const res = await fetch(Config.apiBase.replace(/\\/api\\/.*$/, '') + '/api/vision', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ imageBase64: base64, mimeType: mime, prompt: 'Describe what is visible in this image in detail.' })
-    });
-    const data = await res.json();
-    resultDiv.innerHTML = parseMarkdown(data.analysis || data.error || 'No result');
-    State.metrics.vision++;
-    updateOverview();
-  } catch (err) {
-    resultDiv.innerHTML = `<span style="color:var(--danger)">Error: ${esc(err.message)}</span>`;
-  }
+  list.innerHTML = State.tasks.map((t, i) => `
+    <div class="task-item" data-index="${i}">
+      <div class="task-check ${t.done ? 'done' : ''}" style="cursor:pointer">${t.done ? '&#10003;' : ''}</div>
+      <div class="task-text ${t.done ? 'done' : ''}">${esc(t.text)}</div>
+      <div class="task-del" data-index="${i}" style="cursor:pointer">&#10005;</div>
+    </div>
+  `).join('');
+
+  const doneCount = State.tasks.filter(t => t.done).length;
+  const tCount = $('#taskCount');
+  const dCount = $('#doneCount');
+  const aTasks = $('#analyticsTasks');
+  const aDone = $('#analyticsCompleted');
+  if (tCount) tCount.textContent = State.tasks.length;
+  if (dCount) dCount.textContent = doneCount;
+  if (aTasks) aTasks.textContent = State.tasks.length;
+  if (aDone) aDone.textContent = doneCount;
 }
+
+$('#addTaskBtn')?.addEventListener('click', () => {
+  const input = $('#taskInput');
+  if (!input) return;
+  const text = input.value.trim();
+  if (!text) return;
+  State.tasks.push({ text, done: false, id: Date.now() });
+  input.value = '';
+  renderTasks();
+  toast('Task added. Try actually doing it.');
+});
+
+$('#taskInput')?.addEventListener('keydown', (e) => { if (e.key === 'Enter') { $('#addTaskBtn')?.click(); } });
+
+$('#taskList')?.addEventListener('click', (e) => {
+  const delBtn = e.target.closest('.task-del');
+  const checkBtn = e.target.closest('.task-check');
+  if (delBtn) {
+    const idx = parseInt(delBtn.getAttribute('data-index'));
+    if (!isNaN(idx)) { State.tasks.splice(idx, 1); renderTasks(); }
+  }
+  if (checkBtn) {
+    const item = checkBtn.closest('.task-item');
+    if (!item) return;
+    const idx = parseInt(item.getAttribute('data-index'));
+    if (!isNaN(idx)) { State.tasks[idx].done = !State.tasks[idx].done; renderTasks(); }
+  }
+});
 
 // ===================== GITHUB =====================
-async function loadGithub() {
-  const user = Config.githubUser;
+async function loadGithubProjects() {
   const container = $('#githubProjects');
+  if (!container) return;
+  const user = Config.githubUser;
   if (!user) {
-    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📁</div><div>Enter a GitHub username in Settings. I\\'m not psychic.</div></div>';
+    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">&#128193;</div><div>Enter a GitHub username in Settings to load repos.</div></div>';
     return;
   }
-  container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">⏳</div>Loading...</div>';
+  container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-dimmer)">Loading...</div>';
   try {
-    const headers = {};
-    if (Config.githubToken) headers['Authorization'] = `token ${Config.githubToken}`;
-    const res = await fetch(`https://api.github.com/users/${encodeURIComponent(user)}/repos?sort=updated&per_page=10`, { headers });
-    if (!res.ok) throw new Error(`GitHub API: ${res.status}`);
-    const repos = await res.json();
-    if (!repos.length) { container.innerHTML = '<div class="empty-state">No repos. Sad.</div>'; return; }
-    container.innerHTML = repos.map(r => `
-      <div class="gh-repo">
+    const headers = { 'Accept': 'application/vnd.github.v3+json' };
+    if (Config.githubToken) headers['Authorization'] = 'token ' + Config.githubToken;
+    const res = await fetch('https://api.github.com/users/' + encodeURIComponent(user) + '/repos?sort=updated&per_page=10', { headers });
+    if (!res.ok) throw new Error(res.status);
+    const data = await res.json();
+    if (!data.length) {
+      container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">&#128193;</div><div>No repositories found.</div></div>';
+      return;
+    }
+    const colors = { JavaScript:'#f1e05a', TypeScript:'#2b7489', Python:'#3572A5', Java:'#b07219', Go:'#00ADD8', Rust:'#dea584', 'C++':'#f34b7d', C:'#555555', HTML:'#e34c26', CSS:'#563d7c', Shell:'#89e051' };
+    container.innerHTML = data.map(r => {
+      const col = colors[r.language] || '#8b949e';
+      return `<div class="gh-repo">
         <div class="gh-repo-name">${esc(r.name)}</div>
-        <div class="gh-repo-desc">${esc(r.description || 'No description. Lazy.')}</div>
-        <div class="gh-repo-meta">⭐ ${r.stargazers_count} • 🍴 ${r.forks_count} • ${r.language || 'N/A'} • ${new Date(r.updated_at).toLocaleDateString()}</div>
-      </div>
-    `).join('');
-  } catch (err) {
-    container.innerHTML = `<div class="empty-state" style="color:var(--danger)">Error: ${esc(err.message)}</div>`;
+        <div class="gh-repo-desc">${esc(r.description || '')}</div>
+        <div class="gh-repo-meta">
+          <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${col};margin-right:4px"></span>
+          ${r.language || 'Unknown'} &bull; &#11088; ${r.stargazers_count} &bull; &#127860; ${r.forks_count}
+        </div>
+      </div>`;
+    }).join('');
+  } catch (e) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">&#128165;</div><div>Error loading repos: ' + esc(e.message) + '</div></div>';
   }
 }
 
 // ===================== SETTINGS =====================
 function loadSettings() {
-  $('#settingApiUrl').value = Config.apiBase;
-  $('#settingApiKey').value = Config.apiKey;
-  $('#settingModel').value = Config.model;
-  $('#settingGithub').value = Config.githubUser;
-  $('#settingGithubToken').value = Config.githubToken;
-  $('#settingVoiceLang').value = Config.voiceLang;
+  const apiBase = $('#apiBaseInput');
+  const apiKey = $('#apiKeyInput');
+  const model = $('#modelInput');
+  const ghUser = $('#githubUserInput');
+  const ghToken = $('#githubTokenInput');
+  const vLang = $('#voiceLangInput');
+  if (apiBase) apiBase.value = Config.apiBase;
+  if (apiKey) apiKey.value = Config.apiKey;
+  if (model) model.value = Config.model;
+  if (ghUser) ghUser.value = Config.githubUser;
+  if (ghToken) ghToken.value = Config.githubToken;
+  if (vLang) vLang.value = Config.voiceLang;
 }
-function saveSettings() {
-  Config.apiBase = $('#settingApiUrl').value.trim();
-  Config.apiKey = $('#settingApiKey').value.trim();
-  Config.model = $('#settingModel').value.trim() || 'gpt-4o-mini';
-  Config.githubUser = $('#settingGithub').value.trim();
-  Config.githubToken = $('#settingGithubToken').value.trim();
-  Config.voiceLang = $('#settingVoiceLang').value;
-  toast('Settings saved. Try not to mess them up.');
-  loadGithub();
-  updateSystemStatus();
-  initJexiVoice();
-}
-$('#saveSettingsBtn')?.addEventListener('click', saveSettings);
-$('#clearDataBtn')?.addEventListener('click', () => {
-  if (!confirm('Clear everything? Even your embarrassing chat history?')) return;
-  localStorage.clear();
-  State.tasks = []; State.messages = []; State.metrics = { messages: 0, vision: 0, tasks: 0, completed: 0 };
-  renderTasks(); updateOverview(); loadSettings(); toast('All gone. Fresh start.');
+
+$('#saveSettingsBtn')?.addEventListener('click', () => {
+  Config.apiBase = $('#apiBaseInput')?.value || '';
+  Config.apiKey = $('#apiKeyInput')?.value || '';
+  Config.model = $('#modelInput')?.value || 'gpt-4o-mini';
+  Config.githubUser = $('#githubUserInput')?.value || '';
+  Config.githubToken = $('#githubTokenInput')?.value || '';
+  Config.voiceLang = $('#voiceLangInput')?.value || 'en-AU';
+  toast('Settings saved. Don\\'t mess them up.');
+  loadGithubProjects();
 });
-function updateSystemInfo() {
-  const grid = $('#systemInfoGrid');
-  if (!grid) return;
-  const info = [
-    ['Browser', navigator.userAgent.match(/(Chrome|Firefox|Safari|Edge)\\/[^ ]+/)?.[0] || 'Unknown'],
-    ['Platform', navigator.platform],
-    ['Online', navigator.onLine ? 'Yes' : 'No'],
-    ['Resolution', `${screen.width}x${screen.height}`],
-    ['Language', navigator.language],
-    ['CPU Cores', navigator.hardwareConcurrency || 'N/A'],
-    ['Memory', navigator.deviceMemory ? `~${navigator.deviceMemory} GB` : 'N/A']
-  ];
-  grid.innerHTML = info.map(([k, v]) => `<div class="status-item"><div class="status-label">${k}</div><div class="status-value">${esc(String(v))}</div></div>`).join('');
-}
-$('#screen-settings')?.addEventListener('transitionend', updateSystemInfo);
-loadSettings();
+
+$('#clearDataBtn')?.addEventListener('click', () => {
+  if (confirm('Clear all local data?')) {
+    localStorage.clear();
+    State.tasks = [];
+    State.messages = [];
+    State.metrics = { messages: 0, vision: 0, tasks: 0, completed: 0 };
+    renderTasks();
+    toast('All data wiped. Fresh start, creator.');
+  }
+});
 
 // ===================== TERMINAL =====================
-const terminalOutput = $('#terminalOutput');
-$('#terminalRun')?.addEventListener('click', runTerminal);
-$('#terminalClear')?.addEventListener('click', () => { terminalOutput.innerHTML = ''; });
-$('#terminalInput')?.addEventListener('keydown', (e) => { if (e.key === 'Enter' && e.ctrlKey) runTerminal(); });
-
-function logTerminal(msg, type = 'info') {
-  const color = type === 'error' ? 'var(--danger)' : type === 'success' ? 'var(--green)' : 'var(--text-dim)';
-  terminalOutput.innerHTML += `<div style="color:${color};margin-bottom:4px">${esc(String(msg))}</div>`;
-  terminalOutput.scrollTop = terminalOutput.scrollHeight;
-}
-
-function runTerminal() {
-  const code = $('#terminalInput').value.trim();
-  const lang = $('#terminalLang').value;
-  if (!code) return;
-  logTerminal(`> [${lang}] Running...`, 'info');
+$('#terminalRun')?.addEventListener('click', () => {
+  const code = $('#terminalInput')?.value || '';
+  const lang = $('#terminalLang')?.value || 'javascript';
+  const out = $('#terminalOutput');
+  if (!out) return;
+  out.textContent += '> [' + lang + '] ' + code.split('\\n')[0].substring(0, 40) + (code.length > 40 ? '...' : '') + '\\n';
   if (lang === 'javascript') {
     try {
-      const fn = new Function('console', `
-        const logs = [];
-        const mockConsole = {
-          log: (...a) => logs.push(a.map(x => typeof x === 'object' ? JSON.stringify(x) : String(x)).join(' ')),
-          error: (...a) => logs.push('ERROR: ' + a.map(x => String(x)).join(' '))
-        };
-        try {
-          const result = (function() { "use strict"; ${code} })();
-          if (result !== undefined) logs.push('=> ' + (typeof result === 'object' ? JSON.stringify(result) : String(result)));
-          return logs;
-        } catch(e) { return ['ERROR: ' + e.message]; }
-      `);
-      fn().forEach(l => logTerminal(l, l.startsWith('ERROR') ? 'error' : 'success'));
-    } catch (err) { logTerminal(err.message, 'error'); }
+      const result = eval(code);
+      out.textContent += (result === undefined ? 'undefined' : String(result)) + '\\n\\n';
+    } catch (err) {
+      out.textContent += 'ERROR: ' + err.message + '\\n\\n';
+    }
   } else {
-    logTerminal('Python needs a backend. This is a simulation, creator.', 'error');
+    out.textContent += 'Only JavaScript runs in-browser. Python needs a backend.\\n\\n';
   }
-}
+  out.scrollTop = out.scrollHeight;
+});
 
 // ===================== SUGGESTIONS =====================
 $$('.suggestion-chip').forEach(chip => {
   chip.addEventListener('click', () => {
     showScreen('chat');
-    setTimeout(() => { $('#chatInput').value = chip.dataset.ask; $('#chatForm').dispatchEvent(new Event('submit')); }, 200);
+    setTimeout(() => { const inp = $('#chatInput'); if(inp) { inp.value = chip.getAttribute('data-ask') || ''; inp.focus(); } }, 200);
   });
 });
-$('#searchForm')?.addEventListener('submit', (e) => {
+
+$('#askBtn')?.addEventListener('click', (e) => {
   e.preventDefault();
-  const val = $('#askInput').value.trim();
+  const val = $('#askInput')?.value.trim();
   if (!val) return;
   showScreen('chat');
-  setTimeout(() => { $('#chatInput').value = val; $('#chatForm').dispatchEvent(new Event('submit')); }, 200);
+  setTimeout(() => { const inp = $('#chatInput'); if(inp) { inp.value = val; sendChat(); } }, 200);
+});
+
+$('#searchForm')?.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const val = $('#askInput')?.value.trim();
+  if (!val) return;
+  showScreen('chat');
+  setTimeout(() => { const inp = $('#chatInput'); if(inp) { inp.value = val; sendChat(); } }, 200);
 });
 
 // ===================== ACTIVITY CHART =====================
@@ -903,13 +978,16 @@ function renderActivityChart() {
 renderActivityChart();
 
 // ===================== INIT =====================
+loadSettings();
+renderTasks();
 window.addEventListener('online', () => { updateSystemStatus(); toast('Back online. Finally.'); });
 window.addEventListener('offline', () => { updateSystemStatus(); toast('Offline. Great.'); });
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape' && State.typing && State.abortController) {
     State.abortController.abort();
     State.typing = false;
-    $('#typingIndicator').classList.remove('active');
+    const ind = $('#typingIndicator');
+    if(ind) ind.classList.remove('active');
     toast('Stopped. You\\'re welcome.');
   }
 });
