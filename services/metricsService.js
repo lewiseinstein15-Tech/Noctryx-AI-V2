@@ -1,5 +1,5 @@
-const db = require('../database/db');
-const crypto = require('crypto');
+import db from '../database/db.js';
+import crypto from 'crypto';
 
 class MetricsService {
   constructor() { this.activeStreams = 0; }
@@ -18,4 +18,5 @@ class MetricsService {
     } catch { return { activeStreams: this.activeStreams, uptime: process.uptime(), providers: [] }; }
   }
 }
-module.exports = new MetricsService();
+
+export default new MetricsService();
