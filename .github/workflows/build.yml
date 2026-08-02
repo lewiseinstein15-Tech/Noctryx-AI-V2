@@ -27,10 +27,7 @@ jobs:
         run: npm install
 
       - name: Build web assets
-        run: |
-          mkdir -p dist
-          cp index.html dist/
-          cp manifest.json dist/
+        run: node build.js
 
       - name: Add Capacitor Android platform
         run: |
@@ -50,5 +47,5 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: noctryx-ai-apk
+          name: jexi-ai-apk
           path: android/app/build/outputs/apk/debug/app-debug.apk
