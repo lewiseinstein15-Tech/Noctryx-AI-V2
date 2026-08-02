@@ -9,7 +9,8 @@ const COPY_LIST = [
   'manifest.json',
   'capacitor.config.json',
   'icon.svg',
-  'icon-maskable.svg'
+  'icon-maskable.svg',
+  'api'
 ];
 
 if (!fs.existsSync(DIST)) fs.mkdirSync(DIST, { recursive: true });
@@ -30,4 +31,11 @@ COPY_LIST.forEach((item) => {
   console.log(`✅ Copied: ${item}`);
 });
 
-console.log('🚀 Build complete. dist/ is ready for Capacitor.');
+const swSrc = path.join(SRC, 'sw.js');
+const swDest = path.join(DIST, 'sw.js');
+if (fs.existsSync(swSrc)) {
+  fs.copyFileSync(swSrc, swDest);
+  console.log('✅ Copied: sw.js');
+}
+
+console.log('🚀 Build complete. dist/ is ready.');
