@@ -23,9 +23,14 @@ app.get('/api/agents', (req, res) => {
   });
 });
 
+// Compatible with the frontend: accepts OpenAI-style body and streams OpenAI-style SSE
 app.post('/api/chat', async (req, res) => {
-  const { message, history = [], stream = true } = req.body || {};
-  if (!message) return res.status(400).json({ error: 'message required' });
+  const body = req.body || {};
+  const messages = body.messages || (body.message ? [{ role: 'user', content: body.message }] : null);
+
+  if (!messages || !Array.isArray(messages) || !messages.length) {
+    return res.status(400).json({ error: 'messages (or message) required' });
+  }
 
   res.writeHead(200, {
     'Content-Type': 'text/event-stream',
@@ -33,7 +38,6 @@ app.post('/api/chat', async (req, res) => {
     'Connection': 'keep-alive',
     'X-Accel-Buffering': 'no'
   });
-  const send = (obj) => res.write('data: ' + JSON.stringify(obj) + '\n\n');
 
   const ac = new AbortController();
   req.on('close', () => ac.abort());
@@ -41,21 +45,34 @@ app.post('/api/chat', async (req, res) => {
   try {
     const apiKey = process.env.OPENAI_API_KEY || process.env.GROQ_API_KEY;
     const endpoint = process.env.AI_ENDPOINT || 'https://api.openai.com/v1/chat/completions';
-    const model = process.env.AI_MODEL || 'gpt-4o-mini';
+    const model = process.env.AI_MODEL || process.env.OPENAI_MODEL || 'gpt-4o-mini';
 
-    const messages = [
-      { role: 'system', content: JEXI_PERSONA },
-      ...(history || []).slice(-6),
-      { role: 'user', content: message }
-    ];
+    const hasSystem = messages.some(m => m.role === 'system');
+    const fullMessages = hasSystem
+      ? messages
+      : [{ role: 'system', content: JEXI_PERSONA }, ...messages];
+
+    if (!apiKey) {
+      const demo = "No API key set. Add OPENAI_API_KEY or GROQ_API_KEY to your environment. I'm running in demo mode.";
+      res.write('data: ' + JSON.stringify({ choices: [{ delta: { content: demo } }] }) + '\n\n');
+      res.write('data: [DONE]\n\n');
+      res.end();
+      return;
+    }
 
     const r = await fetch(endpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        ...(apiKey ? { 'Authorization': `Bearer ${apiKey}` } : {})
+        Authorization: `Bearer ${apiKey}`
       },
-      body: JSON.stringify({ model, messages, stream: true }),
+      body: JSON.stringify({
+        model,
+        messages: fullMessages,
+        stream: true,
+        temperature: 0.7,
+        max_tokens: 2048
+      }),
       signal: ac.signal
     });
 
@@ -79,13 +96,17 @@ app.post('/api/chat', async (req, res) => {
         try {
           const j = JSON.parse(payload);
           const chunk = j.choices?.[0]?.delta?.content || '';
-          if (chunk) send({ type: 'token', text: chunk });
+          if (chunk) {
+            res.write('data: ' + JSON.stringify({ choices: [{ delta: { content: chunk } }] }) + '\n\n');
+          }
         } catch {}
       }
     }
-    send({ type: 'done' });
+    res.write('data: [DONE]\n\n');
   } catch (err) {
-    if (err.name !== 'AbortError') send({ type: 'error', message: err.message });
+    if (err.name !== 'AbortError') {
+      res.write('data: ' + JSON.stringify({ error: err.message }) + '\n\n');
+    }
   } finally {
     res.end();
   }
