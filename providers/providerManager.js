@@ -1,8 +1,8 @@
-const GroqProvider = require('./groq');
-const GeminiProvider = require('./gemini');
-const OpenAIProvider = require('./openai');
-const SystemPromptService = require('../services/systemPrompt');
-const Logger = require('../services/logger');
+import GroqProvider from './groq.js';
+import GeminiProvider from './gemini.js';
+import OpenAIProvider from './openai.js';
+import SystemPromptService from '../services/systemPrompt.js';
+import Logger from '../services/logger.js';
 
 class ProviderManager {
   constructor() {
@@ -62,4 +62,4 @@ class ProviderManager {
   }
 }
 
-module.exports = new ProviderManager();
+export default new ProviderManager();
