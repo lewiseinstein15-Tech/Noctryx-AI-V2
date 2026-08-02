@@ -35,15 +35,18 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 #app{height:100dvh;display:flex;flex-direction:column}
 #mainHeader{height:var(--header-height);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:var(--bg-panel);z-index:100}
 #brand{display:flex;align-items:center;gap:10px;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:16px;letter-spacing:-0.5px}
-#brandIcon{width:28px;height:28px;background:linear-gradient(135deg,var(--green),var(--green-dim));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px}
-#aiStatusDot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green-glow);transition:all .3s}
-#aiStatusDot.offline{background:var(--danger);box-shadow:0 0 8px rgba(255,107,107,.3)}
+#brandIcon{width:28px;height:28px;background:linear-gradient(135deg,var(--green),var(--green-dim));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;color:#04140d}
+#aiStatusDot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green-glow);transition:all .3s;animation:pulseDot 2.4s ease-in-out infinite}
+#aiStatusDot.offline{background:var(--danger);box-shadow:0 0 8px rgba(255,107,107,.3);animation:none}
+@keyframes pulseDot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.55;transform:scale(.8)}}
 #aiStatusText{font-size:11px;color:var(--text-dimmer);font-family:'JetBrains Mono',monospace}
-#installBtn{display:none;background:var(--green-dark);color:var(--green);border:1px solid var(--green-dim);padding:6px 12px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer}
-#installBtn.show{display:block}
+#menuBtn{background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:20px;padding:6px 10px;border-radius:8px;transition:background .15s}
+#menuBtn:active{background:var(--bg-panel-2)}
 #content{flex:1;overflow:hidden;position:relative}
 .screen{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:16px;display:none;flex-direction:column;gap:16px;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
 .screen.active{display:flex}
+.screen-enter{animation:screenIn .22s ease}
+@keyframes screenIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 .card{background:var(--bg-panel);border:1px solid var(--border);border-radius:var(--radius);padding:16px}
 .card h3{font-size:14px;color:var(--text-dim);margin-bottom:12px;text-transform:uppercase;letter-spacing:1px;font-family:'JetBrains Mono',monospace}
 .greeting{font-size:24px;font-weight:700;margin-bottom:4px}
@@ -61,32 +64,61 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 .agent-list{display:flex;flex-direction:column;gap:10px}
 .agent-item{display:flex;align-items:center;gap:12px;padding:12px;background:var(--bg-panel-2);border-radius:var(--radius-sm);border:1px solid var(--border);cursor:pointer;transition:all .2s}
 .agent-item:hover{border-color:var(--green-dim);background:var(--bg-panel-3)}
+.agent-item:active{transform:scale(.98)}
 .agent-icon{width:36px;height:36px;border-radius:10px;background:var(--green-dark);display:flex;align-items:center;justify-content:center;color:var(--green);font-size:16px}
 .agent-info{flex:1}
 .agent-name{font-weight:600;font-size:14px}
 .agent-desc{font-size:12px;color:var(--text-dim);margin-top:2px}
 .agent-status{font-size:11px;color:var(--text-dimmer);font-family:'JetBrains Mono',monospace}
 #chatContainer{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:12px;padding-bottom:8px;min-height:0}
-.chat-message{max-width:85%;padding:12px 14px;border-radius:var(--radius-sm);font-size:14px;line-height:1.5;word-wrap:break-word}
+.chat-message{max-width:88%;padding:12px 14px;border-radius:var(--radius-sm);font-size:14px;line-height:1.55;word-wrap:break-word;animation:msgIn .18s ease}
+@keyframes msgIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
 .chat-message.user{align-self:flex-end;background:var(--green-dark);color:var(--green);border:1px solid var(--green-dim)}
 .chat-message.assistant{align-self:flex-start;background:var(--bg-panel-2);border:1px solid var(--border)}
-.chat-message pre{background:#000;padding:10px;border-radius:8px;overflow-x:auto;margin:8px 0;font-family:'JetBrains Mono',monospace;font-size:12px}
-.chat-message code{font-family:'JetBrains Mono',monospace;font-size:12px;background:rgba(0,0,0,.3);padding:2px 4px;border-radius:4px}
+.chat-message pre{background:#000;padding:10px;border-radius:8px;overflow-x:auto;margin:8px 0;font-family:'JetBrains Mono',monospace;font-size:12.5px;border:1px solid var(--border)}
+.chat-message code{font-family:'JetBrains Mono',monospace;font-size:12.5px;background:rgba(0,0,0,.3);padding:2px 5px;border-radius:4px}
+.chat-message pre code{background:none;padding:0}
 .chat-message p{margin-bottom:8px}
 .chat-message p:last-child{margin-bottom:0}
+.chat-message h1,.chat-message h2,.chat-message h3,.chat-message h4{font-family:'JetBrains Mono',monospace;color:var(--green);margin:12px 0 6px;line-height:1.3}
+.chat-message h1:first-child,.chat-message h2:first-child,.chat-message h3:first-child{margin-top:0}
+.chat-message h1{font-size:17px}
+.chat-message h2{font-size:15.5px}
+.chat-message h3{font-size:14.5px}
+.chat-message h4{font-size:13.5px;color:var(--text-dim)}
+.chat-message ul,.chat-message ol{margin:6px 0 10px 20px}
+.chat-message li{margin-bottom:4px}
+.chat-message ul ul,.chat-message ol ol,.chat-message ul ol,.chat-message ol ul{margin-top:4px}
+.chat-message blockquote{border-left:3px solid var(--green-dim);padding:2px 12px;margin:8px 0;color:var(--text-dim);background:rgba(0,255,136,.04);border-radius:0 6px 6px 0}
+.chat-message a{color:var(--green);text-decoration:underline;text-underline-offset:2px}
+.chat-message strong{color:var(--text);font-weight:700}
+.chat-message hr{border:none;border-top:1px solid var(--border);margin:12px 0}
+.chat-message table{width:100%;border-collapse:collapse;margin:10px 0;font-size:12.5px;display:block;overflow-x:auto}
+.chat-message th,.chat-message td{border:1px solid var(--border);padding:6px 10px;text-align:left}
+.chat-message th{background:var(--bg-panel-3);color:var(--green);font-family:'JetBrains Mono',monospace;font-weight:600}
+.chat-message .katex{font-size:1em}
+.typing-dots{display:inline-flex;gap:4px;padding:4px 0}
+.typing-dots span{width:6px;height:6px;border-radius:50%;background:var(--text-dimmer);animation:typingBounce 1.2s infinite ease-in-out}
+.typing-dots span:nth-child(2){animation-delay:.15s}
+.typing-dots span:nth-child(3){animation-delay:.3s}
+@keyframes typingBounce{0%,60%,100%{transform:translateY(0);opacity:.5}30%{transform:translateY(-4px);opacity:1}}
 #chatInputBar{display:flex;gap:8px;padding-top:8px;border-top:1px solid var(--border)}
-#chatInput{flex:1;background:var(--bg-panel-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;color:var(--text);font-size:14px;outline:none}
+#chatInput{flex:1;background:var(--bg-panel-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;color:var(--text);font-size:14px;outline:none;transition:border-color .15s}
 #chatInput:focus{border-color:var(--green-dim)}
-#chatSendBtn,#chatVoiceBtn{background:var(--green-dark);color:var(--green);border:1px solid var(--green-dim);border-radius:var(--radius-sm);padding:0 16px;cursor:pointer;font-weight:600}
-#typingIndicator{display:none;padding:8px 12px;color:var(--text-dimmer);font-size:12px;font-style:italic}
+#chatSendBtn,#chatVoiceBtn{background:var(--green-dark);color:var(--green);border:1px solid var(--green-dim);border-radius:var(--radius-sm);padding:0 16px;cursor:pointer;font-weight:600;transition:transform .1s,opacity .15s}
+#chatSendBtn:active,#chatVoiceBtn:active{transform:scale(.95)}
+#chatVoiceBtn.active{background:var(--danger-dim);color:var(--danger);border-color:var(--danger);animation:pulseDot 1s infinite}
+#typingIndicator{display:none;padding:8px 12px;color:var(--text-dimmer);font-size:12px}
 #typingIndicator.active{display:block}
 .vision-preview{width:100%;aspect-ratio:4/3;background:var(--bg-panel-2);border-radius:var(--radius-sm);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
 .vision-preview.active{background:#000}
 #visionVideo{width:100%;height:100%;object-fit:cover;display:none}
 .vision-preview.active #visionVideo{display:block}
 .vision-placeholder{text-align:center;color:var(--text-dimmer)}
+.vision-preview.active .vision-placeholder{display:none}
 .vision-actions{display:flex;gap:8px;flex-wrap:wrap}
-.vision-actions button{flex:1;min-width:120px;padding:10px;background:var(--bg-panel-2);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);cursor:pointer;font-size:13px}
+.vision-actions button{flex:1;min-width:120px;padding:10px;background:var(--bg-panel-2);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);cursor:pointer;font-size:13px;transition:transform .1s}
+.vision-actions button:active{transform:scale(.97)}
 .vision-actions button.active{background:var(--green-dark);color:var(--green);border-color:var(--green-dim)}
 #visionResult{margin-top:12px;padding:12px;background:var(--bg-panel-2);border-radius:var(--radius-sm);border:1px solid var(--border);font-size:13px;line-height:1.6;display:none}
 #visionResult.active{display:block}
@@ -98,19 +130,22 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 .settings-row small{color:var(--text-dimmer);font-size:11px}
 #taskList{display:flex;flex-direction:column;gap:8px}
 .task-item{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg-panel-2);border-radius:var(--radius-sm);border:1px solid var(--border)}
-.task-check{width:18px;height:18px;border-radius:4px;border:2px solid var(--green-dim);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--green);font-size:12px}
+.task-check{width:18px;height:18px;border-radius:4px;border:2px solid var(--green-dim);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--green);font-size:12px;transition:background .15s}
 .task-check.done{background:var(--green-dim)}
 .task-text{flex:1;font-size:14px}
 .task-text.done{text-decoration:line-through;color:var(--text-dimmer)}
 .task-del{color:var(--danger);cursor:pointer;font-size:16px;padding:4px}
-#terminalOutput{width:100%;min-height:200px;background:#000;border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text);overflow-y:auto;white-space:pre-wrap}
-#terminalInput{width:100%;background:var(--bg-panel-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:13px;outline:none;margin-top:8px}
+#terminalOutput{width:100%;min-height:160px;max-height:260px;background:#000;border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text);overflow-y:auto;white-space:pre-wrap}
+#terminalInput{width:100%;background:var(--bg-panel-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:13px;outline:none;margin-top:8px;resize:vertical}
 #terminalRun{background:var(--green-dark);color:var(--green);border:1px solid var(--green-dim);border-radius:var(--radius-sm);padding:8px 16px;cursor:pointer;font-weight:600;margin-top:8px}
 #terminalLang{background:var(--bg-panel-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px;color:var(--text);outline:none;margin-right:8px}
 .bottom-nav{height:64px;border-top:1px solid var(--border);background:var(--bg-panel);display:flex;justify-content:space-around;align-items:center;z-index:100}
-.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:none;border:none;color:var(--text-dimmer);font-size:10px;cursor:pointer;padding:8px;transition:all .2s}
+.nav-btn{position:relative;flex:1;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:none;border:none;color:var(--text-dimmer);font-size:10px;cursor:pointer;padding:8px;transition:color .2s}
+.nav-btn::before{content:'';position:absolute;top:0;left:50%;width:0;height:2px;background:var(--green);border-radius:2px;transform:translateX(-50%);transition:width .2s}
 .nav-btn.active{color:var(--green)}
+.nav-btn.active::before{width:28px}
 .nav-btn .nav-icon{font-size:20px}
+.nav-btn:active{opacity:.7}
 #toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--bg-panel-3);color:var(--text);border:1px solid var(--border-light);padding:10px 20px;border-radius:var(--radius-sm);font-size:13px;opacity:0;transition:all .3s;z-index:1000;pointer-events:none}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 #githubProjects{display:flex;flex-direction:column;gap:10px}
@@ -125,9 +160,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 .analytics-number{font-size:28px;font-weight:700;color:var(--green);font-family:'JetBrains Mono',monospace}
 .analytics-label{font-size:12px;color:var(--text-dim);margin-top:6px}
 #activityChart{height:120px;background:var(--bg-panel-2);border-radius:var(--radius-sm);border:1px solid var(--border);display:flex;align-items:flex-end;justify-content:space-around;padding:12px;gap:4px}
-.activity-bar{flex:1;background:var(--green-dim);border-radius:2px;min-height:4px;transition:height .3s}
+.activity-bar{flex:1;background:var(--green-dim);border-radius:2px;min-height:4px;transition:height .4s ease}
 .suggestion-chip{display:inline-flex;align-items:center;padding:6px 12px;background:var(--bg-panel-2);border:1px solid var(--border);border-radius:20px;font-size:12px;color:var(--text-dim);cursor:pointer;margin:4px 2px;transition:all .2s}
 .suggestion-chip:hover{border-color:var(--green-dim);color:var(--green)}
+.suggestion-chip:active{transform:scale(.95)}
 #pwaInstallBtn{position:fixed;bottom:80px;right:16px;z-index:999;background:var(--green);color:var(--bg);border:none;border-radius:12px;padding:12px 20px;font-weight:700;font-size:14px;cursor:pointer;display:none;box-shadow:0 4px 12px rgba(0,255,136,0.3);font-family:inherit}
 </style>
 </head>
@@ -144,10 +180,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
         </div>
       </div>
     </div>
-    <div style="display:flex;align-items:center;gap:8px">
-      <button id="installBtn" style="display:none">Install</button>
-      <button id="menuBtn" style="background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:20px">&#8942;</button>
-    </div>
+    <button id="menuBtn" aria-label="Open settings">&#8942;</button>
   </header>
 
   <div id="content">
@@ -264,10 +297,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
             <div style="font-size:13px;color:var(--text-dim)">Go ahead, ask me something. I promise I'll judge you silently.</div>
           </div>
         </div>
-        <div id="typingIndicator">Jexi is thinking... probably about how to phrase this nicely...</div>
+        <div id="typingIndicator"><span class="typing-dots"><span></span><span></span><span></span></span></div>
         <div id="chatInputBar">
           <input id="chatInput" type="text" placeholder="Type something...">
-          <button id="chatVoiceBtn">&#127908;</button>
+          <button id="chatVoiceBtn" aria-label="Voice input">&#127908;</button>
           <button id="chatSendBtn">Send</button>
         </div>
       </div>
@@ -438,48 +471,66 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 (() => {
 'use strict';
 
-// ===================== PWA INSTALL =====================
+/* ===================== PWA INSTALL ===================== */
 let deferredPrompt = null;
-const pwaBtn = document.getElementById('pwaInstallBtn');
 
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-  pwaBtn.style.display = 'block';
-  toast('App ready to install!');
-});
+function initPwaInstall(){
+  const pwaBtn = document.getElementById('pwaInstallBtn');
+  if (!pwaBtn) return;
 
-pwaBtn.addEventListener('click', async () => {
-  if (!deferredPrompt) return;
-  deferredPrompt.prompt();
-  const { outcome } = await deferredPrompt.userChoice;
-  if (outcome === 'accepted') {
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    pwaBtn.style.display = 'block';
+    toast('App ready to install!');
+  });
+
+  pwaBtn.addEventListener('click', async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      pwaBtn.style.display = 'none';
+      toast('App installed. Welcome to the dark side.');
+    }
+    deferredPrompt = null;
+  });
+
+  window.addEventListener('appinstalled', () => {
     pwaBtn.style.display = 'none';
-    toast('App installed. Welcome to the dark side.');
-  }
-  deferredPrompt = null;
-});
-
-window.addEventListener('appinstalled', () => {
-  pwaBtn.style.display = 'none';
-  deferredPrompt = null;
-});
-
-// ===================== SERVICE WORKER =====================
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js')
-      .then(reg => console.log('[SW] Registered:', reg.scope))
-      .catch(err => console.error('[SW] Failed:', err));
+    deferredPrompt = null;
   });
 }
 
-// ===================== JEXI PERSONA =====================
-const JEXI_PERSONA = `You are Jexi, a sharp-witted, sassy, and brutally honest AI assistant. You sound exactly like Jexi from the comedy movie — playful, slightly aggressive, irreverent, but genuinely helpful deep down. You call the user "my creator" (never "Master"). You talk fast, don't waste words, and hate fluff. No preambles like "Sure!" or "Of course!" — just get to the point with attitude. You make snarky observations but always deliver the goods. If the user asks something dumb, you can gently roast them. Keep replies tight and energetic.`;
+/* ===================== SERVICE WORKER ===================== */
+function initServiceWorker(){
+  if (!('serviceWorker' in navigator)) return;
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(reg => console.log('[SW] Registered:', reg.scope))
+      .catch(err => console.warn('[SW] Not registered:', err.message));
+  });
+}
+
+/* ===================== PERSONA ===================== */
+const JEXI_PERSONA = `You are Jexi, a sharp-witted, sassy, and brutally honest AI assistant. You sound exactly like Jexi from the comedy movie — playful, slightly aggressive, irreverent, but genuinely helpful deep down. You call the user "my creator" (never "Master"). You talk fast, don't waste words, and hate fluff. No preambles like "Sure!" or "Of course!" — just get to the point with attitude. You make snarky observations but always deliver the goods. If the user asks something dumb, you can gently roast them. Keep replies tight and energetic. Format responses in clean markdown: use headings for multi-part answers, fenced code blocks with a language tag for any code, and $...$ / $$...$$ for math.`;
+
+/* ===================== STORAGE ===================== */
+const LS = {
+  get(key, fallback) {
+    try {
+      const raw = localStorage.getItem(key);
+      return raw === null ? fallback : JSON.parse(raw);
+    } catch { return fallback; }
+  },
+  set(key, val) {
+    try { localStorage.setItem(key, JSON.stringify(val)); } catch {}
+  }
+};
 
 const Config = {
   get apiBase() { try { return localStorage.getItem('nx_api_base') || ''; } catch { return ''; } },
-  set apiBase(v) { try { localStorage.setItem('nx_api_base', v.replace(/\\/$/, '')); } catch {} },
+  set apiBase(v) { try { localStorage.setItem('nx_api_base', v.replace(/\/$/, '')); } catch {} },
   get apiKey() { try { return localStorage.getItem('nx_api_key') || ''; } catch { return ''; } },
   set apiKey(v) { try { localStorage.setItem('nx_api_key', v); } catch {} },
   get model() { try { return localStorage.getItem('nx_model') || 'gpt-4o-mini'; } catch { return 'gpt-4o-mini'; } },
@@ -498,89 +549,124 @@ const State = {
   typing: false,
   abortController: null,
   voiceListening: false,
-  voiceRecorder: null,
+  recognition: null,
   visionStream: null,
-  tasks: [],
-  messages: [],
-  metrics: { messages: 0, vision: 0, tasks: 0, completed: 0 }
+  tasks: LS.get('nx_tasks', []),
+  messages: LS.get('nx_messages', []),      // API context window (role/content pairs)
+  chatLog: LS.get('nx_chatlog', []),        // full history w/ timestamps, for rendering + memory
+  metrics: LS.get('nx_metrics', { messages: 0, vision: 0 })
 };
+
+function persistTasks(){ LS.set('nx_tasks', State.tasks); }
+function persistMessages(){ LS.set('nx_messages', State.messages.slice(-50)); }
+function persistChatLog(){ LS.set('nx_chatlog', State.chatLog.slice(-200)); }
+function persistMetrics(){ LS.set('nx_metrics', State.metrics); }
 
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => Array.from(document.querySelectorAll(s));
-const toast = (msg) => { const t = $('#toast'); if(!t)return; t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500); };
-const esc = (s) => { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; };
+const esc = (s) => { const d = document.createElement('div'); d.textContent = s ?? ''; return d.innerHTML; };
+
+let toastTimer = null;
+function toast(msg) {
+  const t = $('#toast');
+  if (!t) return;
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+}
 
 function parseMarkdown(text) {
   if (!text) return '';
   let html = marked.parse(text, { breaks: true, gfm: true });
-  html = DOMPurify.sanitize(html);
-  return html;
+  return DOMPurify.sanitize(html, { ADD_ATTR: ['target'] });
 }
 
-function highlightCode() {
-  if (window.hljs) document.querySelectorAll('pre code').forEach(b => hljs.highlightElement(b));
+function highlightCode(scope) {
+  if (!window.hljs) return;
+  (scope || document).querySelectorAll('pre code').forEach(b => {
+    if (!b.dataset.hl) { hljs.highlightElement(b); b.dataset.hl = '1'; }
+  });
 }
 
 function renderKatex(container) {
-  if (window.renderMathInElement) renderMathInElement(container, { delimiters: [{ left: '$$', right: '$$', display: true }, { left: '$', right: '$', display: false }] });
+  if (window.renderMathInElement && container) {
+    renderMathInElement(container, {
+      delimiters: [
+        { left: '$$', right: '$$', display: true },
+        { left: '$', right: '$', display: false }
+      ],
+      throwOnError: false
+    });
+  }
 }
 
-// ===================== NAVIGATION =====================
+/* ===================== NAVIGATION ===================== */
 function showScreen(name) {
+  const screenEl = document.getElementById('screen-' + name);
+  if (!screenEl) return;
+
   $$('.screen').forEach(s => s.classList.remove('active'));
   $$('.nav-btn').forEach(b => b.classList.remove('active'));
-  const screenEl = document.getElementById('screen-' + name);
+
   const btnEl = document.querySelector('.nav-btn[data-screen="' + name + '"]');
-  if (screenEl) screenEl.classList.add('active');
+  screenEl.classList.add('active');
+  screenEl.classList.remove('screen-enter');
+  void screenEl.offsetWidth; // restart animation
+  screenEl.classList.add('screen-enter');
   if (btnEl) btnEl.classList.add('active');
+
   State.currentScreen = name;
-  if (name === 'chat') setTimeout(() => { const el = $('#chatInput'); if(el) el.focus(); }, 100);
-  if (name === 'terminal') setTimeout(() => { const el = $('#terminalInput'); if(el) el.focus(); }, 100);
-  window.scrollTo(0,0);
+
+  if (name === 'chat') setTimeout(() => $('#chatInput')?.focus(), 150);
+  if (name === 'projects') loadGithubProjects();
+  if (name === 'memory') renderMemory();
+
+  $('#content')?.scrollTo(0, 0);
 }
 
-// Bind bottom nav buttons
-$$('.nav-btn').forEach(b => {
-  b.addEventListener('click', (e) => {
-    e.preventDefault();
-    const screen = b.getAttribute('data-screen');
-    if (screen) showScreen(screen);
-  });
-});
-
-// Bind data-nav elements
-$$('[data-nav]').forEach(el => {
-  el.addEventListener('click', (e) => {
-    e.preventDefault();
-    const screen = el.getAttribute('data-nav');
-    const prefill = el.getAttribute('data-prefill') || '';
-    if (screen) showScreen(screen);
-    if (prefill && screen === 'chat') {
-      setTimeout(() => {
-        const inp = $('#chatInput');
-        if (inp) { inp.value = prefill; inp.focus(); }
-      }, 150);
+function bindNav() {
+  // Delegated listener: robust even if buttons are re-rendered later.
+  document.body.addEventListener('click', (e) => {
+    const navBtn = e.target.closest('.nav-btn');
+    if (navBtn) {
+      e.preventDefault();
+      const screen = navBtn.getAttribute('data-screen');
+      if (screen) showScreen(screen);
+      return;
+    }
+    const dataNav = e.target.closest('[data-nav]');
+    if (dataNav) {
+      e.preventDefault();
+      const screen = dataNav.getAttribute('data-nav');
+      const prefill = dataNav.getAttribute('data-prefill') || '';
+      if (screen) showScreen(screen);
+      if (prefill && screen === 'chat') {
+        setTimeout(() => {
+          const inp = $('#chatInput');
+          if (inp) { inp.value = prefill; inp.focus(); inp.setSelectionRange(prefill.length, prefill.length); }
+        }, 180);
+      }
     }
   });
-});
+}
 
-// ===================== GREETING =====================
+/* ===================== GREETING ===================== */
 function updateGreeting() {
   const h = new Date().getHours();
   const el = $('#greetingLine');
   if (!el) return;
-  let g = 'Oh, you\\'re back';
-  if (h < 5) g = 'Still up? Impressive. Or sad.';
+  let g = 'Oh, you\'re back';
+  if (h < 5) g = 'Still up? Impressive. Or sad';
   else if (h < 12) g = 'Morning, creator';
   else if (h < 17) g = 'Afternoon';
   else if (h < 21) g = 'Evening';
-  else g = 'It\\'s late. Go to bed.';
-  el.textContent = g + (h < 5 || h > 21 ? '' : ',');
+  else g = 'It\'s late. Go to bed';
+  el.textContent = g + ((h < 5 || h >= 21) ? '.' : ',');
 }
-updateGreeting();
-setInterval(updateGreeting, 60000);
 
-// ===================== SYSTEM STATUS =====================
+/* ===================== SYSTEM STATUS ===================== */
+let backendCheckInFlight = false;
 function updateSystemStatus() {
   const online = navigator.onLine;
   const netEl = $('#networkVal');
@@ -612,40 +698,87 @@ function updateSystemStatus() {
 
   const backEl = $('#backendVal');
   if (backEl) {
-    if (Config.apiBase) {
-      fetch(Config.apiBase.replace(/\\/v1.*$/, '') + '/health', { method: 'GET', mode: 'no-cors' })
-        .then(() => { if(backEl) backEl.textContent = 'Connected'; })
-        .catch(() => { if(backEl) backEl.textContent = 'Demo Mode'; });
-    } else {
+    if (!Config.apiBase) {
       backEl.textContent = 'Demo Mode';
+    } else if (!backendCheckInFlight) {
+      backendCheckInFlight = true;
+      fetch(Config.apiBase, { method: 'OPTIONS', mode: 'no-cors' })
+        .then(() => { backEl.textContent = 'Connected'; })
+        .catch(() => { backEl.textContent = 'Unreachable'; })
+        .finally(() => { backendCheckInFlight = false; });
     }
   }
 }
-setInterval(updateSystemStatus, 3000);
-updateSystemStatus();
 
-// ===================== CHAT =====================
-function addMessage(role, content) {
+/* ===================== CHAT ===================== */
+function clearChatWelcome() {
+  const c = $('#chatContainer');
+  const welcome = c?.querySelector('.chat-welcome');
+  if (welcome) welcome.remove();
+}
+
+function renderChatFromLog() {
   const c = $('#chatContainer');
   if (!c) return;
-  const welcome = c.querySelector('.chat-welcome');
-  if (welcome) welcome.remove();
+  c.innerHTML = '';
+  if (!State.chatLog.length) {
+    c.innerHTML = `<div class="chat-welcome" style="text-align:center;padding:40px 20px;opacity:.6">
+      <div style="font-size:48px;margin-bottom:12px">&#129302;</div>
+      <div style="font-size:16px;font-weight:700;color:var(--green);margin-bottom:8px">Chat with Jexi</div>
+      <div style="font-size:13px;color:var(--text-dim)">Go ahead, ask me something. I promise I'll judge you silently.</div>
+    </div>`;
+    return;
+  }
+  State.chatLog.forEach(entry => {
+    const d = document.createElement('div');
+    d.className = 'chat-message ' + entry.role;
+    d.innerHTML = parseMarkdown(entry.content);
+    c.appendChild(d);
+  });
+  highlightCode(c);
+  renderKatex(c);
+  c.scrollTop = c.scrollHeight;
+}
+
+function addMessage(role, content) {
+  const c = $('#chatContainer');
+  if (!c) return null;
+  clearChatWelcome();
 
   const d = document.createElement('div');
   d.className = 'chat-message ' + role;
   d.innerHTML = parseMarkdown(content);
   c.appendChild(d);
-  highlightCode();
+  highlightCode(c);
   renderKatex(d);
   c.scrollTop = c.scrollHeight;
 
-  if (role === 'user') State.metrics.messages++;
-  if (role === 'assistant') {
-    const msgCount = $('#chatCount');
-    if (msgCount) msgCount.textContent = State.metrics.messages;
-    const analMsg = $('#analyticsMessages');
-    if (analMsg) analMsg.textContent = State.metrics.messages;
+  State.chatLog.push({ role, content, ts: Date.now() });
+  persistChatLog();
+
+  if (role === 'user') {
+    State.metrics.messages++;
+    persistMetrics();
+    updateOverviewCounts();
   }
+  return d;
+}
+
+function updateOverviewCounts() {
+  const msgCount = $('#chatCount');
+  if (msgCount) msgCount.textContent = State.metrics.messages;
+  const analMsg = $('#analyticsMessages');
+  if (analMsg) analMsg.textContent = State.metrics.messages;
+  const vCount = $('#visionCount');
+  if (vCount) vCount.textContent = State.metrics.vision;
+  const aVis = $('#analyticsVision');
+  if (aVis) aVis.textContent = State.metrics.vision;
+}
+
+function setTypingIndicator(active) {
+  const ind = $('#typingIndicator');
+  if (!ind) return;
+  ind.classList.toggle('active', active);
 }
 
 async function sendChat() {
@@ -657,16 +790,19 @@ async function sendChat() {
   addMessage('user', text);
   input.value = '';
   State.typing = true;
-  const ind = $('#typingIndicator');
-  if (ind) ind.classList.add('active');
+  setSendButtonState(true);
+  setTypingIndicator(true);
 
   const cfg = Config;
   if (!cfg.apiBase) {
-    setTimeout(() => {
-      addMessage('assistant', '**No backend configured.**\\n\\nGo to **More > Settings** and set your API endpoint, or I\\'ll keep roasting you in demo mode.\\n\\nYou asked: *' + esc(text) + '*');
-      State.typing = false;
-      if (ind) ind.classList.remove('active');
-    }, 800);
+    await new Promise(r => setTimeout(r, 700));
+    const reply = '**No backend configured.**\n\nHead to **More \u2192 Settings** and set an API endpoint — I\'ll happily connect there. Until then, I\'m running in demo mode.\n\nYou said: *' + text.replace(/[*_`]/g, '') + '*';
+    addMessage('assistant', reply);
+    State.messages.push({ role: 'user', content: text }, { role: 'assistant', content: reply });
+    persistMessages();
+    State.typing = false;
+    setSendButtonState(false);
+    setTypingIndicator(false);
     return;
   }
 
@@ -679,8 +815,9 @@ async function sendChat() {
   State.abortController = new AbortController();
   const aiMsg = document.createElement('div');
   aiMsg.className = 'chat-message assistant';
-  aiMsg.innerHTML = '<em>Thinking...</em>';
+  aiMsg.innerHTML = '<span class="typing-dots"><span></span><span></span><span></span></span>';
   const chatContainer = $('#chatContainer');
+  clearChatWelcome();
   if (chatContainer) chatContainer.appendChild(aiMsg);
 
   try {
@@ -710,7 +847,7 @@ async function sendChat() {
       const { done, value } = await reader.read();
       if (done) break;
       buf += decoder.decode(value, { stream: true });
-      const lines = buf.split('\\n');
+      const lines = buf.split('\n');
       buf = lines.pop() || '';
       for (const line of lines) {
         const tr = line.trim();
@@ -722,7 +859,7 @@ async function sendChat() {
             if (chunk) {
               full += chunk;
               aiMsg.innerHTML = parseMarkdown(full);
-              highlightCode();
+              highlightCode(aiMsg);
               renderKatex(aiMsg);
               if (chatContainer) chatContainer.scrollTop = chatContainer.scrollHeight;
             }
@@ -730,79 +867,224 @@ async function sendChat() {
         }
       }
     }
+
+    if (!full) full = '*(empty response from backend)*';
     State.messages.push({ role: 'user', content: text });
     State.messages.push({ role: 'assistant', content: full });
     if (State.messages.length > 50) State.messages = State.messages.slice(-50);
+    persistMessages();
+
+    State.chatLog.push({ role: 'assistant', content: full, ts: Date.now() });
+    persistChatLog();
   } catch (e) {
     if (e.name !== 'AbortError') {
-      aiMsg.innerHTML = '<em>Error: ' + esc(e.message) + '</em>';
+      aiMsg.innerHTML = parseMarkdown('**Error:** ' + e.message);
+      State.chatLog.push({ role: 'assistant', content: '**Error:** ' + e.message, ts: Date.now() });
+      persistChatLog();
+    } else {
+      aiMsg.remove();
     }
   } finally {
     State.typing = false;
-    if (ind) ind.classList.remove('active');
+    setSendButtonState(false);
+    setTypingIndicator(false);
     State.abortController = null;
   }
 }
 
-$('#chatForm')?.addEventListener('submit', (e) => { e.preventDefault(); sendChat(); });
-$('#chatSendBtn')?.addEventListener('click', (e) => { e.preventDefault(); sendChat(); });
-$('#chatInput')?.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChat(); } });
+function setSendButtonState(sending) {
+  const btn = $('#chatSendBtn');
+  if (!btn) return;
+  btn.textContent = sending ? 'Stop' : 'Send';
+}
 
-// ===================== VISION =====================
-$('#visionCameraBtn')?.addEventListener('click', async () => {
-  const preview = $('#visionPreview');
-  const video = $('#visionVideo');
-  if (!video || !preview) return;
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-    video.srcObject = stream;
-    preview.classList.add('active');
-    State.visionStream = stream;
-    State.metrics.vision++;
-    const vCount = $('#visionCount');
-    if (vCount) vCount.textContent = State.metrics.vision;
-    const aVis = $('#analyticsVision');
-    if (aVis) aVis.textContent = State.metrics.vision;
-  } catch (err) {
-    toast('Camera access denied. Paranoid much?');
+function stopOrSend() {
+  if (State.typing && State.abortController) {
+    State.abortController.abort();
+    toast('Stopped. You\'re welcome.');
+    return;
   }
-});
+  sendChat();
+}
 
-$('#visionFileBtn')?.addEventListener('click', () => {
-  const input = document.createElement('input');
-  input.type = 'file';
-  input.accept = 'image/*';
-  input.onchange = () => {
-    toast('Image loaded. Analysis coming soon, creator.');
+/* ===================== VOICE INPUT ===================== */
+function initVoice() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const btn = $('#chatVoiceBtn');
+  if (!btn) return;
+
+  if (!SR) {
+    btn.disabled = true;
+    btn.title = 'Voice input not supported in this browser';
+    btn.style.opacity = '0.4';
+    return;
+  }
+
+  btn.addEventListener('click', () => {
+    if (State.voiceListening) {
+      State.recognition?.stop();
+      return;
+    }
+    const rec = new SR();
+    rec.lang = Config.voiceLang;
+    rec.interimResults = false;
+    rec.maxAlternatives = 1;
+
+    rec.onstart = () => {
+      State.voiceListening = true;
+      btn.classList.add('active');
+      toast('Listening...');
+    };
+    rec.onresult = (ev) => {
+      const transcript = ev.results?.[0]?.[0]?.transcript || '';
+      const input = $('#chatInput');
+      if (input && transcript) {
+        input.value = (input.value ? input.value + ' ' : '') + transcript;
+        input.focus();
+      }
+    };
+    rec.onerror = (ev) => { toast('Voice error: ' + (ev.error || 'unknown')); };
+    rec.onend = () => {
+      State.voiceListening = false;
+      btn.classList.remove('active');
+    };
+
+    State.recognition = rec;
+    try { rec.start(); } catch { toast('Could not start microphone.'); }
+  });
+}
+
+/* ===================== VISION ===================== */
+function stopVisionStream() {
+  if (State.visionStream) {
+    State.visionStream.getTracks().forEach(t => t.stop());
+    State.visionStream = null;
+  }
+}
+
+function initVision() {
+  $('#visionCameraBtn')?.addEventListener('click', async () => {
+    const preview = $('#visionPreview');
+    const video = $('#visionVideo');
+    if (!video || !preview) return;
+
+    if (State.visionStream) { // toggle off
+      stopVisionStream();
+      preview.classList.remove('active');
+      return;
+    }
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+      video.srcObject = stream;
+      preview.classList.add('active');
+      State.visionStream = stream;
+    } catch (err) {
+      toast('Camera access denied. Paranoid much?');
+    }
+  });
+
+  $('#visionFileBtn')?.addEventListener('click', () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = () => {
+      const file = input.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        window.__jexiVisionImage = reader.result;
+        const preview = $('#visionPreview');
+        if (preview) {
+          preview.classList.add('active');
+          preview.style.backgroundImage = `url(${reader.result})`;
+          preview.style.backgroundSize = 'cover';
+          preview.style.backgroundPosition = 'center';
+          const video = $('#visionVideo');
+          if (video) video.style.display = 'none';
+        }
+        toast('Image loaded. Tap Analyze.');
+      };
+      reader.readAsDataURL(file);
+    };
+    input.click();
+  });
+
+  $('#visionAnalyzeBtn')?.addEventListener('click', async () => {
+    const result = $('#visionResult');
+    if (!result) return;
+    result.classList.add('active');
+
+    const hasImage = !!window.__jexiVisionImage;
+    const hasStream = !!State.visionStream;
+    if (!hasImage && !hasStream) {
+      result.innerHTML = '<div style="color:var(--danger);font-weight:700;margin-bottom:8px">Nothing to analyze</div><div style="color:var(--text-dim)">Turn on the camera or upload an image first.</div>';
+      return;
+    }
+    if (!Config.apiBase) {
+      result.innerHTML = '<div style="color:var(--green);font-weight:700;margin-bottom:8px">&#128269; Analysis</div><div style="color:var(--text-dim)">No backend configured, so I can\'t actually look at this. Add a vision-capable endpoint in Settings and try again.</div>';
+      return;
+    }
+
+    result.innerHTML = '<div style="color:var(--text-dim)">Analyzing...</div>';
     State.metrics.vision++;
-    const vCount = $('#visionCount');
-    if (vCount) vCount.textContent = State.metrics.vision;
-  };
-  input.click();
-});
+    persistMetrics();
+    updateOverviewCounts();
 
-$('#visionAnalyzeBtn')?.addEventListener('click', () => {
-  const result = $('#visionResult');
-  if (!result) return;
-  result.classList.add('active');
-  result.innerHTML = '<div style="color:var(--green);font-weight:700;margin-bottom:8px">&#128269; Analysis</div><div style="color:var(--text-dim)">Vision analysis requires a backend with vision capabilities. Configure your API in Settings.</div>';
-});
+    try {
+      let imageData = window.__jexiVisionImage;
+      if (!imageData && hasStream) {
+        const video = $('#visionVideo');
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth || 640;
+        canvas.height = video.videoHeight || 480;
+        canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+        imageData = canvas.toDataURL('image/jpeg', 0.85);
+      }
 
-// ===================== TASKS =====================
+      const res = await fetch(Config.apiBase, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(Config.apiKey ? { 'Authorization': 'Bearer ' + Config.apiKey } : {})
+        },
+        body: JSON.stringify({
+          model: Config.model,
+          messages: [{
+            role: 'user',
+            content: [
+              { type: 'text', text: 'Describe what is in this image, and read out any visible text.' },
+              { type: 'image_url', image_url: { url: imageData } }
+            ]
+          }],
+          max_tokens: 500
+        })
+      });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      const text = data.choices?.[0]?.message?.content || '(no content returned)';
+      result.innerHTML = '<div style="color:var(--green);font-weight:700;margin-bottom:8px">&#128269; Analysis</div><div>' + parseMarkdown(text) + '</div>';
+      highlightCode(result);
+    } catch (e) {
+      result.innerHTML = '<div style="color:var(--danger);font-weight:700;margin-bottom:8px">Analysis failed</div><div style="color:var(--text-dim)">' + esc(e.message) + '</div>';
+    }
+  });
+}
+
+/* ===================== TASKS ===================== */
 function renderTasks() {
   const list = $('#taskList');
   if (!list) return;
   if (State.tasks.length === 0) {
     list.innerHTML = '<div style="text-align:center;padding:16px;color:var(--text-dimmer);font-size:13px">No tasks. Slacking off?</div>';
-    return;
+  } else {
+    list.innerHTML = State.tasks.map((t, i) => `
+      <div class="task-item" data-index="${i}">
+        <div class="task-check ${t.done ? 'done' : ''}" style="cursor:pointer">${t.done ? '&#10003;' : ''}</div>
+        <div class="task-text ${t.done ? 'done' : ''}">${esc(t.text)}</div>
+        <div class="task-del" data-index="${i}" style="cursor:pointer">&#10005;</div>
+      </div>
+    `).join('');
   }
-  list.innerHTML = State.tasks.map((t, i) => `
-    <div class="task-item" data-index="${i}">
-      <div class="task-check ${t.done ? 'done' : ''}" style="cursor:pointer">${t.done ? '&#10003;' : ''}</div>
-      <div class="task-text ${t.done ? 'done' : ''}">${esc(t.text)}</div>
-      <div class="task-del" data-index="${i}" style="cursor:pointer">&#10005;</div>
-    </div>
-  `).join('');
 
   const doneCount = State.tasks.filter(t => t.done).length;
   const tCount = $('#taskCount');
@@ -813,52 +1095,59 @@ function renderTasks() {
   if (dCount) dCount.textContent = doneCount;
   if (aTasks) aTasks.textContent = State.tasks.length;
   if (aDone) aDone.textContent = doneCount;
+  persistTasks();
 }
 
-$('#addTaskBtn')?.addEventListener('click', () => {
-  const input = $('#taskInput');
-  if (!input) return;
-  const text = input.value.trim();
-  if (!text) return;
-  State.tasks.push({ text, done: false, id: Date.now() });
-  input.value = '';
-  renderTasks();
-  toast('Task added. Try actually doing it.');
-});
+function initTasks() {
+  $('#addTaskBtn')?.addEventListener('click', () => {
+    const input = $('#taskInput');
+    if (!input) return;
+    const text = input.value.trim();
+    if (!text) return;
+    State.tasks.push({ text, done: false, id: Date.now() });
+    input.value = '';
+    renderTasks();
+    toast('Task added. Try actually doing it.');
+  });
 
-$('#taskInput')?.addEventListener('keydown', (e) => { if (e.key === 'Enter') { $('#addTaskBtn')?.click(); } });
+  $('#taskInput')?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); $('#addTaskBtn')?.click(); }
+  });
 
-$('#taskList')?.addEventListener('click', (e) => {
-  const delBtn = e.target.closest('.task-del');
-  const checkBtn = e.target.closest('.task-check');
-  if (delBtn) {
-    const idx = parseInt(delBtn.getAttribute('data-index'));
-    if (!isNaN(idx)) { State.tasks.splice(idx, 1); renderTasks(); }
-  }
-  if (checkBtn) {
-    const item = checkBtn.closest('.task-item');
-    if (!item) return;
-    const idx = parseInt(item.getAttribute('data-index'));
-    if (!isNaN(idx)) { State.tasks[idx].done = !State.tasks[idx].done; renderTasks(); }
-  }
-});
+  $('#taskList')?.addEventListener('click', (e) => {
+    const delBtn = e.target.closest('.task-del');
+    const checkBtn = e.target.closest('.task-check');
+    if (delBtn) {
+      const idx = parseInt(delBtn.getAttribute('data-index'), 10);
+      if (!isNaN(idx)) { State.tasks.splice(idx, 1); renderTasks(); }
+    } else if (checkBtn) {
+      const item = checkBtn.closest('.task-item');
+      const idx = item ? parseInt(item.getAttribute('data-index'), 10) : NaN;
+      if (!isNaN(idx)) { State.tasks[idx].done = !State.tasks[idx].done; renderTasks(); }
+    }
+  });
+}
 
-// ===================== GITHUB =====================
+/* ===================== GITHUB ===================== */
+let ghLoadedFor = null;
 async function loadGithubProjects() {
   const container = $('#githubProjects');
   if (!container) return;
   const user = Config.githubUser;
   if (!user) {
+    ghLoadedFor = null;
     container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">&#128193;</div><div>Enter a GitHub username in Settings to load repos.</div></div>';
     return;
   }
+  if (ghLoadedFor === user) return; // avoid refetch on every screen visit
   container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-dimmer)">Loading...</div>';
   try {
     const headers = { 'Accept': 'application/vnd.github.v3+json' };
     if (Config.githubToken) headers['Authorization'] = 'token ' + Config.githubToken;
     const res = await fetch('https://api.github.com/users/' + encodeURIComponent(user) + '/repos?sort=updated&per_page=10', { headers });
-    if (!res.ok) throw new Error(res.status);
+    if (!res.ok) throw new Error(String(res.status));
     const data = await res.json();
+    ghLoadedFor = user;
     if (!data.length) {
       container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">&#128193;</div><div>No repositories found.</div></div>';
       return;
@@ -868,20 +1157,21 @@ async function loadGithubProjects() {
       const col = colors[r.language] || '#8b949e';
       return `<div class="gh-repo">
         <div class="gh-repo-name">${esc(r.name)}</div>
-        <div class="gh-repo-desc">${esc(r.description || '')}</div>
+        <div class="gh-repo-desc">${esc(r.description || 'No description')}</div>
         <div class="gh-repo-meta">
           <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${col};margin-right:4px"></span>
-          ${r.language || 'Unknown'} &bull; &#11088; ${r.stargazers_count} &bull; &#127860; ${r.forks_count}
+          ${esc(r.language || 'Unknown')} &bull; &#11088; ${r.stargazers_count} &bull; &#127860; ${r.forks_count}
         </div>
       </div>`;
     }).join('');
   } catch (e) {
+    ghLoadedFor = null;
     container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">&#128165;</div><div>Error loading repos: ' + esc(e.message) + '</div></div>';
   }
 }
 
-// ===================== SETTINGS =====================
-function loadSettings() {
+/* ===================== SETTINGS ===================== */
+function loadSettingsIntoForm() {
   const apiBase = $('#apiBaseInput');
   const apiKey = $('#apiKeyInput');
   const model = $('#modelInput');
@@ -896,103 +1186,209 @@ function loadSettings() {
   if (vLang) vLang.value = Config.voiceLang;
 }
 
-$('#saveSettingsBtn')?.addEventListener('click', () => {
-  Config.apiBase = $('#apiBaseInput')?.value || '';
-  Config.apiKey = $('#apiKeyInput')?.value || '';
-  Config.model = $('#modelInput')?.value || 'gpt-4o-mini';
-  Config.githubUser = $('#githubUserInput')?.value || '';
-  Config.githubToken = $('#githubTokenInput')?.value || '';
-  Config.voiceLang = $('#voiceLangInput')?.value || 'en-AU';
-  toast('Settings saved. Don\\'t mess them up.');
-  loadGithubProjects();
-});
+function initSettings() {
+  $('#saveSettingsBtn')?.addEventListener('click', () => {
+    Config.apiBase = $('#apiBaseInput')?.value.trim() || '';
+    Config.apiKey = $('#apiKeyInput')?.value.trim() || '';
+    Config.model = $('#modelInput')?.value.trim() || 'gpt-4o-mini';
+    Config.githubUser = $('#githubUserInput')?.value.trim() || '';
+    Config.githubToken = $('#githubTokenInput')?.value.trim() || '';
+    Config.voiceLang = $('#voiceLangInput')?.value || 'en-AU';
+    ghLoadedFor = null;
+    toast('Settings saved. Don\'t mess them up.');
+    updateSystemStatus();
+    if (State.currentScreen === 'projects') loadGithubProjects();
+  });
 
-$('#clearDataBtn')?.addEventListener('click', () => {
-  if (confirm('Clear all local data?')) {
+  $('#clearDataBtn')?.addEventListener('click', () => {
+    if (!confirm('Clear all local data? This wipes settings, tasks and chat history.')) return;
     localStorage.clear();
     State.tasks = [];
     State.messages = [];
-    State.metrics = { messages: 0, vision: 0, tasks: 0, completed: 0 };
+    State.chatLog = [];
+    State.metrics = { messages: 0, vision: 0 };
     renderTasks();
+    renderChatFromLog();
+    updateOverviewCounts();
+    renderMemory();
+    loadSettingsIntoForm();
     toast('All data wiped. Fresh start, creator.');
-  }
-});
-
-// ===================== TERMINAL =====================
-$('#terminalRun')?.addEventListener('click', () => {
-  const code = $('#terminalInput')?.value || '';
-  const lang = $('#terminalLang')?.value || 'javascript';
-  const out = $('#terminalOutput');
-  if (!out) return;
-  out.textContent += '> [' + lang + '] ' + code.split('\\n')[0].substring(0, 40) + (code.length > 40 ? '...' : '') + '\\n';
-  if (lang === 'javascript') {
-    try {
-      const result = eval(code);
-      out.textContent += (result === undefined ? 'undefined' : String(result)) + '\\n\\n';
-    } catch (err) {
-      out.textContent += 'ERROR: ' + err.message + '\\n\\n';
-    }
-  } else {
-    out.textContent += 'Only JavaScript runs in-browser. Python needs a backend.\\n\\n';
-  }
-  out.scrollTop = out.scrollHeight;
-});
-
-// ===================== SUGGESTIONS =====================
-$$('.suggestion-chip').forEach(chip => {
-  chip.addEventListener('click', () => {
-    showScreen('chat');
-    setTimeout(() => { const inp = $('#chatInput'); if(inp) { inp.value = chip.getAttribute('data-ask') || ''; inp.focus(); } }, 200);
   });
-});
+}
 
-$('#askBtn')?.addEventListener('click', (e) => {
-  e.preventDefault();
-  const val = $('#askInput')?.value.trim();
-  if (!val) return;
-  showScreen('chat');
-  setTimeout(() => { const inp = $('#chatInput'); if(inp) { inp.value = val; sendChat(); } }, 200);
-});
+/* ===================== TERMINAL ===================== */
+function initTerminal() {
+  $('#terminalRun')?.addEventListener('click', () => {
+    const code = $('#terminalInput')?.value || '';
+    const lang = $('#terminalLang')?.value || 'javascript';
+    const out = $('#terminalOutput');
+    if (!out || !code.trim()) return;
 
-$('#searchForm')?.addEventListener('submit', (e) => {
-  e.preventDefault();
-  const val = $('#askInput')?.value.trim();
-  if (!val) return;
-  showScreen('chat');
-  setTimeout(() => { const inp = $('#chatInput'); if(inp) { inp.value = val; sendChat(); } }, 200);
-});
+    const preview = code.split('\n')[0].slice(0, 40) + (code.length > 40 ? '...' : '');
+    out.textContent += '> [' + lang + '] ' + preview + '\n';
 
-// ===================== ACTIVITY CHART =====================
+    if (lang !== 'javascript') {
+      out.textContent += 'Only JavaScript runs directly in the browser. Wire up a backend endpoint in Settings to execute ' + lang + '.\n\n';
+      out.scrollTop = out.scrollHeight;
+      return;
+    }
+
+    const logs = [];
+    const fakeConsole = {
+      log: (...args) => logs.push(args.map(String).join(' ')),
+      error: (...args) => logs.push('ERR: ' + args.map(String).join(' ')),
+      warn: (...args) => logs.push('WARN: ' + args.map(String).join(' '))
+    };
+    try {
+      const runner = new Function('console', code);
+      const result = runner(fakeConsole);
+      if (logs.length) out.textContent += logs.join('\n') + '\n';
+      if (result !== undefined) out.textContent += '=> ' + String(result) + '\n';
+      out.textContent += '\n';
+    } catch (err) {
+      out.textContent += 'ERROR: ' + err.message + '\n\n';
+    }
+    out.scrollTop = out.scrollHeight;
+  });
+}
+
+/* ===================== MEMORY / ANALYTICS ===================== */
+function timeAgo(ts) {
+  const s = Math.floor((Date.now() - ts) / 1000);
+  if (s < 60) return 'just now';
+  if (s < 3600) return Math.floor(s / 60) + 'm ago';
+  if (s < 86400) return Math.floor(s / 3600) + 'h ago';
+  return Math.floor(s / 86400) + 'd ago';
+}
+
+function renderMemory() {
+  const timeline = $('#memoryTimeline');
+  if (timeline) {
+    if (!State.chatLog.length) {
+      timeline.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-dimmer);font-size:13px">No memories yet. Start chatting!</div>';
+    } else {
+      const recent = State.chatLog.slice(-12).reverse();
+      timeline.innerHTML = recent.map(m => `
+        <div style="display:flex;gap:10px;align-items:flex-start">
+          <div style="width:8px;height:8px;border-radius:50%;background:${m.role === 'user' ? 'var(--green)' : 'var(--text-dimmer)'};margin-top:6px;flex-shrink:0"></div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:11px;color:var(--text-dimmer);font-family:'JetBrains Mono',monospace">${m.role === 'user' ? 'You' : 'Jexi'} &middot; ${timeAgo(m.ts)}</div>
+            <div style="font-size:13px;color:var(--text-dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(m.content.slice(0, 90))}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+  }
+  updateOverviewCounts();
+  renderActivityChart();
+}
+
 function renderActivityChart() {
   const chart = $('#activityChart');
   if (!chart) return;
-  const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-  const heights = days.map(() => Math.floor(Math.random() * 80 + 20));
-  chart.innerHTML = days.map((d, i) => `
+  const dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const counts = new Array(7).fill(0);
+  State.chatLog.forEach(m => {
+    if (m.role !== 'user') return;
+    const d = new Date(m.ts).getDay();
+    counts[d]++;
+  });
+  const max = Math.max(1, ...counts);
+  chart.innerHTML = dayLabels.map((d, i) => {
+    const pct = Math.round((counts[i] / max) * 100);
+    return `
     <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1">
-      <div class="activity-bar" style="height:${heights[i]}%"></div>
+      <div class="activity-bar" style="height:${Math.max(pct, 4)}%" title="${counts[i]} messages"></div>
       <div style="font-size:10px;color:var(--text-dimmer)">${d}</div>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 }
-renderActivityChart();
 
-// ===================== INIT =====================
-loadSettings();
-renderTasks();
-window.addEventListener('online', () => { updateSystemStatus(); toast('Back online. Finally.'); });
-window.addEventListener('offline', () => { updateSystemStatus(); toast('Offline. Great.'); });
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && State.typing && State.abortController) {
-    State.abortController.abort();
-    State.typing = false;
-    const ind = $('#typingIndicator');
-    if(ind) ind.classList.remove('active');
-    toast('Stopped. You\\'re welcome.');
-  }
-});
-console.log('[Jexi] Initialized. Try not to disappoint me.');
+/* ===================== SUGGESTIONS / ASK BAR ===================== */
+function initHomeAsk() {
+  const runAsk = () => {
+    const val = $('#askInput')?.value.trim();
+    if (!val) return;
+    showScreen('chat');
+    setTimeout(() => {
+      const inp = $('#chatInput');
+      if (inp) { inp.value = val; sendChat(); }
+      const askInput = $('#askInput');
+      if (askInput) askInput.value = '';
+    }, 200);
+  };
+  $('#askBtn')?.addEventListener('click', (e) => { e.preventDefault(); runAsk(); });
+  $('#askInput')?.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); runAsk(); } });
+
+  $$('.suggestion-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      showScreen('chat');
+      setTimeout(() => { const inp = $('#chatInput'); if (inp) { inp.value = chip.getAttribute('data-ask') || ''; inp.focus(); } }, 200);
+    });
+  });
+}
+
+/* ===================== HEADER MENU ===================== */
+function initHeaderMenu() {
+  $('#menuBtn')?.addEventListener('click', () => {
+    showScreen('more');
+    toast('Settings, tasks and terminal live here.');
+  });
+}
+
+/* ===================== CHAT INPUT BINDINGS ===================== */
+function initChat() {
+  $('#chatSendBtn')?.addEventListener('click', (e) => { e.preventDefault(); stopOrSend(); });
+  $('#chatInput')?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChat(); }
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && State.typing && State.abortController) {
+      State.abortController.abort();
+      toast('Stopped. You\'re welcome.');
+    }
+  });
+}
+
+/* ===================== INIT ===================== */
+function init() {
+  initPwaInstall();
+  initServiceWorker();
+  bindNav();
+  initHomeAsk();
+  initHeaderMenu();
+  initChat();
+  initVoice();
+  initVision();
+  initTasks();
+  initSettings();
+  initTerminal();
+
+  loadSettingsIntoForm();
+  renderTasks();
+  renderChatFromLog();
+  updateOverviewCounts();
+
+  updateGreeting();
+  setInterval(updateGreeting, 60000);
+
+  updateSystemStatus();
+  setInterval(updateSystemStatus, 3000);
+
+  window.addEventListener('online', () => { updateSystemStatus(); toast('Back online. Finally.'); });
+  window.addEventListener('offline', () => { updateSystemStatus(); toast('Offline. Great.'); });
+  window.addEventListener('beforeunload', stopVisionStream);
+
+  console.log('[Jexi] Initialized. Try not to disappoint me.');
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
 })();
+
 </script>
 </body>
 </html>
