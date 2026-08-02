@@ -31,11 +31,14 @@ COPY_LIST.forEach((item) => {
   console.log(`✅ Copied: ${item}`);
 });
 
+// Copy service worker
 const swSrc = path.join(SRC, 'sw.js');
 const swDest = path.join(DIST, 'sw.js');
 if (fs.existsSync(swSrc)) {
   fs.copyFileSync(swSrc, swDest);
   console.log('✅ Copied: sw.js');
+} else {
+  console.warn('⚠️ Missing: sw.js');
 }
 
 console.log('🚀 Build complete. dist/ is ready.');
