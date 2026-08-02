@@ -1,19 +1,6 @@
-// api/health.js - CommonJS version (no import/export)
-module.exports = function(req, res) {
-  // CORS headers
+export default function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  // Handle OPTIONS preflight
-  if (req.method === 'OPTIONS') {
-    return res.status(204).end();
-  }
-
-  // Return health status
-  res.status(200).json({
-    ok: true,
-    time: new Date().toISOString(),
-    providers: ['cerebras', 'groq', 'openrouter', 'gemini']
-  });
-};
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  if (req.method === 'OPTIONS') { res.status(204).end(); return; }
+  res.status(200).json({ ok: true, name: 'Jexi', status: 'sassy and operational', time: new Date().toISOString() });
+}
