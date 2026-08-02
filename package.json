@@ -1,14 +1,25 @@
 {
-  "name": "noctryx-ai-v2",
+  "name": "jexi-ai",
   "version": "2.0.0",
-  "description": "Noctryx AI V2",
+  "description": "Jexi AI - Sharp-witted personal assistant",
+  "type": "module",
   "scripts": {
-    "build": "mkdir -p public && cp -r index.html css js manifest.json icon*.svg public/ 2>/dev/null || true"
+    "build": "node build.js",
+    "sync": "npx cap sync",
+    "android": "npx cap open android",
+    "build:android": "npm run build && npx cap sync android && cd android && ./gradlew assembleDebug",
+    "dev": "node server.js",
+    "start": "node server.js"
   },
   "dependencies": {
-    "dotenv": "^16.4.5"
+    "@capacitor/android": "^6.0.0",
+    "@capacitor/core": "^6.0.0",
+    "@capacitor/splash-screen": "^6.0.0",
+    "@capacitor/status-bar": "^6.0.0",
+    "express": "^4.19.2",
+    "cors": "^2.8.5"
   },
-  "engines": {
-    "node": ">=18"
+  "devDependencies": {
+    "@capacitor/cli": "^6.0.0"
   }
 }
