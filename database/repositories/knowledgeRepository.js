@@ -1,4 +1,4 @@
-const db = require('../db');
+import db from '../db.js';
 
 class KnowledgeRepository {
   static findByQuery(query) {
@@ -14,4 +14,5 @@ class KnowledgeRepository {
     } catch {}
   }
 }
-module.exports = KnowledgeRepository;
+
+export default KnowledgeRepository;
