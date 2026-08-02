@@ -1,22 +1,25 @@
 {
-  "name": "Jexi AI",
+  "name": "Jexi AI by Noctryx",
   "short_name": "Jexi",
   "id": "com.noctryx.jexi",
+  "description": "Sharp-witted personal AI assistant",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "background_color": "#060a09",
   "theme_color": "#060a09",
-  "orientation": "portrait",
+  "orientation": "portrait-primary",
+  "categories": ["productivity", "utilities"],
   "icons": [
     {
       "src": "/icon.svg",
-      "sizes": "512x512",
-      "type": "image/svg+xml"
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
     },
     {
       "src": "/icon-maskable.svg",
-      "sizes": "512x512",
+      "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "maskable"
     }
