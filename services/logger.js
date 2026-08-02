@@ -6,4 +6,5 @@ class Logger {
   static warn(msg, meta) { console.warn(Logger.format('WARN', msg, meta)); }
   static error(msg, meta) { console.error(Logger.format('ERROR', msg, meta)); }
 }
-module.exports = Logger;
+
+export default Logger;
