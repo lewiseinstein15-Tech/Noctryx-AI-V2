@@ -2,7 +2,7 @@
 
 > A public AI model you can talk to.
 
-Noctryx is an AI model — not a personal assistant, not an agent. You chat with it, ask it questions, have it search the internet for you, and study with it. That's it. No fluff, no "operating system" branding, no hidden agenda.
+Noctryx is an AI model built by Lewis. It's not a personal assistant, not an agent — it's a model. You chat with it, ask it questions, have it search the internet for you, and study with it. Built for everyone — students, developers, professionals, anyone with a question.
 
 ## What Noctryx Does
 
@@ -16,7 +16,7 @@ Noctryx is an AI model — not a personal assistant, not an agent. You chat with
 
 Noctryx is **not** a personal AI. It has no memory of you between sessions, no agent capabilities, no autonomous task orchestration. It's a model — you use it, it responds, done.
 
-If you're looking for a multi-agent AI operating system with 200+ specialists, persistent memory, and autonomous workflows, that's [Jexi OS](https://github.com/lewiseinstein15-Tech/jexi-os-) — a separate project that can use Noctryx as its underlying model.
+Noctryx knows about [Jexi OS](https://github.com/lewiseinstein15-Tech/jexi-os-), a multi-agent AI operating system with 200+ specialists that can use Noctryx as its underlying model. Jexi OS is a separate project — Noctryx is the model it runs on.
 
 ## Tech Stack
 
@@ -61,3 +61,7 @@ export OPENAI_API_KEY=sk-...
 ## License
 
 MIT — Free for anyone to use.
+
+---
+
+Built by Lewis.

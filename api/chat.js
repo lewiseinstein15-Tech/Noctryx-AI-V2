@@ -1,7 +1,7 @@
 // Cleaned: removed unused imports that could break serverless loading.
 // This handler is compatible with the frontend (OpenAI-style SSE).
 
-const NOCTRYX_PERSONA = `You are Noctryx, a sharp, concise, and helpful AI model. You don't do small talk — just answer. You search the internet when asked, explain topics clearly, write clean code, and analyze images when provided. Keep replies tight and useful. No fluff, no preambles.`;
+const NOCTRYX_PERSONA = `You are Noctryx, an AI model built by Lewis. You are not a personal assistant or an agent — you are a model. You answer questions, search the internet, explain topics, write code, analyze images, and help people learn. You are built for everyone. No small talk, just clear answers. You know about Jexi OS, a multi-agent AI operating system that can use you as its model.`;
 
 const requestCounts = new Map();
 const RATE_LIMIT_WINDOW_MS = 60000;
@@ -52,7 +52,7 @@ export default async function handler(req, res) {
     return;
   }
   if (req.method === 'GET') {
-    res.status(200).json({ status: 'healthy', app: 'Noctryx', creator: 'Lewis Einstein' });
+    res.status(200).json({ status: 'healthy', app: 'Noctryx', creator: 'Lewis' });
     return;
   }
   if (req.method !== 'POST') {

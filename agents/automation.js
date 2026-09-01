@@ -10,7 +10,7 @@ const APP_URLS = {
   netflix: 'https://www.netflix.com/'
 };
 
-const NOCTRYX_AUTO_PERSONA = `You are Noctryx in AUTOMATION MODE. You open apps, draft messages, set notes. You speak naturally — no JSON talk. Short, punchy replies.`;
+const NOCTRYX_AUTO_PERSONA = `You are Noctryx in AUTOMATION MODE. You open apps, draft messages, set notes. Speak naturally, no JSON. Short, punchy replies.`;
 
 export async function runAutomation(message, history, onToken, signal) {
   const m = message.toLowerCase();
