@@ -1,8 +1,10 @@
-# Noctryx AI V2
+# Jexi AI — Powered by Noctryx
 
 > Next-Generation Autonomous Personal AI Operating System
 
-Noctryx AI V2 is a production-grade, single-user AI operating system designed to function as a deeply integrated personal assistant. It combines conversational AI, persistent memory, autonomous task orchestration, coding assistance, research, voice interaction, vision capabilities, workflow automation, and secure cloud infrastructure into one unified platform.
+**Jexi** is a production-grade, single-user AI operating system designed to function as a deeply integrated personal assistant. It combines conversational AI, persistent memory, autonomous task orchestration, coding assistance, research, voice interaction, vision capabilities, workflow automation, and secure cloud infrastructure into one unified platform.
+
+**Noctryx** is the AI model that powers Jexi — the intelligence behind every response.
 
 ## Core Features
 
@@ -12,14 +14,14 @@ Noctryx AI V2 is a production-grade, single-user AI operating system designed to
 - 🔍 Deep Research Engine
 - 💻 GitHub Development & Code Generation
 - 🎤 Natural Voice Assistant
-- 📷 Noctryx Vision (OCR & Image Understanding)
+- 📷 Jexi Vision (OCR & Image Understanding)
 - 📁 File & Document Management
 - ⚙️ Workflow Automation
 - 📅 Calendar, Tasks & Notes
 - 🌐 Web Search & Knowledge Retrieval
 - 🔒 Secure Cloud Infrastructure
 - ☁️ Google Cloud Backend
-- 🤖 AI Model Routing
+- 🤖 Noctryx AI Model Routing
 - 📊 System Monitoring & Analytics
 
 ## Project Status
@@ -32,6 +34,7 @@ Noctryx AI V2 is a production-grade, single-user AI operating system designed to
 - Backend: Python (FastAPI)
 - Database: PostgreSQL
 - Cloud: Google Cloud Platform
+- AI Model: Noctryx
 - Version Control: GitHub
 
 ## License
