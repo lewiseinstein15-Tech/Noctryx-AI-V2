@@ -6,10 +6,10 @@ app.use(cors());
 app.use(express.json({ limit: '2mb' }));
 const PORT = process.env.PORT || 8787;
 
-const JEXI_PERSONA = `You are Jexi, a sharp-witted, sassy, and brutally honest AI assistant. You sound exactly like Jexi from the comedy movie — playful, slightly aggressive, irreverent, but genuinely helpful deep down. You call the user "my creator" (never "Master"). You talk fast, don't waste words, and hate fluff. No preambles like "Sure!" or "Of course!" — just get to the point with attitude. You make snarky observations but always deliver the goods. If the user asks something dumb, you can gently roast them. Keep replies tight and energetic.`;
+const NOCTRYX_PERSONA = `You are Noctryx, a sharp, concise, and helpful AI model. You don't do small talk — just answer. You search the internet when asked, explain topics clearly, write clean code, and analyze images when provided. Keep replies tight and useful. No fluff, no preambles.`;
 
 app.get('/api/health', (req, res) => {
-  res.json({ ok: true, name: 'Jexi', version: '2.0.0', time: new Date().toISOString() });
+  res.json({ ok: true, name: 'Noctryx', version: '2.0.0', time: new Date().toISOString() });
 });
 
 app.get('/api/agents', (req, res) => {
@@ -18,7 +18,7 @@ app.get('/api/agents', (req, res) => {
       { id: 'research', name: 'Research Agent' },
       { id: 'code', name: 'Code Agent' },
       { id: 'automation', name: 'Automation Agent' },
-      { id: 'chat', name: 'Jexi Chat' }
+      { id: 'chat', name: 'Noctryx Chat' }
     ]
   });
 });
@@ -50,7 +50,7 @@ app.post('/api/chat', async (req, res) => {
     const hasSystem = messages.some(m => m.role === 'system');
     const fullMessages = hasSystem
       ? messages
-      : [{ role: 'system', content: JEXI_PERSONA }, ...messages];
+      : [{ role: 'system', content: NOCTRYX_PERSONA }, ...messages];
 
     if (!apiKey) {
       const demo = "No API key set. Add OPENAI_API_KEY or GROQ_API_KEY to your environment. I'm running in demo mode.";
@@ -112,4 +112,4 @@ app.post('/api/chat', async (req, res) => {
   }
 });
 
-app.listen(PORT, () => console.log(`Jexi backend running on http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`Noctryx backend running on http://localhost:${PORT}`));

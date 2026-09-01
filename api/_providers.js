@@ -1,7 +1,7 @@
 export const PROVIDERS = {
   cerebras: { enabled: !!process.env.CEREBRAS_API_KEY, url: 'https://api.cerebras.ai/v1/chat/completions', model: 'gpt-oss-120b', priority: 0, headers: () => ({ 'Authorization': `Bearer ${process.env.CEREBRAS_API_KEY}`, 'Content-Type': 'application/json' }) },
   groq: { enabled: !!process.env.GROQ_API_KEY, url: 'https://api.groq.com/openai/v1/chat/completions', model: 'llama-3.3-70b-versatile', priority: 1, headers: () => ({ 'Authorization': `Bearer ${process.env.GROQ_API_KEY}`, 'Content-Type': 'application/json' }) },
-  openrouter: { enabled: !!process.env.OPENROUTER_API_KEY, url: 'https://openrouter.ai/api/v1/chat/completions', model: process.env.OPENROUTER_MODEL || 'meta-llama/llama-3.3-70b-instruct:free', priority: 2, headers: () => ({ 'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`, 'Content-Type': 'application/json', 'HTTP-Referer': process.env.ALLOWED_ORIGIN || 'https://noctryx.vercel.app', 'X-Title': 'Jexi AI' }) },
+  openrouter: { enabled: !!process.env.OPENROUTER_API_KEY, url: 'https://openrouter.ai/api/v1/chat/completions', model: process.env.OPENROUTER_MODEL || 'meta-llama/llama-3.3-70b-instruct:free', priority: 2, headers: () => ({ 'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`, 'Content-Type': 'application/json', 'HTTP-Referer': process.env.ALLOWED_ORIGIN || 'https://noctryx.vercel.app', 'X-Title': 'Noctryx' }) },
   gemini: { enabled: !!process.env.GEMINI_API_KEY, model: 'gemini-2.5-flash', priority: 3 }
 };
 

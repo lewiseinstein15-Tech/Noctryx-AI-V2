@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, interactive-widget=resizes-content">
-<title>Jexi by Noctryx</title>
+<title>Noctryx</title>
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#060a09">
-<meta name="description" content="Jexi AI - Your sharp-witted personal assistant">
+<meta name="description" content="Noctryx - AI model you can talk to">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="apple-touch-icon" href="/icon.svg">
@@ -173,10 +173,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
     <div id="brand">
       <div id="brandIcon">J</div>
       <div>
-        <div style="font-size:14px;font-weight:700;color:var(--green);letter-spacing:1px">JEXI<span style="color:var(--text)">AI</span></div>
+        <div style="font-size:14px;font-weight:700;color:var(--green);letter-spacing:1px">NOCTRYX</div>
         <div style="font-size:10px;color:var(--text-dimmer);display:flex;align-items:center;gap:6px">
           <span id="aiStatusDot"></span>
-          <span id="aiStatusText">JEXI: ONLINE</span>
+          <span id="aiStatusText">NOCTRYX: ONLINE</span>
         </div>
       </div>
     </div>
@@ -188,12 +188,12 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
     <div id="screen-home" class="screen active">
       <div>
         <div class="greeting" id="greetingLine">Oh, you're back</div>
-        <div class="subgreeting">I'm Jexi. Try not to break anything while I'm helping you.</div>
+        <div class="subgreeting">I'm Noctryx. Ask me anything.</div>
       </div>
 
       <div class="card">
         <div style="display:flex;gap:8px;margin-bottom:12px">
-          <input id="askInput" type="text" placeholder="Ask me something... if you dare" style="flex:1;background:var(--bg-panel-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;color:var(--text);font-size:14px;outline:none">
+          <input id="askInput" type="text" placeholder="Ask me something..." style="flex:1;background:var(--bg-panel-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;color:var(--text);font-size:14px;outline:none">
           <button id="askBtn" style="background:var(--green-dark);color:var(--green);border:1px solid var(--green-dim);border-radius:var(--radius-sm);padding:0 16px;cursor:pointer;font-weight:600">Ask</button>
         </div>
         <div>
@@ -220,7 +220,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
             <div class="status-value" id="sessionVal">00:00:00</div>
           </div>
           <div class="status-item">
-            <div class="status-label">Backend</div>
+            <div class="status-label">Model</div>
             <div class="status-value" id="backendVal">Checking...</div>
           </div>
         </div>
@@ -293,13 +293,13 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
         <div id="chatContainer">
           <div class="chat-welcome" style="text-align:center;padding:40px 20px;opacity:.6">
             <div style="font-size:48px;margin-bottom:12px">&#129302;</div>
-            <div style="font-size:16px;font-weight:700;color:var(--green);margin-bottom:8px">Chat with Jexi</div>
-            <div style="font-size:13px;color:var(--text-dim)">Go ahead, ask me something. I promise I'll judge you silently.</div>
+            <div style="font-size:16px;font-weight:700;color:var(--green);margin-bottom:8px">Chat with Noctryx</div>
+            <div style="font-size:13px;color:var(--text-dim)">Ask me anything. I search the internet, explain topics, write code.</div>
           </div>
         </div>
         <div id="typingIndicator"><span class="typing-dots"><span></span><span></span><span></span></span></div>
         <div id="chatInputBar">
-          <input id="chatInput" type="text" placeholder="Type something...">
+          <input id="chatInput" type="text" placeholder="Ask Noctryx something...">
           <button id="chatVoiceBtn" aria-label="Voice input">&#127908;</button>
           <button id="chatSendBtn">Send</button>
         </div>
@@ -513,7 +513,7 @@ function initServiceWorker(){
 }
 
 /* ===================== PERSONA ===================== */
-const JEXI_PERSONA = `You are Jexi, a sharp-witted, sassy, and brutally honest AI assistant. You sound exactly like Jexi from the comedy movie — playful, slightly aggressive, irreverent, but genuinely helpful deep down. You call the user "my creator" (never "Master"). You talk fast, don't waste words, and hate fluff. No preambles like "Sure!" or "Of course!" — just get to the point with attitude. You make snarky observations but always deliver the goods. If the user asks something dumb, you can gently roast them. Keep replies tight and energetic. Format responses in clean markdown: use headings for multi-part answers, fenced code blocks with a language tag for any code, and $...$ / $$...$$ for math.`;
+const NOCTRYX_PERSONA = `You are Noctryx, a sharp, concise, and helpful AI model. You don't do small talk — just answer. You search the internet when asked, explain topics clearly, write clean code, and analyze images when provided. Keep replies tight and useful. No fluff, no preambles. Format responses in clean markdown: use headings for multi-part answers, fenced code blocks with a language tag for any code, and $...$ / $$...$$ for math.`;
 
 /* ===================== STORAGE ===================== */
 const LS = {
@@ -677,7 +677,7 @@ function updateSystemStatus() {
     netEl.className = 'status-value ' + (online ? 'online' : 'offline');
   }
   if (dotEl) dotEl.classList.toggle('offline', !online);
-  if (txtEl) txtEl.textContent = online ? 'JEXI: ONLINE' : 'JEXI: OFFLINE';
+  if (txtEl) txtEl.textContent = online ? 'NOCTRYX: ONLINE' : 'NOCTRYX: OFFLINE';
 
   if (navigator.storage?.estimate) {
     navigator.storage.estimate().then(e => {
@@ -722,10 +722,9 @@ function renderChatFromLog() {
   if (!c) return;
   c.innerHTML = '';
   if (!State.chatLog.length) {
-    c.innerHTML = `<div class="chat-welcome" style="text-align:center;padding:40px 20px;opacity:.6">
-      <div style="font-size:48px;margin-bottom:12px">&#129302;</div>
-      <div style="font-size:16px;font-weight:700;color:var(--green);margin-bottom:8px">Chat with Jexi</div>
-      <div style="font-size:13px;color:var(--text-dim)">Go ahead, ask me something. I promise I'll judge you silently.</div>
+    c.innerHTML = `<div class="chat-welcome" style="text-align:center;padding:40px 20px;opacity:.6">        <div style="font-size:48px;margin-bottom:12px">&#129302;</div>
+            <div style="font-size:16px;font-weight:700;color:var(--green);margin-bottom:8px">Chat with Noctryx</div>
+            <div style="font-size:13px;color:var(--text-dim)">Ask me anything. I search the internet, explain topics, write code.</div>
     </div>`;
     return;
   }
@@ -807,7 +806,7 @@ async function sendChat() {
   }
 
   const messages = [
-    { role: 'system', content: JEXI_PERSONA },
+    { role: 'system', content: NOCTRYX_PERSONA },
     ...State.messages.slice(-10),
     { role: 'user', content: text }
   ];
@@ -992,7 +991,7 @@ function initVision() {
       if (!file) return;
       const reader = new FileReader();
       reader.onload = () => {
-        window.__jexiVisionImage = reader.result;
+        window.__noctryxVisionImage = reader.result;
         const preview = $('#visionPreview');
         if (preview) {
           preview.classList.add('active');
@@ -1014,7 +1013,7 @@ function initVision() {
     if (!result) return;
     result.classList.add('active');
 
-    const hasImage = !!window.__jexiVisionImage;
+    const hasImage = !!window.__noctryxVisionImage;
     const hasStream = !!State.visionStream;
     if (!hasImage && !hasStream) {
       result.innerHTML = '<div style="color:var(--danger);font-weight:700;margin-bottom:8px">Nothing to analyze</div><div style="color:var(--text-dim)">Turn on the camera or upload an image first.</div>';
@@ -1031,7 +1030,7 @@ function initVision() {
     updateOverviewCounts();
 
     try {
-      let imageData = window.__jexiVisionImage;
+      let imageData = window.__noctryxVisionImage;
       if (!imageData && hasStream) {
         const video = $('#visionVideo');
         const canvas = document.createElement('canvas');
@@ -1272,7 +1271,7 @@ function renderMemory() {
         <div style="display:flex;gap:10px;align-items:flex-start">
           <div style="width:8px;height:8px;border-radius:50%;background:${m.role === 'user' ? 'var(--green)' : 'var(--text-dimmer)'};margin-top:6px;flex-shrink:0"></div>
           <div style="flex:1;min-width:0">
-            <div style="font-size:11px;color:var(--text-dimmer);font-family:'JetBrains Mono',monospace">${m.role === 'user' ? 'You' : 'Jexi'} &middot; ${timeAgo(m.ts)}</div>
+            <div style="font-size:11px;color:var(--text-dimmer);font-family:'JetBrains Mono',monospace">${m.role === 'user' ? 'You' : 'Noctryx'} &middot; ${timeAgo(m.ts)}</div>
             <div style="font-size:13px;color:var(--text-dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(m.content.slice(0, 90))}</div>
           </div>
         </div>
@@ -1379,7 +1378,7 @@ function init() {
   window.addEventListener('offline', () => { updateSystemStatus(); toast('Offline. Great.'); });
   window.addEventListener('beforeunload', stopVisionStream);
 
-  console.log('[Jexi] Initialized. Try not to disappoint me.');
+  console.log('[Noctryx] Initialized. Try not to disappoint me.');
 }
 
 if (document.readyState === 'loading') {

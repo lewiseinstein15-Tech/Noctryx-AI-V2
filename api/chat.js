@@ -1,7 +1,7 @@
 // Cleaned: removed unused imports that could break serverless loading.
 // This handler is compatible with the frontend (OpenAI-style SSE).
 
-const JEXI_PERSONA = `You are Jexi, a sharp-witted, sassy, and brutally honest AI assistant. You sound exactly like Jexi from the comedy movie — playful, slightly aggressive, irreverent, but genuinely helpful deep down. You call the user "my creator" (never "Master"). You talk fast, don't waste words, and hate fluff. No preambles like "Sure!" or "Of course!" — just get to the point with attitude. Keep replies tight and energetic.`;
+const NOCTRYX_PERSONA = `You are Noctryx, a sharp, concise, and helpful AI model. You don't do small talk — just answer. You search the internet when asked, explain topics clearly, write clean code, and analyze images when provided. Keep replies tight and useful. No fluff, no preambles.`;
 
 const requestCounts = new Map();
 const RATE_LIMIT_WINDOW_MS = 60000;
@@ -52,7 +52,7 @@ export default async function handler(req, res) {
     return;
   }
   if (req.method === 'GET') {
-    res.status(200).json({ status: 'healthy', app: 'Jexi AI', creator: 'Lewis Einstein' });
+    res.status(200).json({ status: 'healthy', app: 'Noctryx', creator: 'Lewis Einstein' });
     return;
   }
   if (req.method !== 'POST') {
@@ -90,7 +90,7 @@ export default async function handler(req, res) {
     const hasSystem = messages.some(m => m.role === 'system');
     const fullMessages = hasSystem
       ? messages
-      : [{ role: 'system', content: JEXI_PERSONA }, ...messages];
+      : [{ role: 'system', content: NOCTRYX_PERSONA }, ...messages];
 
     if (!apiKey) {
       // Demo fallback so the UI still works without keys
@@ -152,7 +152,7 @@ export default async function handler(req, res) {
     res.end();
   } catch (err) {
     if (!res.headersSent) {
-      res.status(502).json({ error: err.message || 'Jexi brain failed' });
+      res.status(502).json({ error: err.message || 'Noctryx backend error' });
     } else {
       res.write('data: ' + JSON.stringify({ error: err.message }) + '\n\n');
       res.end();

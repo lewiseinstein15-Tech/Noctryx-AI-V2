@@ -1,8 +1,8 @@
 {
-  "name": "Jexi AI by Noctryx",
-  "short_name": "Jexi",
-  "id": "com.noctryx.jexi",
-  "description": "Sharp-witted personal AI assistant",
+  "name": "Noctryx",
+  "short_name": "Noctryx",
+  "id": "com.noctryx.app",
+  "description": "AI model you can talk to",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

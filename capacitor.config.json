@@ -1,6 +1,6 @@
 {
-  "appId": "com.noctryx.jexi",
-  "appName": "Jexi AI",
+  "appId": "com.noctryx.app",
+  "appName": "Noctryx",
   "webDir": "dist",
   "server": {
     "androidScheme": "https",
